@@ -37,9 +37,7 @@ namespace ScriptSharp.Compiler {
             try {
                 statement = BuildStatementCore(statementNode);
             }
-            catch(Exception e) {
-                Exception eisBeingusedyoufuck = e;
-                Debugger.Launch();
+            catch {
                 string location = statementNode.Token.Location;
                 string message = "Check that your C# source compiles and that you are not using an unsupported feature. " +
                                  "Common things to check for include use of fully-qualified names " +
