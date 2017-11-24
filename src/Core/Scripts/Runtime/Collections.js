@@ -4,8 +4,8 @@ function toArray(obj) {
   return obj ? (typeof obj == 'string' ? JSON.parse('(' + obj + ')') : Array.prototype.slice.call(obj)) : null;
 }
 function removeItem(a, item) {
-  var index = a.indexOf(item);
-  return index >= 0 ? (a.splice(index, 1), true) : false;
+    var index = a.indexOf(item);
+    return index >= 0 ? (a.splice(index, 1), true) : false;
 }
 
 function clearKeys(obj) {
@@ -83,114 +83,3 @@ function enumerate(o) {
   return new Enumerator(o, keys(o));
 }
 
-function Stack() {
-  this.count = 0;
-  this._items = [];
-}
-var Stack$ = {
-
-  clear: function() {
-    this._items.length = 0;
-    this.count = 0;
-  },
-  contains: function(item) {
-    for (var i = this.count - 1; i >= 0; i--) {
-      if (this._items[i] === item) {
-        return true;
-      }
-    }
-    return false;
-  },
-  getEnumerator: function() {
-    return new Enumerator(this._items.reverse());
-  },
-  peek: function() {
-    return this._items[this.count - 1];
-  },
-  push: function(item) {
-    this._items.push(item);
-    this.count++;
-  },
-  pop: function() {
-    if (this.count) {
-      this.count--;
-      return this._items.pop();
-    }
-    return undefined;
-  }
-}
-
-function Queue() {
-  this.count = 0;
-  this._items = [];
-  this._offset = 0;
-}
-function _cleanQueue(q) {
-  q._items = q._items.slice(q._offset);
-  q._offset = 0;
-}
-var Queue$ = {
-
-  clear: function() {
-    this._items.length = 0;
-    this._offset = 0;
-    this.count = 0;
-  },
-  contains: function(item) {
-    for (var i = this._offset, length = this._items.length; i <= length; i++) {
-      if (this._items[i] === item) {
-        return true;
-      }
-    }
-    return false;
-  },
-  dequeue: function() {
-    if (this.count) {
-      var item = this._items[this._offset];
-      if (++this._offset * 2 >= this._items.length) {
-        _cleanQueue(this);
-      }
-      this.count--;
-      return item;
-    }
-    return undefined;
-  },
-  enqueue: function(item) {
-    this._items.push(item);
-    this.count++;
-  },
-  getEnumerator: function() {
-    if (this._offset != 0) {
-      _cleanQueue(this);
-    }
-    return new Enumerator(this._items);
-  },
-  peek: function() {
-    return this._items.length ? this._items[this._offset] : undefined;
-  }
-}
-
-function Dictionary() {
-    var instance = {};
-
-    createPropertyGet(this, "values", function () {
-        return Object.values(instance);
-    });
-
-    createPropertyGet(this, "keys", function () {
-        return Object.keys(instance);
-    });
-}
-
-var Dictionary$ = {
-    add: function (key, value) {
-    },
-    remove: function (key) {
-    },
-    clear: function () {
-    },
-    contains: function (key) {
-    },
-    tryGetValue: function (key, valueContainer) {
-    }
-}

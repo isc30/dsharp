@@ -1,6 +1,4 @@
-﻿//Guid
-
-function Guid() {
+﻿function Guid() {
 }
 function _guidGetRand() {
     return (Math.random() * 4294967295) | 0;

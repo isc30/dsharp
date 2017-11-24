@@ -8,42 +8,51 @@
 
 (function (global) {
     function _ss() {
+        #include "System\Interfaces.js"
+        #include "System\Guid.js"
+        #include "System\String.js"
+        #include "System\Delegate.js"
 
-        #include "Runtime\Polyfills.js"
-        #include "Runtime\Misc.js"
+        #include "System\ComponentModel\Interfaces.js"
+
+        #include "System\Collections\Generic\Dictionary.js"
+        #include "System\Collections\Generic\Queue.js"
+        #include "System\Collections\Generic\Stack.js"
+        #include "System\Collections\Generic\Interfaces.js"
+
+        #include "System\Text\StringBuilder.js"
+
         #include "Runtime\Collections.js"
-        #include "Runtime\Guid.js"
-        #include "Runtime\String.js"
-        #include "Runtime\Delegate.js"
-        #include "Runtime\EventArgs.js"
-        #include "Runtime\Contracts.js"
-        #include "Runtime\StringBuilder.js"
-        #include "Runtime\Observable.js"
-        #include "Runtime\Task.js"
         #include "Runtime\Culture.js"
+        #include "Runtime\EventArgs.js"
         #include "Runtime\Format.js"
+        #include "Runtime\Misc.js"
+        #include "Runtime\Observable.js"
+        #include "Runtime\Polyfills.js"
         #include "Runtime\TypeSystem.js"
 
         var exports = {
+            CancelEventArgs: defineClass(CancelEventArgs, {}, [], null),
+            Dictionary: defineClass(Dictionary, Dictionary$, [], null, [IReadOnlyDictionary, IDictionary]),
+            EventArgs: defineClass(EventArgs, {}, [], null),
+            Guid: defineClass(Guid, Guid$, [], null),
+            ICollection: defineInterface(ICollection),
+            IContainer: defineInterface(IContainer),
+            IDictionary: defineInterface(IDictionary, [ICollection]),
             IDisposable: defineInterface(IDisposable),
             IEnumerable: defineInterface(IEnumerable),
             IEnumerator: defineInterface(IEnumerator),
+            IEqualityComparer: defineInterface(IEqualityComparer),
+            IList: defineInterface(IList, [IReadOnlyList, ICollection]),
             IObserver: defineInterface(IObserver),
-            IApplication: defineInterface(IApplication),
-            IContainer: defineInterface(IContainer),
-            IObjectFactory: defineInterface(IObjectFactory),
-            IEventManager: defineInterface(IEventManager),
-            IInitializable: defineInterface(IInitializable),
-            EventArgs: defineClass(EventArgs, {}, [], null),
-            CancelEventArgs: defineClass(CancelEventArgs, {}, [], null),
-            StringBuilder: defineClass(StringBuilder, StringBuilder$, [], null),
-            Dictionary: defineClass(Dictionary, Dictionary$, [], null),
-            Stack: defineClass(Stack, Stack$, [], null),
-            Queue: defineClass(Queue, Queue$, [], null),
+            IReadOnlyCollection: defineInterface(IReadOnlyCollection, [IEnumerable]),
+            IReadOnlyDictionary: defineInterface(IReadOnlyDictionary, [IReadOnlyCollection]),
+            IReadOnlyList: defineInterface(IReadOnlyList, [IReadOnlyCollection]),
             Observable: defineClass(Observable, Observable$, [], null),
             ObservableCollection: defineClass(ObservableCollection, ObservableCollection$, [], null, [IEnumerable]),
-            Task: defineClass(Task, Task$, [], null),
-            Guid: defineClass(Guid, Guid$, [], null)
+            Queue: defineClass(Queue, Queue$, [], null, [ICollection]),
+            Stack: defineClass(Stack, Stack$, [], null, [ICollection]),
+            StringBuilder: defineClass(StringBuilder, StringBuilder$, [], null)
         };
 
         var extensions = {
@@ -87,7 +96,6 @@
             bindAdd: bindAdd,
             bindSub: bindSub,
             bindExport: bindExport,
-            deferred: deferred,
             paramsGenerator: paramsGenerator,
             createPropertyGet: createPropertyGet,
             createPropertySet: createPropertySet,
