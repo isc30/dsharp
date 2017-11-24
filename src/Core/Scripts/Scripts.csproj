@@ -21,6 +21,7 @@
   <ItemGroup>
     <Content Include="Runtime\Collections.js" />
     <Content Include="Runtime\Guid.js" />
+    <Content Include="Runtime\Polyfills.js" />
     <Content Include="Runtime\String.js" />
     <Content Include="Runtime\Misc.js" />
     <Content Include="Runtime\Format.js" />
@@ -36,6 +37,9 @@
   <ItemGroup>
     <PackageContent Include="Package\package.json" />
     <PackageContent Include="Package\readme.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Build\DSharp.Scripts.targets" />
   </ItemGroup>
   <Target Name="Build">
     <Exec Command="$(ToolsPath)\sspp.exe /nologo /debug /d:DEBUG /crlf /input:$(ProjectDir)Runtime.js /output:$(OutputPath)\ss.js" />

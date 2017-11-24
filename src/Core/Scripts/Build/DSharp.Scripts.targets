@@ -1,0 +1,13 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Target Name="Build">
+    <Exec Command="$(ToolsPath)\sspp.exe /nologo /debug /d:DEBUG /crlf /input:$(ProjectDir)Runtime.js /output:$(OutputPath)\ss.js" />
+    <Exec Command="$(ToolsPath)\ajaxmin.exe -hc -clobber:true $(OutputPath)\ss.js -term -out $(OutputPath)\ss.min.js" />
+    <Exec Command="$(ToolsPath)\sspp.exe /nologo /debug /d:DEBUG /crlf /input:$(ProjectDir)Loader.js /output:$(OutputPath)\ssloader.js" />
+    <Exec Command="$(ToolsPath)\ajaxmin.exe -hc -clobber:true $(OutputPath)\ssloader.js -term -out $(OutputPath)\ssloader.min.js" />
+    <Copy SourceFiles="@(PackageContent)" DestinationFolder="$(OutputPath)\npm" />
+    <Copy SourceFiles="$(OutputPath)\ss.js" DestinationFolder="$(OutputPath)\npm" />
+  </Target>
+  <Target Name="Clean">
+  </Target>
+  <Target Name="Rebuild" DependsOnTargets="Clean;Build" />
+</Project>

@@ -1,9 +1,9 @@
 {
-  "name": "scriptsharp",
+  "name": "dsharp",
   "version": "1.0.0",
-  "description": "Script# Runtime",
-  "keywords": [ "scriptsharp", "script#" ],
-  "author": "Nikhil Kothari",
+  "description": "D# Runtime",
+  "keywords": [ "DSharp", "D#" ],
+  "author": "Derivco Ipswich",
   "license": "Apache 2.0",
   "repository": {
     "type": "git",

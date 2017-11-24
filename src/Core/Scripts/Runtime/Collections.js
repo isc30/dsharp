@@ -13,6 +13,7 @@ function clearKeys(obj) {
     delete obj[key];
   }
 }
+
 function getValues(obj) {
     if (Object.values === 'function') {
         return Object.values(obj);
@@ -30,6 +31,7 @@ function getValues(obj) {
 function keyExists(obj, key) {
   return obj[key] !== undefined;
 }
+
 function keys(obj) {
   if (Object.keys) {
     return Object.keys(obj);
@@ -40,6 +42,7 @@ function keys(obj) {
   }
   return keys;
 }
+
 function keyCount(obj) {
   return keys(obj).length;
 }
@@ -167,3 +170,27 @@ var Queue$ = {
   }
 }
 
+function Dictionary() {
+    var instance = {};
+
+    createPropertyGet(this, "values", function () {
+        return Object.values(instance);
+    });
+
+    createPropertyGet(this, "keys", function () {
+        return Object.keys(instance);
+    });
+}
+
+var Dictionary$ = {
+    add: function (key, value) {
+    },
+    remove: function (key) {
+    },
+    clear: function () {
+    },
+    contains: function (key) {
+    },
+    tryGetValue: function (key, valueContainer) {
+    }
+}
