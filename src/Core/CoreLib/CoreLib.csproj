@@ -52,6 +52,13 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Collections\Generic\IDictionary.cs" />
+    <Compile Include="Collections\Generic\IEqualityComparer.cs" />
+    <Compile Include="Collections\Generic\IList.cs" />
+    <Compile Include="Collections\Generic\IReadonlyDictionary.cs" />
+    <Compile Include="Collections\Generic\IReadOnlyList.cs" />
+    <Compile Include="IComparable.cs" />
+    <Compile Include="IEqutable.cs" />
     <Compile Include="Linq\Linq.cs" />
     <Compile Include="Activator.cs" />
     <Compile Include="Guid.cs" />

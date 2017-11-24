@@ -2,91 +2,62 @@
 // Script#/Libraries/CoreLib
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
-
 using System.Runtime.CompilerServices;
 
-namespace System.Collections.Generic {
-
+namespace System.Collections.Generic
+{
     /// <summary>
     /// The Dictionary data type which is mapped to the Object type in Javascript.
     /// </summary>
     [ScriptIgnoreNamespace]
     [ScriptImport]
-    [ScriptName("Object")]
-    public sealed class Dictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>> {
+    [ScriptName(object.NAME_DEFINITION)]
+    public sealed class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>
+    {
+        public extern Dictionary();
 
-        public Dictionary() {
-        }
-
-        public Dictionary(params object[] nameValuePairs) {
-        }
+        public extern Dictionary(params object[] nameValuePairs);
 
         [Obsolete("This is only for use by the c# compiler, and cannot be used for generating script.", /* error */ true)]
-        public Dictionary(int count) {
-        }
+        public extern Dictionary(int count);
 
-        public int Count {
-            get {
-                return 0;
-            }
-        }
+        public extern int Count { get; }
 
-        public IReadonlyCollection<TKey> Keys {
-            get {
-                return null;
-            }
-        }
+        public extern ICollection<TKey> Keys { get; }
+
+        [ScriptAlias("ss.getValues")]
+        public extern ICollection<TValue> Values { get; }
+
+        extern IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys { get; }
+
+        [ScriptAlias("ss.getValues")]
+        extern IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values { get; }
 
         [ScriptField]
-        public TValue this[TKey key] {
-            get {
-                return default(TValue);
-            }
-            set {
-            }
-        }
+        public extern TValue this[TKey key] { get; set; }
 
         [Obsolete("This is only for use by the c# compiler, and cannot be used for generating script.", /* error */ true)]
-        public void Add(TKey key, TValue value) {
-        }
+        public extern void Add(TKey key, TValue value);
 
         [ScriptAlias("ss.clearKeys")]
-        public void Clear() {
-        }
+        public extern void Clear();
 
         [ScriptAlias("ss.keyExists")]
-        public bool ContainsKey(TKey key) {
-            return false;
-        }
+        public extern bool ContainsKey(TKey key);
 
-        public static Dictionary<TKey, TValue> GetDictionary(object o) {
-            return null;
-        }
+        public extern IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator();
 
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() {
-            return null;
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return null;
-        }
-
-        public void Remove(TKey key) {
-        }
+        public extern bool Remove(TKey key);
 
         [Obsolete("This is only for use by the c# compiler, and cannot be used for generating script.", /* error */ true)]
-        public bool TryGetValue(TKey key, out TValue value) {
-            value = default(TValue);
-            return false;
-        }
+        public extern bool TryGetValue(TKey key, out TValue value);
 
-        public static implicit operator Dictionary(Dictionary<TKey, TValue> dictionary) {
-            return null;
-        }
+        extern IEnumerator IEnumerable.GetEnumerator();
 
-        public static implicit operator Dictionary<TKey, TValue>(Dictionary dictionary) {
-            return null;
-        }
+        extern void ICollection<KeyValuePair<TKey, TValue>>.Add(KeyValuePair<TKey, TValue> item);
+
+        extern bool ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> item);
+
+        extern bool ICollection<KeyValuePair<TKey, TValue>>.Remove(KeyValuePair<TKey, TValue> item);
     }
 }

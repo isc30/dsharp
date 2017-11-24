@@ -15,7 +15,7 @@ namespace System {
     public class Object {
 
         [ScriptName("name")]
-        public const string NAME_DEFINITION = "Object";
+        internal const string NAME_DEFINITION = "Object";
 
         /// <summary>
         /// Retrieves the type associated with an object instance.

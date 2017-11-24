@@ -13,6 +13,20 @@ function clearKeys(obj) {
     delete obj[key];
   }
 }
+function getValues(obj) {
+    if (Object.values === 'function') {
+        return Object.values(obj);
+    }
+
+    var arr = [];
+
+    for (var key in obj) {
+        arr.push(obj[key]);
+    }
+
+    return arr;
+}
+
 function keyExists(obj, key) {
   return obj[key] !== undefined;
 }

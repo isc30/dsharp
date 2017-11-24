@@ -15,7 +15,7 @@ namespace System.Collections.Generic {
     [ScriptIgnoreNamespace]
     [ScriptImport]
     [ScriptName("Array")]
-    public sealed class List<T> : ICollection<T> {
+    public sealed class List<T> : IList<T> {
 
         public List() {
         }
@@ -58,7 +58,7 @@ namespace System.Collections.Generic {
             return null;
         }
 
-        public bool Contains(object item) {
+        public bool Contains(T item) {
             return false;
         }
 
