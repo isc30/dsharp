@@ -52,11 +52,14 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Browser\JsDictionary.cs" />
     <Compile Include="Collections\Generic\IDictionary.cs" />
     <Compile Include="Collections\Generic\IEqualityComparer.cs" />
     <Compile Include="Collections\Generic\IList.cs" />
     <Compile Include="Collections\Generic\IReadonlyDictionary.cs" />
     <Compile Include="Collections\Generic\IReadOnlyList.cs" />
+    <Compile Include="Collections\IDictionary.cs" />
+    <Compile Include="Collections\IDictionaryEnumerator.cs" />
     <Compile Include="IComparable.cs" />
     <Compile Include="IEqutable.cs" />
     <Compile Include="Linq\Linq.cs" />
@@ -131,7 +134,6 @@
     <Compile Include="Diagnostics\Debug.cs" />
     <Compile Include="Decimal.cs" />
     <Compile Include="Delegate.cs" />
-    <Compile Include="Collections\Dictionary.cs" />
     <Compile Include="Collections\DictionaryEntry.cs" />
     <Compile Include="Double.cs" />
     <Compile Include="Enum.cs" />

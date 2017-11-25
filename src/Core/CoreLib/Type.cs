@@ -3,71 +3,44 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System.Collections;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Browser;
 
-namespace System {
-
+namespace System
+{
     /// <summary>
     /// The Type data type which is mapped to the Function type in Javascript.
     /// </summary>
     [ScriptIgnoreNamespace]
     [ScriptImport]
-    public sealed class Type {
-
+    public sealed class Type
+    {
         [ScriptName("$base")]
         [ScriptField]
-        public Type BaseType {
-            get {
-                return null;
-            }
-        }
+        public extern Type BaseType { get; }
 
-        public string Name {
-            get {
-                return null;
-            }
-        }
+        public extern string Name { get; }
 
-        /// <summary>
-        /// Gets the prototype associated with the type.
-        /// </summary>
         [ScriptField]
-        public Dictionary Prototype {
-            get {
-                return null;
-            }
-        }
+        public extern JsDictionary Prototype { get; }
 
         [ScriptAlias("ss.type")]
-        public static Type GetType(string typeName) {
-            return null;
-        }
+        public extern static Type GetType(string typeName);
 
         [ScriptAlias("ss.canAssign")]
-        public bool IsAssignableFrom(Type type) {
-            return false;
-        }
+        public extern bool IsAssignableFrom(Type type);
 
         [ScriptAlias("ss.isClass")]
-        public static bool IsClass(Type type) {
-            return false;
-        }
+        public extern static bool IsClass(Type type);
 
         [ScriptAlias("ss.isInterface")]
-        public static bool IsInterface(Type type) {
-            return false;
-        }
+        public extern static bool IsInterface(Type type);
 
         [ScriptAlias("ss.instanceOf")]
-        public bool IsInstanceOfType(object instance) {
-            return false;
-        }
+        public extern bool IsInstanceOfType(object instance);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public static Type GetTypeFromHandle(RuntimeTypeHandle typeHandle) {
-            return null;
-        }
+        public extern static Type GetTypeFromHandle(RuntimeTypeHandle typeHandle);
     }
 }

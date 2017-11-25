@@ -33,13 +33,5 @@ namespace System {
         public virtual string ToString() {
             return null;
         }
-
-        /// <summary>
-        /// Converts an object to its culture-sensitive string representation.
-        /// </summary>
-        /// <returns>The culture-sensitive string representation of the object.</returns>
-        public virtual string ToLocaleString() {
-            return null;
-        }
     }
 }

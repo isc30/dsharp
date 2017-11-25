@@ -4,10 +4,13 @@
  * More information at http://scriptsharp.com
  */
 
-"use strict";
+"use strict"; 
+
+#include "Runtime\Polyfills\Object.js"
 
 (function (global) {
     function _ss() {
+
         #include "System\Interfaces.js"
         #include "System\Guid.js"
         #include "System\String.js"
@@ -28,20 +31,20 @@
         #include "Runtime\Format.js"
         #include "Runtime\Misc.js"
         #include "Runtime\Observable.js"
-        #include "Runtime\Polyfills.js"
         #include "Runtime\TypeSystem.js"
 
         var exports = {
             CancelEventArgs: defineClass(CancelEventArgs, {}, [], null),
             Dictionary: defineClass(Dictionary, Dictionary$, [], null, [IReadOnlyDictionary, IDictionary]),
             EventArgs: defineClass(EventArgs, {}, [], null),
-            Guid: defineClass(Guid, Guid$, [], null),
+            Guid: defineClass(Guid, Guid$, [], null, [IEquatable]),
             ICollection: defineInterface(ICollection),
             IContainer: defineInterface(IContainer),
             IDictionary: defineInterface(IDictionary, [ICollection]),
             IDisposable: defineInterface(IDisposable),
             IEnumerable: defineInterface(IEnumerable),
             IEnumerator: defineInterface(IEnumerator),
+            IEquatable: defineInterface(IEquatable),
             IEqualityComparer: defineInterface(IEqualityComparer),
             IList: defineInterface(IList, [IReadOnlyList, ICollection]),
             IObserver: defineInterface(IObserver),

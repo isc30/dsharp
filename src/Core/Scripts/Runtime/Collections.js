@@ -15,17 +15,7 @@ function clearKeys(obj) {
 }
 
 function getValues(obj) {
-    if (Object.values === 'function') {
-        return Object.values(obj);
-    }
-
-    var arr = [];
-
-    for (var key in obj) {
-        arr.push(obj[key]);
-    }
-
-    return arr;
+    return Object.values(obj);
 }
 
 function keyExists(obj, key) {
@@ -33,18 +23,17 @@ function keyExists(obj, key) {
 }
 
 function keys(obj) {
-  if (Object.keys) {
     return Object.keys(obj);
-  }
-  var keys = [];
-  for (var key in obj) {
-    keys.push(key);
-  }
-  return keys;
 }
 
 function keyCount(obj) {
   return keys(obj).length;
+}
+
+function removeKey(obj, key) {
+    var value = obj[key] !== undefined;
+    delete obj[key];
+    return !!value;
 }
 
 function Enumerator(obj, keys) {

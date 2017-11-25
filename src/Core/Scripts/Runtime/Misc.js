@@ -92,52 +92,6 @@ function compareDates(d1, d2) {
   return (d1 === d2) ? true : ((isValue(d1) && isValue(d2)) ? (d1.getTime() == d2.getTime()) : false);
 }
 
-function _popStackFrame(e) {
-  if (!isValue(e.stack) ||
-      !isValue(e.fileName) ||
-      !isValue(e.lineNumber)) {
-    return;
-  }
-
-  var stackFrames = e.stack.split('\n');
-  var currentFrame = stackFrames[0];
-  var pattern = e.fileName + ':' + e.lineNumber;
-  while (isValue(currentFrame) && currentFrame.indexOf(pattern) === -1) {
-    stackFrames.shift();
-    currentFrame = stackFrames[0];
-  }
-
-  var nextFrame = stackFrames[1];
-  if (!isValue(nextFrame)) {
-    return;
-  }
-
-  var nextFrameParts = nextFrame.match(/@(.*):(\d+)$/);
-  if (!isValue(nextFrameParts)) {
-    return;
-  }
-
-  stackFrames.shift();
-  e.stack = stackFrames.join('\n');
-  e.fileName = nextFrameParts[1];
-  e.lineNumber = parseInt(nextFrameParts[2], 10);
-}
-
-function error(message, errorInfo, innerException) {
-  var e = new Error(message);
-  if (errorInfo) {
-    for (var v in errorInfo) {
-      e[v] = errorInfo[v];
-    }
-  }
-  if (innerException) {
-    e.innerException = innerException;
-  }
-
-  _popStackFrame(e);
-  return e;
-}
-
 function fail(message) {
   console.assert(false, message);
   if (global.navigator) {

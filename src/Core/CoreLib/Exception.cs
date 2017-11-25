@@ -47,15 +47,5 @@ namespace System {
                 return null;
             }
         }
-
-        [ScriptAlias("ss.error")]
-        public static Exception Create(string message, Dictionary errorInfo) {
-            return null;
-        }
-
-        [ScriptAlias("ss.error")]
-        public static Exception Create(string message, Dictionary errorInfo, Exception innerException) {
-            return null;
-        }
     }
 }

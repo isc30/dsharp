@@ -27,7 +27,7 @@
   <ItemGroup>
     <Content Include="Runtime\Collections.js" />
     <Content Include="System\Collections\Generic\Dictionary.js" />
-    <Content Include="Runtime\Polyfills.js" />
+    <Content Include="Runtime\Polyfills\Object.js" />
     <Content Include="System\String.js" />
     <Content Include="Runtime\Misc.js" />
     <Content Include="Runtime\Format.js" />
