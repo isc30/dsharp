@@ -10,11 +10,12 @@
 
 (function (global) {
     function _ss() {
-
-        #include "System\Interfaces.js"
-        #include "System\Guid.js"
-        #include "System\String.js"
+        #include "System\Primitives.js"
         #include "System\Delegate.js"
+        #include "System\Guid.js"
+        #include "System\Interfaces.js"
+        #include "System\String.js"
+        #include "System\Random.js"
 
         #include "System\ComponentModel\Interfaces.js"
 
@@ -24,6 +25,8 @@
         #include "System\Collections\Generic\Interfaces.js"
 
         #include "System\Text\StringBuilder.js"
+
+        #include "System\Runtime\CompilerServices\HashCode.js"
 
         #include "Runtime\Collections.js"
         #include "Runtime\Culture.js"
@@ -55,7 +58,8 @@
             ObservableCollection: defineClass(ObservableCollection, ObservableCollection$, [], null, [IEnumerable]),
             Queue: defineClass(Queue, Queue$, [], null, [ICollection]),
             Stack: defineClass(Stack, Stack$, [], null, [ICollection]),
-            StringBuilder: defineClass(StringBuilder, StringBuilder$, [], null)
+            StringBuilder: defineClass(StringBuilder, StringBuilder$, [], null),
+            Random: defineClass(Random, Random$, [], null, [])
         };
 
         var extensions = {
@@ -79,7 +83,6 @@
             now: now,
             today: today,
             compareDates: compareDates,
-            error: error,
             string: string,
             emptyString: emptyString,
             whitespace: whitespace,
@@ -120,6 +123,9 @@
             defineInterface: defineInterface,
             getConstructorParams: getConstructorParams,
             createInstance: paramsGenerator(1, createInstance),
+
+            hash: hashString,
+            getHashCode: hashObject,
 
             culture: {
                 neutral: neutralCulture,

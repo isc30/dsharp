@@ -93,9 +93,10 @@
     <Compile Include="Callback.cs" />
     <Compile Include="ComponentModel\DependencyAttribute.cs" />
     <Compile Include="ComponentModel\IContainer.cs" />
-    <Compile Include="Export.cs" />
     <Compile Include="Diagnostics\SyntaxValidationAttribute.cs" />
     <Compile Include="NotImplementedException.cs" />
+    <Compile Include="Random.cs" />
+    <Compile Include="Runtime\CompilerServices\RuntimeHelper.cs" />
     <Compile Include="Runtime\CompilerServices\ScriptAllowSystemNamespaceAttribute.cs" />
     <Compile Include="Tuple.cs" />
     <Compile Include="Nullable.cs" />
@@ -153,7 +154,7 @@
     <Compile Include="Collections\Queue.cs" />
     <Compile Include="RegExp.cs" />
     <Compile Include="SByte.cs" />
-    <Compile Include="Script.cs" />
+    <Compile Include="Browser\Script.cs" />
     <Compile Include="Single.cs" />
     <Compile Include="Collections\Stack.cs" />
     <Compile Include="String.cs" />

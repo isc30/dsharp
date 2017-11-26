@@ -1,5 +1,5 @@
-﻿function Dictionary() {
-    this._instance = {};
+﻿function Dictionary(dictionary) {
+    this._instance = dictionary || {};
 
     createPropertyGet(this, "values", function () {
         return Object.values(this._instance);
@@ -7,6 +7,10 @@
 
     createPropertyGet(this, "keys", function () {
         return Object.keys(this._instance);
+    });
+
+    createPropertyGet(this, "count", function () {
+        return keyCount(this._instance);
     });
 }
 
@@ -20,7 +24,7 @@ var Dictionary$ = {
     clear: function () {
         this._instance = {};
     },
-    contains: function (key) {
+    containsKey: function (key) {
         return this._instance[key] !== undefined;
     },
     tryGetValue: function (key, valueContainer) {
@@ -30,5 +34,9 @@ var Dictionary$ = {
             return true;
         }
         return false;
+    },
+    getEnumerator: function () {
+        //TODO: Figure out the dictionary enumerator
+        return null;
     }
 }

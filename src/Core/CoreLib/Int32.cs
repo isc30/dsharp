@@ -15,10 +15,10 @@ namespace System {
     [ScriptName("Number")]
     public struct Int32 {
 
-        [ScriptName("MAX_VALUE")]
-        public const int MaxValue = 0;
+        [ScriptName("INT_MAX_VALUE")]
+        public const int MaxValue = 2147483647;
 
-        [ScriptName("MIN_VALUE")]
+        [ScriptName("INT_MIN_VALUE")]
         public const int MinValue = 0;
 
         [ScriptAlias("parseInt")]

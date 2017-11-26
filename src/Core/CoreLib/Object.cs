@@ -22,16 +22,15 @@ namespace System {
         /// </summary>
         /// <returns>The type of the object.</returns>
         [ScriptAlias("ss.typeOf")]
-        public Type GetType() {
-            return null;
-        }
+        public extern Type GetType();
 
         /// <summary>
         /// Converts an object to its string representation.
         /// </summary>
         /// <returns>The string representation of the object.</returns>
-        public virtual string ToString() {
-            return null;
-        }
+        public extern virtual string ToString();
+
+        [ScriptAlias("ss.getHashCode")]
+        public extern virtual int GetHashCode();
     }
 }
