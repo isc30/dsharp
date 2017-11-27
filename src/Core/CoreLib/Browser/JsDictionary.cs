@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -18,7 +17,7 @@ namespace Browser
         public extern int Count { get; }
 
         [ScriptAlias("ss.keys")]
-        public ICollection<string> Keys { get; }
+        public extern ICollection<string> Keys { get; }
 
         [ScriptAlias("ss.clearKeys")]
         public extern void Clear();
