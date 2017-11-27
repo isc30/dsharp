@@ -26,25 +26,6 @@ namespace System {
             return null;
         }
 
-        [ScriptAlias("ss.bindExport")]
-        public static Export Export(Delegate d) {
-            return null;
-        }
-
-        [ScriptAlias("ss.bindExport")]
-        public static Export Export(Delegate d, bool multiUse) {
-            return null;
-        }
-
-        [ScriptAlias("ss.bindExport")]
-        public static Export Export(Delegate d, bool multiUse, string name) {
-            return null;
-        }
-
-        [ScriptAlias("ss.bindExport")]
-        public static Export Export(Delegate d, bool multiUse, string name, object root) {
-            return null;
-        }
 
         [ScriptAlias("ss.bindSub")]
         public static Delegate Remove(Delegate source, Delegate value) {
