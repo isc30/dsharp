@@ -19,20 +19,7 @@
     <NuSpec Include="Packages\FxCop.nuspec" />
     <None Include="Packages\FxCop\Install.ps1" />
     <None Include="Packages\FxCop\ScriptSharp.PlaceHolder.txt" />
-    <NuSpec Include="Packages\Lib.BingMaps.nuspec" />
     <NuSpec Include="Packages\Lib.HTML.nuspec" />
-    <NuSpec Include="Packages\Lib.jQuery.nuspec" />
-    <NuSpec Include="Packages\Lib.jQuery.UI.nuspec" />
-    <NuSpec Include="Packages\Lib.jQuery.History.nuspec" />
-    <NuSpec Include="Packages\Lib.jQuery.Templating.nuspec" />
-    <NuSpec Include="Packages\Lib.jQuery.Validation.nuspec" />
-    <NuSpec Include="Packages\Lib.Knockout.nuspec" />
-    <NuSpec Include="Packages\Lib.Node.nuspec" />
-    <NuSpec Include="Packages\Lib.Node.Express.nuspec" />
-    <NuSpec Include="Packages\Lib.Node.Restify.nuspec" />
-    <NuSpec Include="Packages\Lib.Node.Mongo.nuspec" />
-    <NuSpec Include="Packages\Lib.Node.Neo4j.nuspec" />
-    <NuSpec Include="Packages\Lib.Node.Azure.nuspec" />
     <NuSpec Include="Packages\Testing.nuspec" />
     <NuSpec Include="Packages\Runtime.nuspec" />
   </ItemGroup>
