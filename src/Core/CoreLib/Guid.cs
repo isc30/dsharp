@@ -14,9 +14,11 @@ namespace System
         [ScriptName(PreserveCase = true)]
         public extern static Guid NewGuid();
 
+        public extern bool Equals(Guid other);
+
         [ScriptSkip]
         public extern override string ToString();
 
-        public extern bool Equals(Guid other);
+        public extern override int GetHashCode();
     }
 }

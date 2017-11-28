@@ -66,7 +66,9 @@ function resolveHashCodeFunction(obj) {
 
     var objGetHashCode = obj["getHashCode"];
     if (objGetHashCode) {
-        return objGetHashCode;
+        return function (obj) {
+            return obj.getHashCode();
+        };
     }
 
     return defaultHashCodeFunction;
