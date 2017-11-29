@@ -20,25 +20,25 @@
     <Content Include="System\Collections\Generic\Interfaces.js" />
     <Content Include="System\Collections\Generic\Queue.js" />
     <Content Include="System\Collections\Generic\Stack.js" />
+    <Content Include="System\ComponentModel\CancelEventArgs.js" />
     <Content Include="System\ComponentModel\Interfaces.js" />
     <Content Include="System\Guid.js" />
     <Content Include="System\Interfaces.js" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Runtime\Assembly.js" />
     <Content Include="Runtime\Collections.js" />
     <Content Include="System\Collections\Generic\Dictionary.js" />
     <Content Include="Runtime\Polyfills\Object.js" />
     <Content Include="System\Primitives.js" />
     <Content Include="System\Random.js" />
+    <Content Include="System\Reflection\Assembly.js" />
     <Content Include="System\Runtime\CompilerServices\HashCode.js" />
     <Content Include="System\String.js" />
     <Content Include="Runtime\Misc.js" />
     <Content Include="Runtime\Format.js" />
     <Content Include="Runtime\Culture.js" />
     <Content Include="System\Delegate.js" />
-    <Content Include="Runtime\EventArgs.js" />
-    <Content Include="Runtime\Observable.js" />
+    <Content Include="System\EventArgs.js" />
     <Content Include="System\Text\StringBuilder.js" />
     <Content Include="Runtime\TypeSystem.js" />
   </ItemGroup>

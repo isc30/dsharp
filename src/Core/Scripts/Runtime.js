@@ -9,32 +9,36 @@
 #include "Runtime\Polyfills\Object.js"
 
 (function (global) {
-    function _ss() {
+        function _ss() {
+            var versionNumber = "1.1.0";
+
         #include "System\Primitives.js"
         #include "System\Delegate.js"
         #include "System\Guid.js"
         #include "System\Interfaces.js"
         #include "System\String.js"
         #include "System\Random.js"
+        #include "System\EventArgs.js"
 
         #include "System\ComponentModel\Interfaces.js"
+        #include "System\ComponentModel\CancelEventArgs.js"
 
         #include "System\Collections\Generic\Dictionary.js"
         #include "System\Collections\Generic\Queue.js"
         #include "System\Collections\Generic\Stack.js"
         #include "System\Collections\Generic\Interfaces.js"
 
-        #include "System\Text\StringBuilder.js"
+        #include "System\Reflection\Assembly.js"
 
         #include "System\Runtime\CompilerServices\HashCode.js"
 
-        #include "Runtime\Assembly.js"
+        #include "System\Text\StringBuilder.js"
+
         #include "Runtime\Collections.js"
         #include "Runtime\Culture.js"
         #include "Runtime\EventArgs.js"
         #include "Runtime\Format.js"
         #include "Runtime\Misc.js"
-        #include "Runtime\Observable.js"
         #include "Runtime\TypeSystem.js"
 
         var ns_System = "System";
@@ -47,35 +51,33 @@
         var exports = {
             Assembly: defineClass(Assembly, Assembly$, [], null, [], ns_System$Reflection),
             AssemblyName: defineClass(AssemblyName, AssemblyName$, [], null, [], ns_System$Reflection),
-            //TODO: Move to System.ComponentModel
-            CancelEventArgs: defineClass(CancelEventArgs, {}, [], null, ns_System),
-            Dictionary: defineClass(Dictionary, Dictionary$, [], null, [IReadOnlyDictionary, IDictionary]),
-            EventArgs: defineClass(EventArgs, {}, [], null),
-            Guid: defineClass(Guid, Guid$, [], null, [IEquatable]),
-            ICollection: defineInterface(ICollection),
-            IContainer: defineInterface(IContainer),
-            IDictionary: defineInterface(IDictionary, [ICollection]),
-            IDisposable: defineInterface(IDisposable),
-            IEnumerable: defineInterface(IEnumerable),
-            IEnumerator: defineInterface(IEnumerator),
-            IEquatable: defineInterface(IEquatable),
-            IEqualityComparer: defineInterface(IEqualityComparer),
-            IList: defineInterface(IList, [IReadOnlyList, ICollection]),
-            IObserver: defineInterface(IObserver),
-            IReadOnlyCollection: defineInterface(IReadOnlyCollection, [IEnumerable]),
-            IReadOnlyDictionary: defineInterface(IReadOnlyDictionary, [IReadOnlyCollection]),
-            IReadOnlyList: defineInterface(IReadOnlyList, [IReadOnlyCollection]),
-            Observable: defineClass(Observable, Observable$, [], null),
-            ObservableCollection: defineClass(ObservableCollection, ObservableCollection$, [], null, [IEnumerable]),
-            Queue: defineClass(Queue, Queue$, [], null, [ICollection]),
-            Stack: defineClass(Stack, Stack$, [], null, [ICollection]),
-            StringBuilder: defineClass(StringBuilder, StringBuilder$, [], null),
-            Random: defineClass(Random, Random$, [], null, []),
+            //TODO: Move to System.ComponentModel folder
+            CancelEventArgs: defineClass(CancelEventArgs, {}, [], null, ns_System$ComponentModel),
+            Dictionary: defineClass(Dictionary, Dictionary$, [], null, [IReadOnlyDictionary, IDictionary], ns_System$Collections$Generic),
+            EventArgs: defineClass(EventArgs, {}, [], null, ns_System),
+            Guid: defineClass(Guid, Guid$, [], null, [IEquatable], ns_System),
+            ICollection: defineInterface(ICollection, null, ns_System$Collections$Generic),
+            IContainer: defineInterface(IContainer, null, ns_System$ComponentModel),
+            IDictionary: defineInterface(IDictionary, [ICollection], ns_System$Collections$Generic),
+            IDisposable: defineInterface(IDisposable, null, ns_System),
+            IEnumerable: defineInterface(IEnumerable, null, ns_System),
+            IEnumerator: defineInterface(IEnumerator, null, ns_System),
+            IEquatable: defineInterface(IEquatable, null, ns_System),
+            IEqualityComparer: defineInterface(IEqualityComparer, null, ns_System$Collections$Generic),
+            IList: defineInterface(IList, [IReadOnlyList, ICollection], ns_System$Collections$Generic),
+            IObserver: defineInterface(IObserver, null, ns_System),
+            IReadOnlyCollection: defineInterface(IReadOnlyCollection, [IEnumerable], ns_System$Collections$Generic),
+            IReadOnlyDictionary: defineInterface(IReadOnlyDictionary, [IReadOnlyCollection], ns_System$Collections$Generic),
+            IReadOnlyList: defineInterface(IReadOnlyList, [IReadOnlyCollection], ns_System$Collections$Generic),
+            Queue: defineClass(Queue, Queue$, [], null, [ICollection], ns_System$Collections$Generic),
+            Stack: defineClass(Stack, Stack$, [], null, [ICollection], ns_System$Collections$Generic),
+            StringBuilder: defineClass(StringBuilder, StringBuilder$, [], null, ns_System$Text),
+            Random: defineClass(Random, Random$, [], null, [], ns_System),
             Version: defineClass(Version, Version$, [], null, [], ns_System)
         };
 
         var extensions = {
-            version: '1.0',
+            version: versionNumber,
 
             isValue: isValue,
             value: value,
@@ -147,7 +149,7 @@
             fail: fail
         }
 
-        return extend(module('ss', '1.1.0', null, exports), extensions);
+        return extend(module('ss', versionNumber, null, exports), extensions);
     }
 
 

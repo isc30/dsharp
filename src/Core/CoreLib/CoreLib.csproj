@@ -90,7 +90,6 @@
     <Compile Include="Collections\Generic\IEnumerator.cs" />
     <Compile Include="Collections\ICollection.cs" />
     <Compile Include="Collections\IReadonlyCollection.cs" />
-    <Compile Include="Collections\ObservableCollection.cs" />
     <Compile Include="Callback.cs" />
     <Compile Include="ComponentModel\DependencyAttribute.cs" />
     <Compile Include="ComponentModel\IContainer.cs" />
@@ -127,7 +126,7 @@
     <Compile Include="Collections\ArrayMapCallback.cs" />
     <Compile Include="Boolean.cs" />
     <Compile Include="Byte.cs" />
-    <Compile Include="CancelEventArgs.cs" />
+    <Compile Include="ComponentModel\CancelEventArgs.cs" />
     <Compile Include="Char.cs" />
     <Compile Include="CompareCallback.cs" />
     <Compile Include="Arguments.cs" />

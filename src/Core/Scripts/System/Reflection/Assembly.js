@@ -51,6 +51,7 @@ function Version(major, minor, build, revision) {
     build = assignDefault(build, -1);
     revision = assignDefault(revision, -1);
 
+    //TODO: Make these readonly value returns.
     createPropertyGet(this, "Major", function () {
         return major;
     });

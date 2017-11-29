@@ -6,24 +6,18 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace System {
-
+namespace System.ComponentModel
+{
     /// <summary>
     /// The event argument associated with cancelable events.
     /// </summary>
     [ScriptImport]
-    public class CancelEventArgs : EventArgs {
-
+    public class CancelEventArgs : EventArgs
+    {
         /// <summary>
         /// Whether the event has been canceled.
         /// </summary>
         [ScriptField]
-        public bool Cancel {
-            get {
-                return false;
-            }
-            set {
-            }
-        }
+        public extern bool Cancel { get; set; }
     }
 }
