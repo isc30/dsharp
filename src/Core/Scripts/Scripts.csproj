@@ -16,6 +16,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="Loader.js" />
+    <Content Include="prototype.js" />
     <Content Include="Runtime.js" />
     <Content Include="System\Collections\Generic\Interfaces.js" />
     <Content Include="System\Collections\Generic\Queue.js" />
