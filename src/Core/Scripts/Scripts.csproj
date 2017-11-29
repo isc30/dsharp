@@ -25,6 +25,7 @@
     <Content Include="System\Interfaces.js" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Runtime\Assembly.js" />
     <Content Include="Runtime\Collections.js" />
     <Content Include="System\Collections\Generic\Dictionary.js" />
     <Content Include="Runtime\Polyfills\Object.js" />

@@ -28,6 +28,7 @@
 
         #include "System\Runtime\CompilerServices\HashCode.js"
 
+        #include "Runtime\Assembly.js"
         #include "Runtime\Collections.js"
         #include "Runtime\Culture.js"
         #include "Runtime\EventArgs.js"
@@ -36,8 +37,18 @@
         #include "Runtime\Observable.js"
         #include "Runtime\TypeSystem.js"
 
+        var ns_System = "System";
+        var ns_System$Reflection = "System.Reflection";
+        var ns_System$Collections$Generic = "System.Collections.Generic";
+        var ns_System$ComponentModel = "System.ComponentModel";
+        var ns_System$Runtime$CompilerServices = "System.Runtime.CompilerServices";
+        var ns_System$Text = "System.Text";
+
         var exports = {
-            CancelEventArgs: defineClass(CancelEventArgs, {}, [], null),
+            Assembly: defineClass(Assembly, Assembly$, [], null, [], ns_System$Reflection),
+            AssemblyName: defineClass(AssemblyName, AssemblyName$, [], null, [], ns_System$Reflection),
+            //TODO: Move to System.ComponentModel
+            CancelEventArgs: defineClass(CancelEventArgs, {}, [], null, ns_System),
             Dictionary: defineClass(Dictionary, Dictionary$, [], null, [IReadOnlyDictionary, IDictionary]),
             EventArgs: defineClass(EventArgs, {}, [], null),
             Guid: defineClass(Guid, Guid$, [], null, [IEquatable]),
@@ -59,7 +70,8 @@
             Queue: defineClass(Queue, Queue$, [], null, [ICollection]),
             Stack: defineClass(Stack, Stack$, [], null, [ICollection]),
             StringBuilder: defineClass(StringBuilder, StringBuilder$, [], null),
-            Random: defineClass(Random, Random$, [], null, [])
+            Random: defineClass(Random, Random$, [], null, []),
+            Version: defineClass(Version, Version$, [], null, [], ns_System)
         };
 
         var extensions = {
@@ -135,7 +147,7 @@
             fail: fail
         }
 
-        return extend(module('ss', null, exports), extensions);
+        return extend(module('ss', '1.1.0', null, exports), extensions);
     }
 
 

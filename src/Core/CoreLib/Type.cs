@@ -4,6 +4,7 @@
 //
 
 using System.ComponentModel;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using Browser;
 
@@ -21,6 +22,28 @@ namespace System
         public extern Type BaseType { get; }
 
         public extern string Name { get; }
+        
+
+        [ScriptName("$namespace")]
+        [ScriptField]
+        public extern string Namespace
+        {
+            get;
+        }
+
+        [ScriptName("$fullName")]
+        [ScriptField]
+        public extern string FullName
+        {
+            get;
+        }
+
+        [ScriptName("$assembly")]
+        [ScriptField]
+        public extern Assembly Assembly
+        {
+            get;
+		}
 
         [ScriptField]
         public extern JsDictionary Prototype { get; }
