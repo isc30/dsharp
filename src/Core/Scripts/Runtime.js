@@ -36,7 +36,6 @@
 
         #include "Runtime\Collections.js"
         #include "Runtime\Culture.js"
-        #include "Runtime\EventArgs.js"
         #include "Runtime\Format.js"
         #include "Runtime\Misc.js"
         #include "Runtime\TypeSystem.js"
