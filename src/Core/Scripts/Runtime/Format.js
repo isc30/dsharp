@@ -31,7 +31,7 @@ function _commaFormatNumber(number, groups, decimal, comma) {
       startIndex = 0;
       done = true;
     }
-    if (!length) {
+    if (!index) {
       break;
     }
 
