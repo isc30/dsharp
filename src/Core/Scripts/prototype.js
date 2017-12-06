@@ -62,6 +62,8 @@ DSharp.defineAssembly("mscorlib", function($global, assembly){
 		//mutable property
 		DSharp.createProperty(instanceType, "Value", function(){
 			return this.value;
+		}, function(){
+			this.value = 0;
 		});
 	});
 });
