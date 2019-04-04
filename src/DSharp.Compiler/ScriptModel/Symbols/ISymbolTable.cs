@@ -1,16 +1,16 @@
-// ISymbolTable.cs
+﻿// ISymbolTable.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System.Collections;
+using System.Collections.Generic;
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
-    internal interface ISymbolTable
+    public interface ISymbolTable
     {
-        ICollection Symbols { get; }
+        IEnumerable<ISymbol> Symbols { get; }
 
-        Symbol FindSymbol(string name, Symbol context, SymbolFilter filter);
+        ISymbol FindSymbol(string name, ISymbol context, SymbolFilter filter);
     }
 }

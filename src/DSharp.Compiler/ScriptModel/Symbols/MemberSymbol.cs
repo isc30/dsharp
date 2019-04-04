@@ -1,4 +1,4 @@
-// MemberSymbol.cs
+﻿// MemberSymbol.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -7,17 +7,17 @@ using System.Diagnostics;
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
-    internal abstract class MemberSymbol : Symbol
+    public abstract class MemberSymbol : Symbol, IMemberSymbol
     {
         private string generatedName;
 
-        protected MemberSymbol(SymbolType type, string name, TypeSymbol parent, TypeSymbol associatedType)
+        protected MemberSymbol(SymbolType type, string name, ITypeSymbol parent, ITypeSymbol associatedType)
             : base(type, name, parent)
         {
             AssociatedType = associatedType;
         }
 
-        public TypeSymbol AssociatedType { get; }
+        public ITypeSymbol AssociatedType { get; }
 
         public override string GeneratedName
         {

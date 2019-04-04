@@ -15,16 +15,12 @@ namespace DSharp.Compiler.Generator
     {
         private readonly Stack<SymbolImplementation> implementationStack;
 
-        private SymbolSet symbols;
-
-        public ScriptGenerator(TextWriter writer, CompilerOptions options, SymbolSet symbols)
+        public ScriptGenerator(TextWriter writer, CompilerOptions options)
         {
             Debug.Assert(writer != null);
             Writer = new ScriptTextWriter(writer);
 
             Options = options;
-            this.symbols = symbols;
-
             implementationStack = new Stack<SymbolImplementation>();
         }
 
@@ -40,9 +36,9 @@ namespace DSharp.Compiler.Generator
             implementationStack.Pop();
         }
 
-        public void GenerateScript(SymbolSet symbolSet)
+        public void GenerateScript(IScriptModel scriptModel)
         {
-            Debug.Assert(symbolSet != null);
+            Debug.Assert(scriptModel != null);
 
             List<TypeSymbol> types = new List<TypeSymbol>();
             List<TypeSymbol> publicTypes = new List<TypeSymbol>();
@@ -50,7 +46,7 @@ namespace DSharp.Compiler.Generator
 
             bool hasNonModuleInternalTypes = false;
 
-            foreach (NamespaceSymbol namespaceSymbol in symbolSet.Namespaces)
+            foreach (NamespaceSymbol namespaceSymbol in scriptModel.Root)
                 if (namespaceSymbol.HasApplicationTypes)
                 {
                     foreach (TypeSymbol type in namespaceSymbol.Types)
@@ -130,7 +126,7 @@ namespace DSharp.Compiler.Generator
             if (generateModule)
             {
                 Writer.Write($"var $exports = {DSharpStringResources.ScriptExportMember("module")}('");
-                Writer.Write(symbolSet.ScriptName);
+                Writer.Write(scriptModel.ScriptName);
                 Writer.Write("',");
 
                 if (internalTypes.Count != 0 && hasNonModuleInternalTypes)

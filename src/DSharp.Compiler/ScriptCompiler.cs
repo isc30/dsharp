@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml;
 using DSharp.Compiler.CodeModel;
 using DSharp.Compiler.CodeModel.Types;
 using DSharp.Compiler.Compiler;
@@ -12,6 +15,9 @@ using DSharp.Compiler.Generator;
 using DSharp.Compiler.Importer;
 using DSharp.Compiler.ScriptModel.Symbols;
 using DSharp.Compiler.Validator;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Text;
 
 namespace DSharp.Compiler
 {
@@ -22,10 +28,9 @@ namespace DSharp.Compiler
 
         private ParseNodeList compilationUnitList;
         private bool hasErrors;
-        private ICollection<TypeSymbol> importedSymbols;
 
         private CompilerOptions options;
-        private SymbolSet symbols;
+        private ICompilationContext compilationContext;
 
         public ScriptCompiler()
             : this(null)
@@ -37,30 +42,64 @@ namespace DSharp.Compiler
             this.errorHandler = errorHandler;
         }
 
-        void IErrorHandler.ReportError(CompilerError error)
+        public bool Compile(CompilerOptions options)
         {
-            hasErrors = true;
-            if (errorHandler != null)
+            this.options = options ?? throw new ArgumentNullException(nameof(options));
+
+            hasErrors = false;
+            compilationContext = new MonoSymbolSet();
+
+            var compilation = ImportMetadata();
+
+            if (hasErrors)
             {
-                errorHandler.ReportError(error);
-                return;
+                return false;
             }
 
-            //TODO: Look at adding a logger interface
-            LogError(error);
-        }
+            compilation = BuildCodeModel(compilation);
 
-        private void LogError(CompilerError error)
-        {
-            if (error.ColumnNumber != null || error.LineNumber != null)
+            if (hasErrors)
             {
-                Console.Error.WriteLine($"{error.File}({error.LineNumber.GetValueOrDefault()},{error.ColumnNumber.GetValueOrDefault()})");
+                return false;
             }
 
-            Console.Error.WriteLine(error.Description);
+            BuildMetadata();
+
+            if (hasErrors)
+            {
+                return false;
+            }
+
+            BuildImplementation();
+
+            if (hasErrors)
+            {
+                return false;
+            }
+
+            GenerateScript();
+
+            if (hasErrors)
+            {
+                return false;
+            }
+
+            return true;
         }
 
-        private void BuildCodeModel()
+        private CSharpCompilation ImportMetadata()
+        {
+            var references = options.References.Select(r => MetadataReference.CreateFromFile(r));
+            var compilationContext = CSharpCompilation.Create(options.AssemblyName)
+                .AddReferences(references);
+
+            MetadataImporter mdImporter = new MetadataImporter(this);
+
+            mdImporter.ImportMetadata(options.References, this.compilationContext);
+            return compilationContext;
+        }
+
+        private CSharpCompilation BuildCodeModel(CSharpCompilation compilation)
         {
             compilationUnitList = new ParseNodeList();
 
@@ -70,50 +109,49 @@ namespace DSharp.Compiler
 
             foreach (IStreamSource source in options.Sources)
             {
-                CompilationUnitNode compilationUnit = codeModelBuilder.BuildCodeModel(source);
 
-                if (compilationUnit != null)
+                try
                 {
-                    validationProcessor.Process(compilationUnit);
+                    CompilationUnitNode compilationUnit = codeModelBuilder.BuildCodeModel(source);
 
-                    compilationUnitList.Append(compilationUnit);
-                }
-            }
-        }
-
-        private void BuildImplementation()
-        {
-            CodeBuilder codeBuilder = new CodeBuilder(options, this);
-            ICollection<SymbolImplementation> implementations = codeBuilder.BuildCode(symbols);
-
-            if (options.Minimize)
-            {
-                foreach (SymbolImplementation impl in implementations)
-                {
-                    if (impl.Scope == null)
+                    if (compilationUnit != null)
                     {
-                        continue;
+                        validationProcessor.Process(compilationUnit);
+
+                        compilationUnitList.Append(compilationUnit);
                     }
-
-                    SymbolObfuscator obfuscator = new SymbolObfuscator();
-                    SymbolImplementationTransformer transformer = new SymbolImplementationTransformer(obfuscator);
-
-                    transformer.TransformSymbolImplementation(impl);
+                }
+                catch (Exception e)
+                {
+                    Console.Error.WriteLine($"Error occurred in File {source?.FullName}: {e.Message}, {e.StackTrace}  ");
                 }
             }
+
+            CSharpParseOptions cSharpParseOptions = new CSharpParseOptions(LanguageVersion.CSharp2)
+                .WithPreprocessorSymbols(options.Defines)
+                .WithKind(SourceCodeKind.Regular);
+
+            foreach (var tree in options.Sources.Select(source =>
+            {
+                return CSharpSyntaxTree.ParseText(SourceText.From(source.GetStream()), cSharpParseOptions).GetRoot();
+            }).ToList())
+            {
+                compilation = compilation.AddSyntaxTrees(tree.SyntaxTree);
+            }
+
+            return compilation;
         }
 
-        //TODO: Look at removing the internal testing type mechanism in favour of testing the compiler correctly.
         private void BuildMetadata()
         {
             if (options.Resources != null && options.Resources.Count != 0)
             {
-                ResourcesBuilder resourcesBuilder = new ResourcesBuilder(symbols);
+                ResourcesBuilder resourcesBuilder = new ResourcesBuilder(compilationContext);
                 resourcesBuilder.BuildResources(options.Resources);
             }
 
             MetadataBuilder mdBuilder = new MetadataBuilder(this);
-            appSymbols = mdBuilder.BuildMetadata(compilationUnitList, symbols, options);
+            appSymbols = mdBuilder.BuildMetadata(compilationUnitList, compilationContext, options);
 
             // Check if any of the types defined in this assembly conflict.
             Dictionary<string, TypeSymbol> types = new Dictionary<string, TypeSymbol>();
@@ -168,58 +206,30 @@ namespace DSharp.Compiler
             {
                 SymbolSetTransformer symbolSetTransformer = new SymbolSetTransformer(transformer);
                 ICollection<Symbol> transformedSymbols =
-                    symbolSetTransformer.TransformSymbolSet(symbols, /* useInheritanceOrder */ true);
+                    symbolSetTransformer.TransformSymbolSet(compilationContext, /* useInheritanceOrder */ true);
             }
         }
 
-        public bool Compile(CompilerOptions options)
+        private void BuildImplementation()
         {
-            if (options == null)
+            CodeBuilder codeBuilder = new CodeBuilder(options, this);
+            ICollection<SymbolImplementation> implementations = codeBuilder.BuildCode(compilationContext);
+
+            if (options.Minimize)
             {
-                throw new ArgumentNullException("options");
+                foreach (SymbolImplementation impl in implementations)
+                {
+                    if (impl.Scope == null)
+                    {
+                        continue;
+                    }
+
+                    SymbolObfuscator obfuscator = new SymbolObfuscator();
+                    SymbolImplementationTransformer transformer = new SymbolImplementationTransformer(obfuscator);
+
+                    transformer.TransformSymbolImplementation(impl);
+                }
             }
-
-            this.options = options;
-
-            hasErrors = false;
-            symbols = new SymbolSet();
-
-            ImportMetadata();
-
-            if (hasErrors)
-            {
-                return false;
-            }
-
-            BuildCodeModel();
-
-            if (hasErrors)
-            {
-                return false;
-            }
-
-            BuildMetadata();
-
-            if (hasErrors)
-            {
-                return false;
-            }
-
-            BuildImplementation();
-
-            if (hasErrors)
-            {
-                return false;
-            }
-
-            GenerateScript();
-
-            if (hasErrors)
-            {
-                return false;
-            }
-
-            return true;
         }
 
         private void GenerateScript()
@@ -268,8 +278,8 @@ namespace DSharp.Compiler
 
             try
             {
-                ScriptGenerator scriptGenerator = new ScriptGenerator(scriptWriter, options, symbols);
-                scriptGenerator.GenerateScript(symbols);
+                ScriptGenerator scriptGenerator = new ScriptGenerator(scriptWriter, options);
+                scriptGenerator.GenerateScript(compilationContext);
             }
             catch (Exception e)
             {
@@ -302,7 +312,7 @@ namespace DSharp.Compiler
 
             bool firstDependency = true;
 
-            foreach (ScriptReference dependency in symbols.Dependencies)
+            foreach (ScriptReference dependency in compilationContext.Dependencies)
             {
                 if (dependency.DelayLoaded)
                 {
@@ -343,7 +353,7 @@ namespace DSharp.Compiler
             depLookupBuilder.Append(";");
 
             return template.TrimStart()
-                           .Replace("{name}", symbols.ScriptName)
+                           .Replace("{name}", compilationContext.ScriptName)
                            .Replace("{description}", options.ScriptInfo.Description ?? string.Empty)
                            .Replace("{copyright}", options.ScriptInfo.Copyright ?? string.Empty)
                            .Replace("{version}", options.ScriptInfo.Version ?? string.Empty)
@@ -353,13 +363,6 @@ namespace DSharp.Compiler
                            .Replace("{dependencies}", dependenciesBuilder.ToString())
                            .Replace("{dependenciesLookup}", depLookupBuilder.ToString())
                            .Replace("{script}", script);
-        }
-
-        private void ImportMetadata()
-        {
-            MetadataImporter mdImporter = new MetadataImporter(options, this);
-
-            importedSymbols = mdImporter.ImportMetadata(options.References, symbols);
         }
 
         private string PreprocessTemplate(string template)
@@ -394,6 +397,55 @@ namespace DSharp.Compiler
 
                 return includedScript;
             });
+        }
+
+        void IErrorHandler.ReportError(CompilerError error)
+        {
+            hasErrors = true;
+            if (errorHandler != null)
+            {
+                errorHandler.ReportError(error);
+                return;
+            }
+
+            //TODO: Look at adding a logger interface
+            LogError(error);
+        }
+
+        private void LogError(CompilerError error)
+        {
+            if (error.ColumnNumber != null || error.LineNumber != null)
+            {
+                Console.Error.WriteLine($"{error.File}({error.LineNumber.GetValueOrDefault()},{error.ColumnNumber.GetValueOrDefault()})");
+            }
+
+            Console.Error.WriteLine(error.Description);
+        }
+    }
+
+    public class RoslynMetadataImporter
+    {
+        public CSharpCompilation ImportMetadata(CSharpCompilation compilation, IEnumerable<string> references)
+        {
+            var metadataReferences = references.Select(r => MetadataReference.CreateFromFile(r));
+
+            compilation = compilation.WithReferences(metadataReferences);
+
+            foreach (var reference in metadataReferences)
+            {
+                var metadata = reference.GetMetadata() as AssemblyMetadata;
+                foreach (var module in metadata.GetModules())
+                {
+                    var metadataReader = module.GetMetadataReader();
+                    foreach (var typeDefinition in metadataReader.TypeDefinitions.Select(def => metadataReader.GetTypeDefinition(def)))
+                    {
+                        var ns = metadataReader.GetNamespaceDefinition(typeDefinition.NamespaceDefinition);
+                        Console.WriteLine($"Reading Type: {metadataReader.GetString(typeDefinition.Name)}, Namespace: {metadataReader.GetString(ns.Name)}, Module: {module.Name}");
+                    }
+                }
+            }
+
+            return compilation;
         }
     }
 }

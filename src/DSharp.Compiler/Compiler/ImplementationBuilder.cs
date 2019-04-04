@@ -152,7 +152,7 @@ namespace DSharp.Compiler.Compiler
                 object defaultValue = null;
 
                 TypeSymbol fieldType = fieldSymbol.AssociatedType;
-                SymbolSet symbolSet = fieldSymbol.SymbolSet;
+                ICompilationContext symbolSet = fieldSymbol.SymbolSet;
 
                 if (fieldType.Type == SymbolType.Enumeration)
                 {
@@ -281,7 +281,7 @@ namespace DSharp.Compiler.Compiler
             }
         }
 
-        Symbol ISymbolTable.FindSymbol(string name, Symbol context, SymbolFilter filter)
+        ISymbol ISymbolTable.FindSymbol(string name, ISymbol context, SymbolFilter filter)
         {
             Debug.Assert(currentScope != null);
 

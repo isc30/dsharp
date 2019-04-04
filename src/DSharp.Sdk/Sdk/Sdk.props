@@ -2,9 +2,7 @@
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
   </PropertyGroup>
-
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
-
   <PropertyGroup>
     <_DSharpVersion>1.0.0-dev.0</_DSharpVersion>
     <TargetFramework Condition="'$(TargetFramework)' == ''">netstandard2.0</TargetFramework>
@@ -23,8 +21,7 @@
     <ExcludeCoreLib Condition="'$(ExcludeCoreLib)' == ''">false</ExcludeCoreLib>
     <SkipScriptCopy Condition="'$(SkipScriptCopy)' == ''">false</SkipScriptCopy>
   </PropertyGroup>
-  
   <ItemGroup Condition="'$(ExcludeCoreLib)' == 'false'">
-    <PackageReference Include="DSharp.Mscorlib" Version="$(_DSharpVersion)" IsImplicitlyDefined="true" PrivateAssets="All" />
+    <PackageReference Include="DSharp.Mscorlib" Version="1.0.0-dev.0" IsImplicitlyDefined="true" PrivateAssets="All" />
   </ItemGroup>
 </Project>

@@ -14,18 +14,18 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         private SymbolImplementation implementation;
         private string selector;
 
-        public MethodSymbol(string name, TypeSymbol parent, TypeSymbol returnType)
+        public MethodSymbol(string name, ITypeSymbol parent, ITypeSymbol returnType)
             : this(SymbolType.Method, name, parent, returnType)
         {
         }
 
-        public MethodSymbol(string name, TypeSymbol parent, TypeSymbol returnType, MemberVisibility visibility)
+        public MethodSymbol(string name, ITypeSymbol parent, ITypeSymbol returnType, MemberVisibility visibility)
             : this(SymbolType.Method, name, parent, returnType)
         {
             SetVisibility(visibility);
         }
 
-        protected MethodSymbol(SymbolType type, string name, TypeSymbol parent, TypeSymbol returnType)
+        protected MethodSymbol(SymbolType type, string name, ITypeSymbol parent, ITypeSymbol returnType)
             : base(type, name, parent, returnType)
         {
         }

@@ -14,7 +14,7 @@ namespace DSharp.Compiler.CodeModel
     ///     ParseNode is a list of 1 element. While a ListTree is used
     ///     for lists containing more than 1 element.
     /// </summary>
-    internal abstract class ParseNode
+    public abstract class ParseNode
     {
         protected ParseNode(ParseNodeType nodeType, Token token)
         {

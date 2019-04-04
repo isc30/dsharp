@@ -19,7 +19,7 @@ namespace DSharp.Compiler.Compiler
             this.errorHandler = errorHandler;
         }
 
-        public ICollection<SymbolImplementation> BuildCode(SymbolSet symbols)
+        public ICollection<SymbolImplementation> BuildCode(ICompilationContext symbols)
         {
             implementations = new List<SymbolImplementation>();
 

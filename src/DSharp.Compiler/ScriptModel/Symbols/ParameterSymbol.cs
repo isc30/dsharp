@@ -1,4 +1,4 @@
-// ParameterSymbol.cs
+﻿// ParameterSymbol.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -7,7 +7,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 {
     internal sealed class ParameterSymbol : LocalSymbol
     {
-        public ParameterSymbol(string name, MemberSymbol parent, TypeSymbol valueType, ParameterMode mode)
+        public ParameterSymbol(string name, ITypeSymbol parent, ITypeSymbol valueType, ParameterMode mode)
             : base(SymbolType.Parameter, name, parent, valueType)
         {
             Mode = mode;
@@ -19,7 +19,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         {
             get
             {
-                TypeSymbol parameterType = ValueType;
+                ITypeSymbol parameterType = ValueType;
 
                 if (parameterType.IsArray)
                 {

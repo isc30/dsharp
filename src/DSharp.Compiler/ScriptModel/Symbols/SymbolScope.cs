@@ -1,4 +1,4 @@
-// SymbolScope.cs
+﻿// SymbolScope.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -62,7 +62,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         ICollection ISymbolTable.Symbols => locals;
 
-        Symbol ISymbolTable.FindSymbol(string name, Symbol context, SymbolFilter filter)
+        ISymbol ISymbolTable.FindSymbol(string name, ISymbol context, SymbolFilter filter)
         {
             Symbol symbol = null;
 
@@ -77,7 +77,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             if (symbol == null)
             {
                 Debug.Assert(parentSymbolTable != null);
-                symbol = parentSymbolTable.FindSymbol(name, context, filter);
+                symbol = (Symbol)parentSymbolTable.FindSymbol(name, context, filter);
             }
 
             return symbol;

@@ -11,9 +11,9 @@ namespace DSharp.Compiler.Compiler
 {
     internal sealed class ResourcesBuilder
     {
-        private readonly SymbolSet symbols;
+        private readonly ICompilationContext symbols;
 
-        public ResourcesBuilder(SymbolSet symbols)
+        public ResourcesBuilder(ICompilationContext symbols)
         {
             this.symbols = symbols;
         }

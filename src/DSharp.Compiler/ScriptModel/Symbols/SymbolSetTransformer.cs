@@ -24,7 +24,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             this.excludeImportedTypes = excludeImportedTypes;
         }
 
-        public ICollection<Symbol> TransformSymbolSet(SymbolSet symbols, bool useInheritanceOrder)
+        public ICollection<Symbol> TransformSymbolSet(ICompilationContext symbols, bool useInheritanceOrder)
         {
             List<TypeSymbol> symbolsToTransform = new List<TypeSymbol>();
 

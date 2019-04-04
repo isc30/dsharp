@@ -1,13 +1,13 @@
-// GenericParameterSymbol.cs
+﻿// GenericParameterSymbol.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
-    internal sealed class GenericParameterSymbol : TypeSymbol
+    public sealed class GenericParameterSymbol : TypeSymbol
     {
-        public GenericParameterSymbol(int index, string name, bool typeParameter, NamespaceSymbol parent)
+        public GenericParameterSymbol(int index, string name, bool typeParameter, INamespaceSymbol parent)
             : base(SymbolType.GenericParameter, name, parent)
         {
             Index = index;

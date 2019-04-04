@@ -1,4 +1,4 @@
-// ClassSymbol.cs
+﻿// ClassSymbol.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -25,12 +25,12 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         private bool testClass;
         private int transformationCookie;
 
-        public ClassSymbol(string name, NamespaceSymbol parent)
+        public ClassSymbol(string name, INamespaceSymbol parent)
             : this(SymbolType.Class, name, parent)
         {
         }
 
-        protected ClassSymbol(SymbolType type, string name, NamespaceSymbol parent)
+        protected ClassSymbol(SymbolType type, string name, INamespaceSymbol parent)
             : base(type, name, parent)
         {
             inheritanceDepth = -1;

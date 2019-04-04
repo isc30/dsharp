@@ -22,7 +22,7 @@ namespace DSharp.Compiler.Compiler
 
         private readonly ExpressionBuilder expressionBuilder;
         private readonly CodeMemberSymbol memberContext;
-        private readonly SymbolSet symbolSet;
+        private readonly ICompilationContext symbolSet;
 
         private readonly ILocalSymbolTable symbolTable;
 

@@ -11,7 +11,7 @@ using DSharp.Compiler.Extensions;
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
-    internal abstract class TypeSymbol : Symbol, ISymbolTable
+    public abstract class TypeSymbol : Symbol, ISymbolTable, ITypeSymbol
     {
         private readonly List<MemberSymbol> members;
         private readonly Dictionary<string, MemberSymbol> memberTable;
@@ -21,7 +21,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         private ISymbolTable parentSymbolTable;
         private bool testType;
 
-        protected TypeSymbol(SymbolType type, string name, NamespaceSymbol parent)
+        protected TypeSymbol(SymbolType type, string name, INamespaceSymbol parent)
             : base(type, name, parent)
         {
             Debug.Assert(parent != null);
@@ -97,7 +97,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public override string GeneratedName => base.GeneratedName.Replace("`", "_$");
 
-        public ICollection<TypeSymbol> GenericArguments { get; private set; }
+        public ICollection<ITypeSymbol> GenericArguments { get; private set; }
 
         public ICollection<GenericParameterSymbol> GenericParameters { get; private set; }
 
@@ -138,7 +138,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public bool IsPublic { get; private set; }
 
-        public ICollection<MemberSymbol> Members => members;
+        public IEnumerable<IMemberSymbol> Members => members;
 
         public object MetadataReference
         {
@@ -172,7 +172,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             memberTable[memberSymbol.Name] = memberSymbol;
         }
 
-        public void AddGenericArguments(TypeSymbol genericType, ICollection<TypeSymbol> genericArguments)
+        public void AddGenericArguments(TypeSymbol genericType, ICollection<ITypeSymbol> genericArguments)
         {
             Debug.Assert(genericType != null);
             Debug.Assert(GenericType == null);
@@ -280,11 +280,9 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             testType = true;
         }
 
-        #region ISymbolTable Members
+        public IEnumerable<ISymbol> Symbols => members;
 
-        ICollection ISymbolTable.Symbols => members;
-
-        Symbol ISymbolTable.FindSymbol(string name, Symbol context, SymbolFilter filter)
+        public ISymbol FindSymbol(string name, ISymbol context, SymbolFilter filter)
         {
             Debug.Assert(string.IsNullOrEmpty(name) == false);
             Debug.Assert(context != null);
@@ -311,7 +309,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
                     if (baseType != null)
                     {
-                        symbol = ((ISymbolTable) baseType).FindSymbol(name, context, baseFilter);
+                        symbol = (Symbol)((ISymbolTable) baseType).FindSymbol(name, context, baseFilter);
                     }
                 }
 
@@ -324,12 +322,10 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             if (symbol == null && parentSymbolTable != null &&
                 (filter & SymbolFilter.ExcludeParent) == 0)
             {
-                symbol = parentSymbolTable.FindSymbol(name, context, filter);
+                symbol = (Symbol)parentSymbolTable.FindSymbol(name, context, filter);
             }
 
             return symbol;
         }
-
-        #endregion
     }
 }

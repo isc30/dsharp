@@ -14,12 +14,12 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         private object value;
 
-        public FieldSymbol(string name, TypeSymbol parent, TypeSymbol valueType)
+        public FieldSymbol(string name, ITypeSymbol parent, ITypeSymbol valueType)
             : this(SymbolType.Field, name, parent, valueType)
         {
         }
 
-        protected FieldSymbol(SymbolType type, string name, TypeSymbol parent, TypeSymbol valueType)
+        protected FieldSymbol(SymbolType type, string name, ITypeSymbol parent, ITypeSymbol valueType)
             : base(type, name, parent, valueType)
         {
         }

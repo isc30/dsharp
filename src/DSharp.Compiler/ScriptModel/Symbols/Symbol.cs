@@ -1,4 +1,4 @@
-// Symbol.cs
+﻿// Symbol.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -7,12 +7,12 @@ using System.Diagnostics;
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
-    internal abstract class Symbol
+    public abstract class Symbol : ISymbol
     {
         private object parseContext;
         private string transformedName;
 
-        protected Symbol(SymbolType type, string name, Symbol parent)
+        protected Symbol(SymbolType type, string name, ISymbol parent)
         {
             Type = type;
             Name = name;
@@ -51,7 +51,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public bool IsTransformed => transformedName != null;
 
-        public Symbol Parent { get; }
+        public ISymbol Parent { get; }
 
         public object ParseContext
         {
@@ -63,7 +63,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             }
         }
 
-        public virtual SymbolSet SymbolSet => Parent.SymbolSet;
+        public virtual ICompilationContext SymbolSet => Parent.SymbolSet;
 
         public SymbolType Type { get; }
 

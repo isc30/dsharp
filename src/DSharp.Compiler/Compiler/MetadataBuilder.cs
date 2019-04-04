@@ -22,7 +22,7 @@ namespace DSharp.Compiler.Compiler
         private readonly IErrorHandler errorHandler;
         private CompilerOptions options;
 
-        private SymbolSet symbols;
+        private ICompilationContext symbols;
         private ISymbolTable symbolTable;
 
         public MetadataBuilder(IErrorHandler errorHandler)
@@ -32,8 +32,8 @@ namespace DSharp.Compiler.Compiler
         }
 
         public ICollection<TypeSymbol> BuildMetadata(
-            ParseNodeList compilationUnits, 
-            SymbolSet symbols,
+            ParseNodeList compilationUnits,
+            ICompilationContext symbols,
             CompilerOptions options)
         {
             Debug.Assert(compilationUnits != null);

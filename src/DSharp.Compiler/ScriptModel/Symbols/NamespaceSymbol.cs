@@ -1,4 +1,4 @@
-// NamespaceSymbol.cs
+﻿// NamespaceSymbol.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -9,26 +9,26 @@ using System.Diagnostics;
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
-    internal sealed class NamespaceSymbol : Symbol, ISymbolTable
+    public sealed class NamespaceSymbol : Symbol, ISymbolTable, INamespaceSymbol
     {
-        private readonly Dictionary<string, TypeSymbol> typeMap;
-        private readonly List<TypeSymbol> types;
+        private readonly Dictionary<string, ITypeSymbol> typeMap;
+        private readonly List<ITypeSymbol> types;
 
-        public NamespaceSymbol(string name, SymbolSet symbolSet)
+        public NamespaceSymbol(string name, ICompilationContext symbolSet)
             : base(SymbolType.Namespace, name, null)
         {
             SymbolSet = symbolSet;
-            types = new List<TypeSymbol>();
-            typeMap = new Dictionary<string, TypeSymbol>();
+            types = new List<ITypeSymbol>();
+            typeMap = new Dictionary<string, ITypeSymbol>();
         }
 
         public bool HasApplicationTypes { get; private set; }
 
-        public override SymbolSet SymbolSet { get; }
+        public override ICompilationContext SymbolSet { get; }
 
-        public ICollection<TypeSymbol> Types => types;
+        public ICollection<ITypeSymbol> Types => types;
 
-        public void AddType(TypeSymbol typeSymbol)
+        public void AddType(ITypeSymbol typeSymbol)
         {
             Debug.Assert(typeSymbol != null);
             Debug.Assert(string.IsNullOrEmpty(typeSymbol.Name) == false);
@@ -56,7 +56,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         ICollection ISymbolTable.Symbols => types;
 
-        Symbol ISymbolTable.FindSymbol(string name, Symbol context, SymbolFilter filter)
+        ISymbol ISymbolTable.FindSymbol(string name, ISymbol context, SymbolFilter filter)
         {
             Debug.Assert(string.IsNullOrEmpty(name) == false);
             Debug.Assert(context == null);

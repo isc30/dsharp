@@ -1,4 +1,4 @@
-// AnonymousMethodSymbol.cs
+﻿// AnonymousMethodSymbol.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -8,7 +8,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
     internal sealed class AnonymousMethodSymbol : MethodSymbol
     {
         public AnonymousMethodSymbol(CodeMemberSymbol containingMember, ISymbolTable stackContext,
-                                     TypeSymbol returnType, bool isStatic)
+                                     ITypeSymbol returnType, bool isStatic)
             : base(SymbolType.AnonymousMethod, /* name */ string.Empty, (TypeSymbol) containingMember.Parent,
                 returnType)
         {

@@ -1,4 +1,4 @@
-// CodeMemberSymbol.cs
+﻿// CodeMemberSymbol.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -14,7 +14,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         private List<ParameterSymbol> parameters;
 
-        protected CodeMemberSymbol(SymbolType type, string name, TypeSymbol parent, TypeSymbol associatedType)
+        protected CodeMemberSymbol(SymbolType type, string name, ITypeSymbol parent, ITypeSymbol associatedType)
             : base(type, name, parent, associatedType)
         {
         }

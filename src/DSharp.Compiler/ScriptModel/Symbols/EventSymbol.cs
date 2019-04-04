@@ -1,4 +1,4 @@
-// FieldSymbol.cs
+﻿// FieldSymbol.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -13,7 +13,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         private SymbolImplementation adderImplementation;
         private SymbolImplementation removerImplementation;
 
-        public EventSymbol(string name, TypeSymbol parent, TypeSymbol handlerType)
+        public EventSymbol(string name, ITypeSymbol parent, ITypeSymbol handlerType)
             : base(SymbolType.Event, name, parent, handlerType)
         {
             ParameterSymbol valueParameter = new ParameterSymbol("value", this, handlerType, ParameterMode.In);

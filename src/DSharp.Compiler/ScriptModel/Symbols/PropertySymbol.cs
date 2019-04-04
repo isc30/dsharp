@@ -1,4 +1,4 @@
-// PropertySymbol.cs
+﻿// PropertySymbol.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -13,12 +13,12 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         private SymbolImplementation getterImplementation;
         private SymbolImplementation setterImplementation;
 
-        public PropertySymbol(string name, TypeSymbol parent, TypeSymbol propertyType)
+        public PropertySymbol(string name, ITypeSymbol parent, ITypeSymbol propertyType)
             : this(SymbolType.Property, name, parent, propertyType)
         {
         }
 
-        protected PropertySymbol(SymbolType type, string name, TypeSymbol parent, TypeSymbol propertyType)
+        protected PropertySymbol(SymbolType type, string name, ITypeSymbol parent, ITypeSymbol propertyType)
             : base(type, name, parent, propertyType)
         {
         }

@@ -1,4 +1,4 @@
-// EnumerationSymbol.cs
+﻿// EnumerationSymbol.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -9,7 +9,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 {
     internal sealed class EnumerationSymbol : TypeSymbol
     {
-        public EnumerationSymbol(string name, NamespaceSymbol parent, bool flags)
+        public EnumerationSymbol(string name, INamespaceSymbol parent, bool flags)
             : base(SymbolType.Enumeration, name, parent)
         {
             Flags = flags;

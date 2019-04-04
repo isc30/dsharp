@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace DSharp
 {
-    internal sealed class ResXItem
+    public sealed class ResXItem
     {
         private readonly string comment;
         private readonly string value;

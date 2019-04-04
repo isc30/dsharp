@@ -1,11 +1,11 @@
-// SymbolType.cs
+﻿// SymbolType.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
-    internal enum SymbolType
+    public enum SymbolType
     {
         Namespace = 0,
 

@@ -23,7 +23,7 @@ namespace DSharp.Compiler.Compiler
 
         private readonly CompilerOptions options;
         private readonly Symbol symbolContext;
-        private readonly SymbolSet symbolSet;
+        private readonly ICompilationContext symbolSet;
         private readonly ILocalSymbolTable symbolTable;
 
         public ExpressionBuilder(ILocalSymbolTable symbolTable, CodeMemberSymbol memberContext,
@@ -151,7 +151,7 @@ namespace DSharp.Compiler.Compiler
 
         private Expression ProcessAnonymousMethodNode(AnonymousMethodNode node)
         {
-            TypeSymbol voidType = symbolSet.ResolveIntrinsicType(IntrinsicType.Void);
+            ITypeSymbol voidType = symbolSet.ResolveIntrinsicType(IntrinsicType.Void);
             Debug.Assert(voidType != null);
 
             bool createStaticDelegate = (memberContext.Visibility & MemberVisibility.Static) != 0;
@@ -164,7 +164,7 @@ namespace DSharp.Compiler.Compiler
             {
                 foreach (ParameterNode parameterNode in node.Parameters)
                 {
-                    TypeSymbol parameterType = symbolSet.ResolveType(parameterNode.Type, symbolTable, symbolContext);
+                    ITypeSymbol parameterType = symbolSet.ResolveType(parameterNode.Type, symbolTable, symbolContext);
                     Debug.Assert(parameterType != null);
 
                     ParameterSymbol paramSymbol =
@@ -991,7 +991,7 @@ namespace DSharp.Compiler.Compiler
 
             // TODO: When inside a static method, we should only lookup static members
 
-            Symbol symbol = symbolTable.FindSymbol(name, symbolContext, filter);
+            Symbol symbol = (Symbol)symbolTable.FindSymbol(name, symbolContext, filter);
 
             if (symbol is LocalSymbol localSymbol)
             {

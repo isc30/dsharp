@@ -407,7 +407,7 @@ namespace DSharp.Compiler.Generator
 
         private static string GetParameterTypeName(TypeSymbol parameterType)
         {
-            SymbolSet symbolSet = parameterType.SymbolSet;
+            ICompilationContext symbolSet = parameterType.SymbolSet;
             TypeSymbol nullableType = symbolSet.ResolveIntrinsicType(IntrinsicType.Nullable);
 
             if (parameterType.FullName == nullableType.FullName)

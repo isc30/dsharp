@@ -1,4 +1,4 @@
-// IndexerSymbol.cs
+﻿// IndexerSymbol.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -10,12 +10,12 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 {
     internal sealed class IndexerSymbol : PropertySymbol
     {
-        public IndexerSymbol(TypeSymbol parent, TypeSymbol propertyType)
+        public IndexerSymbol(ITypeSymbol parent, ITypeSymbol propertyType)
             : base(SymbolType.Indexer, "Item", parent, propertyType)
         {
         }
 
-        public IndexerSymbol(TypeSymbol parent, TypeSymbol propertyType, MemberVisibility visibility)
+        public IndexerSymbol(ITypeSymbol parent, ITypeSymbol propertyType, MemberVisibility visibility)
             : this(parent, propertyType)
         {
             SetVisibility(visibility);
