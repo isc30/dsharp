@@ -2,10 +2,18 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using DSharp.Compiler.CodeModel;
 using DSharp.Compiler.ScriptModel.Symbols;
 
 namespace DSharp.Compiler.ScriptModel
 {
+    public interface IScriptModel : IScriptSymbolTable
+    {
+        INamespaceSymbolCollection Namespaces { get; }
+
+        string ScriptName { get; set; }
+    }
+
     public class ES5ScriptModel : IScriptModel
     {
         public INamespaceSymbolCollection Namespaces { get; }
@@ -243,5 +251,12 @@ namespace DSharp.Compiler.ScriptModel
         {
             return namespaces.GetEnumerator();
         }
+    }
+
+    public interface ISymbolResolver
+    {
+        ITypeSymbol ResolveIntrinsicType(IntrinsicType type);
+
+        ITypeSymbol ResolveType(ParseNode node, IScriptSymbolTable symbolTable, ISymbol contextSymbol);
     }
 }

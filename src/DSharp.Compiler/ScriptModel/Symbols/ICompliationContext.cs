@@ -43,11 +43,4 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         void SetEntryPoint(IMemberSymbol entryPoint);
     }
-
-    public interface IScriptModel : IScriptSymbolTable
-    {
-        INamespaceSymbolCollection Namespaces { get; }
-
-        string ScriptName { get; set; }
-    }
 }

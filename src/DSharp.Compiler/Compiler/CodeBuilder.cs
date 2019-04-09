@@ -19,11 +19,11 @@ namespace DSharp.Compiler.Compiler
             this.errorHandler = errorHandler;
         }
 
-        public ICollection<SymbolImplementation> BuildCode(ICompilationContext symbols)
+        public ICollection<SymbolImplementation> BuildCode(IScriptModel scriptModel)
         {
             implementations = new List<SymbolImplementation>();
 
-            foreach (NamespaceSymbol namespaceSymbol in symbols.Namespaces)
+            foreach (NamespaceSymbol namespaceSymbol in scriptModel.Namespaces)
             {
                 if (namespaceSymbol.HasApplicationTypes == false)
                 {

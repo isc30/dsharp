@@ -23,7 +23,7 @@ namespace DSharp.Compiler.Compiler
 
         private readonly CompilerOptions options;
         private readonly Symbol symbolContext;
-        private readonly ICompilationContext symbolSet;
+        private readonly IScriptModel scriptModel;
         private readonly ILocalSymbolTable symbolTable;
 
         public ExpressionBuilder(ILocalSymbolTable symbolTable, CodeMemberSymbol memberContext,
@@ -33,7 +33,7 @@ namespace DSharp.Compiler.Compiler
             symbolContext = memberContext;
             this.memberContext = memberContext;
             classContext = ((ClassSymbol)memberContext.Parent).PrimaryPartialClass;
-            symbolSet = memberContext.Root;
+            scriptModel = memberContext.Root;
             this.errorHandler = errorHandler;
             this.options = options;
         }
@@ -44,7 +44,7 @@ namespace DSharp.Compiler.Compiler
             this.symbolTable = symbolTable;
             symbolContext = fieldContext;
             classContext = ((ClassSymbol)fieldContext.Parent).PrimaryPartialClass;
-            symbolSet = fieldContext.Root;
+            scriptModel = fieldContext.Root;
             this.errorHandler = errorHandler;
             this.options = options;
         }
@@ -151,7 +151,7 @@ namespace DSharp.Compiler.Compiler
 
         private Expression ProcessAnonymousMethodNode(AnonymousMethodNode node)
         {
-            ITypeSymbol voidType = symbolSet.ResolveIntrinsicType(IntrinsicType.Void);
+            ITypeSymbol voidType = scriptModel.ResolveIntrinsicType(IntrinsicType.Void);
             Debug.Assert(voidType != null);
 
             bool createStaticDelegate = (memberContext.Visibility & MemberVisibility.Static) != 0;
@@ -164,7 +164,7 @@ namespace DSharp.Compiler.Compiler
             {
                 foreach (ParameterNode parameterNode in node.Parameters)
                 {
-                    ITypeSymbol parameterType = symbolSet.ResolveType(parameterNode.Type, symbolTable, symbolContext);
+                    ITypeSymbol parameterType = scriptModel.ResolveType(parameterNode.Type, symbolTable, symbolContext);
                     Debug.Assert(parameterType != null);
 
                     ParameterSymbol paramSymbol =
@@ -193,7 +193,7 @@ namespace DSharp.Compiler.Compiler
 
             if (createStaticDelegate)
             {
-                ITypeSymbol objectType = symbolSet.ResolveIntrinsicType(IntrinsicType.Object);
+                ITypeSymbol objectType = scriptModel.ResolveIntrinsicType(IntrinsicType.Object);
                 Debug.Assert(objectType != null);
 
                 objectExpression = new LiteralExpression(objectType, null);
@@ -208,10 +208,10 @@ namespace DSharp.Compiler.Compiler
 
         private Expression ProcessArrayInitializerNode(ArrayInitializerNode node)
         {
-            ITypeSymbol itemTypeSymbol = symbolSet.ResolveIntrinsicType(IntrinsicType.Object);
+            ITypeSymbol itemTypeSymbol = scriptModel.ResolveIntrinsicType(IntrinsicType.Object);
             Debug.Assert(itemTypeSymbol != null);
 
-            ITypeSymbol arrayTypeSymbol = symbolSet.CreateArrayTypeSymbol(itemTypeSymbol);
+            ITypeSymbol arrayTypeSymbol = scriptModel.CreateArrayTypeSymbol(itemTypeSymbol);
             Expression[] values = new Expression[node.Values.Count];
 
             int i = 0;
@@ -233,10 +233,10 @@ namespace DSharp.Compiler.Compiler
 
         private Expression ProcessArrayNewNode(ArrayNewNode node)
         {
-            ITypeSymbol itemTypeSymbol = symbolSet.ResolveType(node.TypeReference, symbolTable, symbolContext);
+            ITypeSymbol itemTypeSymbol = scriptModel.ResolveType(node.TypeReference, symbolTable, symbolContext);
             Debug.Assert(itemTypeSymbol != null);
 
-            ITypeSymbol arrayTypeSymbol = symbolSet.CreateArrayTypeSymbol(itemTypeSymbol);
+            ITypeSymbol arrayTypeSymbol = scriptModel.CreateArrayTypeSymbol(itemTypeSymbol);
 
             if (node.InitializerExpression == null)
             {
@@ -284,10 +284,10 @@ namespace DSharp.Compiler.Compiler
 
         private Expression ProcessArrayTypeNode(ArrayTypeNode node)
         {
-            ITypeSymbol itemTypeSymbol = symbolSet.ResolveType(node.BaseType, symbolTable, symbolContext);
+            ITypeSymbol itemTypeSymbol = scriptModel.ResolveType(node.BaseType, symbolTable, symbolContext);
             Debug.Assert(itemTypeSymbol != null);
 
-            ITypeSymbol arrayTypeSymbol = symbolSet.CreateArrayTypeSymbol(itemTypeSymbol);
+            ITypeSymbol arrayTypeSymbol = scriptModel.CreateArrayTypeSymbol(itemTypeSymbol);
 
             return new TypeExpression(arrayTypeSymbol, SymbolFilter.Public | SymbolFilter.StaticMembers);
         }
@@ -402,7 +402,7 @@ namespace DSharp.Compiler.Compiler
 
             if (node.Operator == TokenType.Coalesce)
             {
-                ITypeSymbol scriptType = symbolSet.ResolveIntrinsicType(IntrinsicType.Script);
+                ITypeSymbol scriptType = scriptModel.ResolveIntrinsicType(IntrinsicType.Script);
                 MethodSymbol valueMethod = (MethodSymbol)scriptType.GetMember("Value");
 
                 TypeExpression scriptExpression =
@@ -428,7 +428,7 @@ namespace DSharp.Compiler.Compiler
                 case TokenType.Greater:
                 case TokenType.GreaterEqual:
                 case TokenType.Is:
-                    resultType = symbolSet.ResolveIntrinsicType(IntrinsicType.Boolean);
+                    resultType = scriptModel.ResolveIntrinsicType(IntrinsicType.Boolean);
 
                     break;
                 case TokenType.As:
@@ -437,14 +437,14 @@ namespace DSharp.Compiler.Compiler
                     break;
                 case TokenType.Plus:
 
-                    if (rightExpression.EvaluatedType == symbolSet.ResolveIntrinsicType(IntrinsicType.String))
+                    if (rightExpression.EvaluatedType == scriptModel.ResolveIntrinsicType(IntrinsicType.String))
                     {
                         resultType = rightExpression.EvaluatedType;
                     }
 
                     break;
                 case TokenType.Slash:
-                    resultType = symbolSet.ResolveIntrinsicType(IntrinsicType.Double);
+                    resultType = scriptModel.ResolveIntrinsicType(IntrinsicType.Double);
 
                     break;
             }
@@ -460,7 +460,7 @@ namespace DSharp.Compiler.Compiler
                 {
                     ITypeSymbol leftExpressionType = leftExpression.EvaluatedType;
 
-                    if (leftExpressionType == symbolSet.ResolveIntrinsicType(IntrinsicType.Boolean))
+                    if (leftExpressionType == scriptModel.ResolveIntrinsicType(IntrinsicType.Boolean))
                     {
                         // For bitwise operators involving boolean expressions, we perform
                         // a type coercion due to behavioral differences between C# and JavaScript.
@@ -494,7 +494,7 @@ namespace DSharp.Compiler.Compiler
 
                         Expression coerceExpression =
                             new BinaryExpression(Operator.EqualEqualEqual, bitwiseExpression,
-                                new LiteralExpression(symbolSet.ResolveIntrinsicType(IntrinsicType.Integer), 1));
+                                new LiteralExpression(scriptModel.ResolveIntrinsicType(IntrinsicType.Integer), 1));
 
                         if (operatorType == baseOperatorType)
                         {
@@ -532,12 +532,12 @@ namespace DSharp.Compiler.Compiler
                     }
 
                     if (leftExpression.EvaluatedType == rightExpression.EvaluatedType &&
-                        leftExpression.EvaluatedType == symbolSet.ResolveIntrinsicType(IntrinsicType.Date))
+                        leftExpression.EvaluatedType == scriptModel.ResolveIntrinsicType(IntrinsicType.Date))
                     {
                         // Map equality comparison between Date objects to a call to
                         // Script.CompareDates
 
-                        ITypeSymbol scriptType = symbolSet.ResolveIntrinsicType(IntrinsicType.Script);
+                        ITypeSymbol scriptType = scriptModel.ResolveIntrinsicType(IntrinsicType.Script);
                         Debug.Assert(scriptType != null);
 
                         MethodSymbol compareMethod = (MethodSymbol)scriptType.GetMember("CompareDates");
@@ -564,10 +564,10 @@ namespace DSharp.Compiler.Compiler
                 {
                     ITypeSymbol leftExpressionType = leftExpression.EvaluatedType;
 
-                    if (leftExpressionType == symbolSet.ResolveIntrinsicType(IntrinsicType.Byte) ||
-                        leftExpressionType == symbolSet.ResolveIntrinsicType(IntrinsicType.UnsignedShort) ||
-                        leftExpressionType == symbolSet.ResolveIntrinsicType(IntrinsicType.UnsignedInteger) ||
-                        leftExpressionType == symbolSet.ResolveIntrinsicType(IntrinsicType.UnsignedLong))
+                    if (leftExpressionType == scriptModel.ResolveIntrinsicType(IntrinsicType.Byte) ||
+                        leftExpressionType == scriptModel.ResolveIntrinsicType(IntrinsicType.UnsignedShort) ||
+                        leftExpressionType == scriptModel.ResolveIntrinsicType(IntrinsicType.UnsignedInteger) ||
+                        leftExpressionType == scriptModel.ResolveIntrinsicType(IntrinsicType.UnsignedLong))
                     {
                         // Switch to unsigned shift operator for unsigned types (which happens
                         // to be set up to follow the signed operator in the enumeration offset by 1)
@@ -598,20 +598,20 @@ namespace DSharp.Compiler.Compiler
                 childExpression = TransformMemberExpression((MemberExpression)childExpression);
             }
 
-            ITypeSymbol typeSymbol = symbolSet.ResolveType(node.TypeReference, symbolTable, symbolContext);
+            ITypeSymbol typeSymbol = scriptModel.ResolveType(node.TypeReference, symbolTable, symbolContext);
             Debug.Assert(typeSymbol != null);
 
-            if (typeSymbol == symbolSet.ResolveIntrinsicType(IntrinsicType.Integer))
+            if (typeSymbol == scriptModel.ResolveIntrinsicType(IntrinsicType.Integer))
             {
-                if (childExpression.EvaluatedType == symbolSet.ResolveIntrinsicType(IntrinsicType.Double) ||
-                    childExpression.EvaluatedType == symbolSet.ResolveIntrinsicType(IntrinsicType.Single))
+                if (childExpression.EvaluatedType == scriptModel.ResolveIntrinsicType(IntrinsicType.Double) ||
+                    childExpression.EvaluatedType == scriptModel.ResolveIntrinsicType(IntrinsicType.Single))
                 {
                     // A float or double is being cast to an int
                     // In regular .net this causes a truncation to happen, and we'd like
                     // to preserve that behavior.
 
                     TypeSymbol mathType =
-                        (TypeSymbol)((IScriptSymbolTable)symbolSet.SystemNamespace).FindSymbol("Math", null,
+                        (TypeSymbol)((IScriptSymbolTable)scriptModel.SystemNamespace).FindSymbol("Math", null,
                             SymbolFilter.Types);
                     Debug.Assert(mathType != null);
 
@@ -700,7 +700,7 @@ namespace DSharp.Compiler.Compiler
                     Debug.Assert(((GenericNameNode)node.RightChild).TypeArguments != null);
 
                     ParseNode typeArgNode = ((GenericNameNode)node.RightChild).TypeArguments[genericArgIndex];
-                    ITypeSymbol returnType = symbolSet.ResolveType(typeArgNode, symbolTable, symbolContext);
+                    ITypeSymbol returnType = scriptModel.ResolveType(typeArgNode, symbolTable, symbolContext);
 
                     if (returnType != null)
                     {
@@ -743,10 +743,10 @@ namespace DSharp.Compiler.Compiler
 
             Debug.Assert(objectExpression != null);
 
-            ITypeSymbol dictionaryType = symbolSet.ResolveIntrinsicType(IntrinsicType.Dictionary);
-            ITypeSymbol genericDictionaryType = symbolSet.ResolveIntrinsicType(IntrinsicType.GenericDictionary);
-            ITypeSymbol nullableType = symbolSet.ResolveIntrinsicType(IntrinsicType.Nullable);
-            ITypeSymbol typeType = symbolSet.ResolveIntrinsicType(IntrinsicType.Type);
+            ITypeSymbol dictionaryType = scriptModel.ResolveIntrinsicType(IntrinsicType.Dictionary);
+            ITypeSymbol genericDictionaryType = scriptModel.ResolveIntrinsicType(IntrinsicType.GenericDictionary);
+            ITypeSymbol nullableType = scriptModel.ResolveIntrinsicType(IntrinsicType.Nullable);
+            ITypeSymbol typeType = scriptModel.ResolveIntrinsicType(IntrinsicType.Type);
 
             if (memberSymbol.Type == SymbolType.Property)
             {
@@ -793,7 +793,7 @@ namespace DSharp.Compiler.Compiler
                     {
                         // Nullable<T>.Value becomes Script.IsValue(Nullable<T>)
 
-                        ITypeSymbol scriptType = symbolSet.ResolveIntrinsicType(IntrinsicType.Script);
+                        ITypeSymbol scriptType = scriptModel.ResolveIntrinsicType(IntrinsicType.Script);
                         MethodSymbol isValueMethod = (MethodSymbol)scriptType.GetMember("IsValue");
 
                         MethodExpression methodExpression
@@ -811,7 +811,7 @@ namespace DSharp.Compiler.Compiler
                     {
                         // type.Name becomes ss.typeName(type)
 
-                        ITypeSymbol scriptType = symbolSet.ResolveIntrinsicType(IntrinsicType.Script);
+                        ITypeSymbol scriptType = scriptModel.ResolveIntrinsicType(IntrinsicType.Script);
                         MethodSymbol typeNameMethod = (MethodSymbol)scriptType.GetMember("GetTypeName");
 
                         MethodExpression methodExpression
@@ -835,11 +835,11 @@ namespace DSharp.Compiler.Compiler
 
                     object defaultValue = 0;
 
-                    if (underlyingType == symbolSet.ResolveIntrinsicType(IntrinsicType.Boolean))
+                    if (underlyingType == scriptModel.ResolveIntrinsicType(IntrinsicType.Boolean))
                     {
                         defaultValue = false;
                     }
-                    else if (underlyingType == symbolSet.ResolveIntrinsicType(IntrinsicType.String))
+                    else if (underlyingType == scriptModel.ResolveIntrinsicType(IntrinsicType.String))
                     {
                         defaultValue = string.Empty;
                     }
@@ -859,7 +859,7 @@ namespace DSharp.Compiler.Compiler
 
             if (dependency != null)
             {
-                symbolSet.AddDependency(dependency);
+                scriptModel.AddDependency(dependency);
             }
 
             MemberExpression expression = new MemberExpression(objectExpression, memberSymbol);
@@ -872,9 +872,9 @@ namespace DSharp.Compiler.Compiler
 
                 List<ITypeSymbol> typeArgs = new List<ITypeSymbol>();
                 foreach (ParseNode typeArgNode in ((GenericNameNode)node.RightChild).TypeArguments)
-                    typeArgs.Add(symbolSet.ResolveType(typeArgNode, symbolTable, symbolContext));
+                    typeArgs.Add(scriptModel.ResolveType(typeArgNode, symbolTable, symbolContext));
 
-                ITypeSymbol returnType = symbolSet.CreateGenericTypeSymbol(memberSymbol.AssociatedType, typeArgs);
+                ITypeSymbol returnType = scriptModel.CreateGenericTypeSymbol(memberSymbol.AssociatedType, typeArgs);
 
                 if (returnType != null)
                 {
@@ -898,7 +898,7 @@ namespace DSharp.Compiler.Compiler
 
         private Expression ProcessIntrinsicType(IntrinsicTypeNode node)
         {
-            ITypeSymbol typeSymbol = symbolSet.ResolveType(node, symbolTable, symbolContext);
+            ITypeSymbol typeSymbol = scriptModel.ResolveType(node, symbolTable, symbolContext);
             Debug.Assert(typeSymbol != null);
 
             return TransformTypeSymbol(typeSymbol);
@@ -965,7 +965,7 @@ namespace DSharp.Compiler.Compiler
             if (systemTypeName != null)
             {
                 TypeSymbol typeSymbol =
-                    (TypeSymbol)((IScriptSymbolTable)symbolSet.SystemNamespace).FindSymbol(systemTypeName, null,
+                    (TypeSymbol)((IScriptSymbolTable)scriptModel.SystemNamespace).FindSymbol(systemTypeName, null,
                         SymbolFilter.Types);
                 Debug.Assert(typeSymbol != null);
 
@@ -1032,7 +1032,7 @@ namespace DSharp.Compiler.Compiler
 
         private Expression ProcessNewNode(NewNode node)
         {
-            ITypeSymbol type = symbolSet.ResolveType(node.TypeReference, symbolTable, symbolContext);
+            ITypeSymbol type = scriptModel.ResolveType(node.TypeReference, symbolTable, symbolContext);
             Debug.Assert(type != null);
 
             if (type.Type == SymbolType.Delegate)
@@ -1075,7 +1075,7 @@ namespace DSharp.Compiler.Compiler
                 Debug.Assert(node.Arguments is ExpressionListNode);
                 List<Expression> args = BuildExpressionList((ExpressionListNode)node.Arguments);
 
-                if (type == symbolSet.ResolveIntrinsicType(IntrinsicType.Function) &&
+                if (type == scriptModel.ResolveIntrinsicType(IntrinsicType.Function) &&
                     args.Count > 1)
                 {
                     // The function ctor in javascript takes parameters in
@@ -1101,7 +1101,7 @@ namespace DSharp.Compiler.Compiler
 
                     newExpression.AddParameterValue(functionBodyParam);
                 }
-                else if (type.GenericType == symbolSet.ResolveIntrinsicType(IntrinsicType.Nullable))
+                else if (type.GenericType == scriptModel.ResolveIntrinsicType(IntrinsicType.Nullable))
                 {
                     // Creating a new Nullable<T> ... if there is a value specified as a ctor param,
                     // just use the value; otherwise use undefined.
@@ -1120,7 +1120,7 @@ namespace DSharp.Compiler.Compiler
 
             if (type.Dependency != null)
             {
-                symbolSet.AddDependency(type.Dependency);
+                scriptModel.AddDependency(type.Dependency);
             }
 
             return newExpression;
@@ -1233,15 +1233,15 @@ namespace DSharp.Compiler.Compiler
             // REVIEW: Uggh... this has become too complex over time with all the transformations
             //         added over time. Refactoring needed...
 
-            ITypeSymbol objectType = symbolSet.ResolveIntrinsicType(IntrinsicType.Object);
-            ITypeSymbol typeType = symbolSet.ResolveIntrinsicType(IntrinsicType.Type);
-            ITypeSymbol dictionaryType = symbolSet.ResolveIntrinsicType(IntrinsicType.Dictionary);
-            ITypeSymbol genericDictionaryType = symbolSet.ResolveIntrinsicType(IntrinsicType.GenericDictionary);
-            ITypeSymbol intType = symbolSet.ResolveIntrinsicType(IntrinsicType.Integer);
-            ITypeSymbol stringType = symbolSet.ResolveIntrinsicType(IntrinsicType.String);
-            ITypeSymbol scriptType = symbolSet.ResolveIntrinsicType(IntrinsicType.Script);
-            ITypeSymbol argsType = symbolSet.ResolveIntrinsicType(IntrinsicType.Arguments);
-            ITypeSymbol voidType = symbolSet.ResolveIntrinsicType(IntrinsicType.Void);
+            ITypeSymbol objectType = scriptModel.ResolveIntrinsicType(IntrinsicType.Object);
+            ITypeSymbol typeType = scriptModel.ResolveIntrinsicType(IntrinsicType.Type);
+            ITypeSymbol dictionaryType = scriptModel.ResolveIntrinsicType(IntrinsicType.Dictionary);
+            ITypeSymbol genericDictionaryType = scriptModel.ResolveIntrinsicType(IntrinsicType.GenericDictionary);
+            ITypeSymbol intType = scriptModel.ResolveIntrinsicType(IntrinsicType.Integer);
+            ITypeSymbol stringType = scriptModel.ResolveIntrinsicType(IntrinsicType.String);
+            ITypeSymbol scriptType = scriptModel.ResolveIntrinsicType(IntrinsicType.Script);
+            ITypeSymbol argsType = scriptModel.ResolveIntrinsicType(IntrinsicType.Arguments);
+            ITypeSymbol voidType = scriptModel.ResolveIntrinsicType(IntrinsicType.Void);
 
             MethodExpression methodExpression = null;
 
@@ -1612,7 +1612,7 @@ namespace DSharp.Compiler.Compiler
                     {
                         // Switch Arguments.ToArray into Array.ToArray(arguments)
 
-                        ITypeSymbol arrayType = symbolSet.ResolveIntrinsicType(IntrinsicType.Array);
+                        ITypeSymbol arrayType = scriptModel.ResolveIntrinsicType(IntrinsicType.Array);
                         MethodSymbol toArrayMethod = (MethodSymbol)arrayType.GetMember("ToArray");
 
                         InlineScriptExpression argsExpression =
@@ -1780,15 +1780,15 @@ namespace DSharp.Compiler.Compiler
 
         private Expression ProcessTypeofNode(TypeofNode node)
         {
-            ITypeSymbol referencedType = symbolSet.ResolveType(node.TypeReference, symbolTable, symbolContext);
+            ITypeSymbol referencedType = scriptModel.ResolveType(node.TypeReference, symbolTable, symbolContext);
             Debug.Assert(referencedType != null);
 
             if (referencedType.Dependency != null)
             {
-                symbolSet.AddDependency(referencedType.Dependency);
+                scriptModel.AddDependency(referencedType.Dependency);
             }
 
-            ITypeSymbol typeSymbol = symbolSet.ResolveIntrinsicType(IntrinsicType.Type);
+            ITypeSymbol typeSymbol = scriptModel.ResolveIntrinsicType(IntrinsicType.Type);
             Debug.Assert(typeSymbol != null);
 
             return new LiteralExpression(typeSymbol, referencedType);
@@ -1918,7 +1918,7 @@ namespace DSharp.Compiler.Compiler
                         EnumerationFieldSymbol field = (EnumerationFieldSymbol)expression.Member;
                         string fieldName = ((EnumerationSymbol)expression.Member.Parent).CreateNamedValue(field);
 
-                        return new LiteralExpression(symbolSet.ResolveIntrinsicType(IntrinsicType.String),
+                        return new LiteralExpression(scriptModel.ResolveIntrinsicType(IntrinsicType.String),
                             fieldName);
                     }
                     else if (((TypeSymbol)expression.Member.Parent).IsApplicationType ||
@@ -1926,7 +1926,7 @@ namespace DSharp.Compiler.Compiler
                     {
                         // For enum types defined within the same assembly, simply use the literal value.
                         // Same goes for any enums marked as numeric values
-                        return new LiteralExpression(symbolSet.ResolveIntrinsicType(IntrinsicType.Integer),
+                        return new LiteralExpression(scriptModel.ResolveIntrinsicType(IntrinsicType.Integer),
                             ((EnumerationFieldSymbol)expression.Member).Value);
                     }
                     else
@@ -1972,7 +1972,7 @@ namespace DSharp.Compiler.Compiler
                     }
 
                     if ((expression.Member.Visibility & MemberVisibility.Static) != 0 &&
-                        expression.Member.Parent == symbolSet.ResolveIntrinsicType(IntrinsicType.String) &&
+                        expression.Member.Parent == scriptModel.ResolveIntrinsicType(IntrinsicType.String) &&
                         string.CompareOrdinal(expression.Member.Name, "Empty") == 0)
                     {
                         // Convert String.Empty to literal expression

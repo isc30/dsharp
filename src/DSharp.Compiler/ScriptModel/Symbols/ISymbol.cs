@@ -79,24 +79,4 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         void SetInterfaceMember(IMemberSymbol memberSymbol);
     }
-
-    public class CompilationRoot : ICompilationRoot
-    {
-        private readonly IEnumerable<INamespaceSymbol> namespaceSymbols;
-
-        public CompilationRoot(IEnumerable<INamespaceSymbol> namespaceSymbols)
-        {
-            this.namespaceSymbols = namespaceSymbols;
-        }
-
-        public IEnumerator<INamespaceSymbol> GetEnumerator()
-        {
-            return namespaceSymbols.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return namespaceSymbols.GetEnumerator();
-        }
-    }
 }
