@@ -360,7 +360,7 @@ namespace DSharp.Compiler.Generator
                         writer.Write(", ");
                     }
 
-                    TypeSymbol parameterType = parameterSymbol.ValueType;
+                    ITypeSymbol parameterType = parameterSymbol.ValueType;
                     string parameterTypeName = GetParameterTypeName(parameterType);
                     writer.Write(parameterTypeName);
                     firstParameter = false;
@@ -395,7 +395,9 @@ namespace DSharp.Compiler.Generator
                         writer.Write(", ");
                     }
 
-                    writer.Write(inheritedInterface.FullGeneratedName);
+                    string name = GetGeneratedInterfaceName(inheritedInterface);
+                    writer.Write(name);
+
                     first = false;
                 }
 
@@ -405,18 +407,31 @@ namespace DSharp.Compiler.Generator
             writer.Write(")");
         }
 
-        private static string GetParameterTypeName(TypeSymbol parameterType)
+        private static string GetGeneratedInterfaceName(InterfaceSymbol inheritedInterface)
         {
-            ICompilationContext symbolSet = parameterType.SymbolSet;
-            TypeSymbol nullableType = symbolSet.ResolveIntrinsicType(IntrinsicType.Nullable);
+            string name = inheritedInterface.FullGeneratedName;
+            int index = inheritedInterface.FullGeneratedName.IndexOf("_$");
+
+            if (index >= 1)
+            {
+                return name.Remove(index);
+            }
+
+            return name;
+        }
+
+        private static string GetParameterTypeName(ITypeSymbol parameterType)
+        {
+            ICompilationContext symbolSet = parameterType.Root;
+            ITypeSymbol nullableType = symbolSet.ResolveIntrinsicType(IntrinsicType.Nullable);
 
             if (parameterType.FullName == nullableType.FullName)
             {
                 parameterType = parameterType.GenericArguments.First();
             }
 
-            TypeSymbol typeType = symbolSet.ResolveIntrinsicType(IntrinsicType.Type);
-            TypeSymbol functionType = symbolSet.ResolveIntrinsicType(IntrinsicType.Function);
+            ITypeSymbol typeType = symbolSet.ResolveIntrinsicType(IntrinsicType.Type);
+            ITypeSymbol functionType = symbolSet.ResolveIntrinsicType(IntrinsicType.Function);
 
             if (parameterType.FullName == typeType.FullName || parameterType.Type == SymbolType.Delegate)
             {
@@ -429,12 +444,12 @@ namespace DSharp.Compiler.Generator
 
                 if (enumType.UseNamedValues)
                 {
-                    TypeSymbol stringType = symbolSet.ResolveIntrinsicType(IntrinsicType.String);
+                    ITypeSymbol stringType = symbolSet.ResolveIntrinsicType(IntrinsicType.String);
                     parameterType = stringType;
                 }
                 else
                 {
-                    TypeSymbol numberType = symbolSet.ResolveIntrinsicType(IntrinsicType.Number);
+                    ITypeSymbol numberType = symbolSet.ResolveIntrinsicType(IntrinsicType.Number);
                     parameterType = numberType;
                 }
             }

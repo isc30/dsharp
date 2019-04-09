@@ -11,14 +11,14 @@ using DSharp.Compiler.Extensions;
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
-    public abstract class TypeSymbol : Symbol, ISymbolTable, ITypeSymbol
+    public abstract class TypeSymbol : Symbol, ITypeSymbol
     {
-        private readonly List<MemberSymbol> members;
-        private readonly Dictionary<string, MemberSymbol> memberTable;
+        private readonly List<IMemberSymbol> members;
+        private readonly Dictionary<string, IMemberSymbol> memberTable;
 
         private object metadataReference;
 
-        private ISymbolTable parentSymbolTable;
+        private IScriptSymbolTable parentSymbolTable;
         private bool testType;
 
         protected TypeSymbol(SymbolType type, string name, INamespaceSymbol parent)
@@ -26,8 +26,8 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         {
             Debug.Assert(parent != null);
 
-            memberTable = new Dictionary<string, MemberSymbol>();
-            members = new List<MemberSymbol>();
+            memberTable = new Dictionary<string, IMemberSymbol>();
+            members = new List<IMemberSymbol>();
             IsApplicationType = true;
         }
 
@@ -71,7 +71,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         {
             get
             {
-                string namespaceName = Namespace;
+                string namespaceName = Namespace.Name;
 
                 if (namespaceName.Length != 0)
                 {
@@ -88,7 +88,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             {
                 if (IsApplicationType)
                 {
-                    return Namespace.Replace(".", "$");
+                    return Namespace.Name.Replace(".", "$");
                 }
 
                 return ScriptNamespace != null ? ScriptNamespace : string.Empty;
@@ -101,7 +101,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public ICollection<GenericParameterSymbol> GenericParameters { get; private set; }
 
-        public TypeSymbol GenericType { get; private set; }
+        public ITypeSymbol GenericType { get; private set; }
 
         public bool IgnoreNamespace { get; private set; }
 
@@ -150,19 +150,17 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             }
         }
 
-        public string Namespace
+        public INamespaceSymbol Namespace
         {
             get
             {
-                Debug.Assert(Parent is NamespaceSymbol);
-
-                return ((NamespaceSymbol) Parent).Name;
+                return Parent as INamespaceSymbol;
             }
         }
 
         public string ScriptNamespace { get; set; }
 
-        public virtual void AddMember(MemberSymbol memberSymbol)
+        public virtual void AddMember(IMemberSymbol memberSymbol)
         {
             Debug.Assert(memberSymbol != null);
             Debug.Assert(string.IsNullOrEmpty(memberSymbol.Name) == false);
@@ -201,7 +199,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             return null;
         }
 
-        public virtual MemberSymbol GetMember(string name)
+        public virtual IMemberSymbol GetMember(string name)
         {
             if (memberTable.ContainsKey(name))
             {
@@ -267,7 +265,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             return true;
         }
 
-        public void SetParentSymbolTable(ISymbolTable symbolTable)
+        public void SetParentSymbolTable(IScriptSymbolTable symbolTable)
         {
             Debug.Assert(parentSymbolTable == null);
             Debug.Assert(symbolTable != null);
@@ -287,7 +285,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             Debug.Assert(string.IsNullOrEmpty(name) == false);
             Debug.Assert(context != null);
 
-            Symbol symbol = null;
+            ISymbol symbol = null;
 
             if ((filter & SymbolFilter.Members) != 0)
             {
@@ -299,7 +297,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 {
                     TypeSymbol baseType = GetBaseType();
                     TypeSymbol objectType =
-                        (TypeSymbol) ((ISymbolTable) SymbolSet.SystemNamespace).FindSymbol("Object", null,
+                        (TypeSymbol) ((IScriptSymbolTable) Root.SystemNamespace).FindSymbol("Object", null,
                             SymbolFilter.Types);
 
                     if (baseType == null && this != objectType)
@@ -309,7 +307,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
                     if (baseType != null)
                     {
-                        symbol = (Symbol)((ISymbolTable) baseType).FindSymbol(name, context, baseFilter);
+                        symbol = (Symbol)((IScriptSymbolTable) baseType).FindSymbol(name, context, baseFilter);
                     }
                 }
 

@@ -1,4 +1,4 @@
-// LiteralExpression.cs
+﻿// LiteralExpression.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -13,7 +13,7 @@ namespace DSharp.Compiler.ScriptModel.Expressions
     /// </summary>
     internal sealed class LiteralExpression : Expression
     {
-        public LiteralExpression(TypeSymbol valueType, object value)
+        public LiteralExpression(ITypeSymbol valueType, object value)
             : base(ExpressionType.Literal, valueType, SymbolFilter.Public | SymbolFilter.InstanceMembers)
         {
             Value = value;

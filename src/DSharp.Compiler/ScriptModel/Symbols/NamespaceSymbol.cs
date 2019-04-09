@@ -9,22 +9,22 @@ using System.Diagnostics;
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
-    public sealed class NamespaceSymbol : Symbol, ISymbolTable, INamespaceSymbol
+    public sealed class NamespaceSymbol : Symbol, IScriptSymbolTable, INamespaceSymbol
     {
         private readonly Dictionary<string, ITypeSymbol> typeMap;
         private readonly List<ITypeSymbol> types;
 
-        public NamespaceSymbol(string name, ICompilationContext symbolSet)
+        public NamespaceSymbol(string name, IScriptModel root)
             : base(SymbolType.Namespace, name, null)
         {
-            SymbolSet = symbolSet;
+            Root = root;
             types = new List<ITypeSymbol>();
             typeMap = new Dictionary<string, ITypeSymbol>();
         }
 
         public bool HasApplicationTypes { get; private set; }
 
-        public override ICompilationContext SymbolSet { get; }
+        public override IScriptModel Root { get; }
 
         public ICollection<ITypeSymbol> Types => types;
 
@@ -52,11 +52,9 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             return true;
         }
 
-        #region ISymbolTable Members
+        public IEnumerable<ISymbol> Symbols => types;
 
-        ICollection ISymbolTable.Symbols => types;
-
-        ISymbol ISymbolTable.FindSymbol(string name, ISymbol context, SymbolFilter filter)
+        public ISymbol FindSymbol(string name, ISymbol context, SymbolFilter filter)
         {
             Debug.Assert(string.IsNullOrEmpty(name) == false);
             Debug.Assert(context == null);
@@ -69,7 +67,5 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
             return null;
         }
-
-        #endregion
     }
 }

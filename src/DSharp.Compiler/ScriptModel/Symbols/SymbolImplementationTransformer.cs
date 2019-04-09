@@ -18,7 +18,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         private void TransformScope(SymbolScope scope, List<Symbol> transformedSymbols)
         {
-            foreach (Symbol symbol in ((ISymbolTable) scope).Symbols)
+            foreach (Symbol symbol in ((IScriptSymbolTable) scope).Symbols)
             {
                 if (symbol.Type != SymbolType.Variable)
                 {

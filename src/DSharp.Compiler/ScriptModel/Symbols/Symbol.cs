@@ -20,7 +20,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             IsTransformAllowed = true;
         }
 
-        public virtual string Documentation => SymbolSet.GetSummaryDocumentation(DocumentationId);
+        public virtual string Documentation => Root.GetSummaryDocumentation(DocumentationId);
 
         public virtual string DocumentationId
         {
@@ -63,7 +63,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             }
         }
 
-        public virtual ICompilationContext SymbolSet => Parent.SymbolSet;
+        public virtual IScriptModel Root => Parent.Root;
 
         public SymbolType Type { get; }
 

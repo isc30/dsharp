@@ -31,7 +31,7 @@ namespace DSharp.Compiler.Compiler
         {
             this.symbolTable = symbolTable;
             this.memberContext = memberContext;
-            symbolSet = memberContext.SymbolSet;
+            symbolSet = memberContext.Root;
             this.errorHandler = errorHandler;
 
             expressionBuilder = new ExpressionBuilder(symbolTable, memberContext, errorHandler, options);
@@ -234,7 +234,7 @@ namespace DSharp.Compiler.Compiler
 
         private Statement ProcessForeachStatement(ForeachNode node)
         {
-            TypeSymbol type = symbolSet.ResolveType(node.Type, symbolTable, memberContext);
+            ITypeSymbol type = symbolSet.ResolveType(node.Type, symbolTable, memberContext);
             Debug.Assert(type != null);
 
             bool dictionaryContainer = type.Name == "DictionaryEntry" || type.Name == "KeyValuePair`2";
@@ -410,7 +410,7 @@ namespace DSharp.Compiler.Compiler
 
                 if (catchNode.Name != null)
                 {
-                    TypeSymbol exceptionVariableType =
+                    ITypeSymbol exceptionVariableType =
                         symbolSet.ResolveType(catchNode.Type, symbolTable, memberContext);
                     Debug.Assert(exceptionVariableType != null);
 
@@ -419,7 +419,7 @@ namespace DSharp.Compiler.Compiler
                 }
                 else
                 {
-                    TypeSymbol exceptionVariableType =
+                    ITypeSymbol exceptionVariableType =
                         symbolSet.ResolveIntrinsicType(IntrinsicType.Exception);
                     Debug.Assert(exceptionVariableType != null);
 
@@ -459,7 +459,7 @@ namespace DSharp.Compiler.Compiler
         private Statement ProcessVariableDeclarationStatement(VariableDeclarationNode node)
         {
             VariableDeclarationStatement statement = new VariableDeclarationStatement();
-            TypeSymbol variableType = symbolSet.ResolveType(node.Type, symbolTable, memberContext);
+            ITypeSymbol variableType = symbolSet.ResolveType(node.Type, symbolTable, memberContext);
 
             foreach (VariableInitializerNode initializerNode in node.Initializers)
             {

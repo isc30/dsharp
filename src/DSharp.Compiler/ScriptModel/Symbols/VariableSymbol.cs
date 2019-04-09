@@ -1,4 +1,4 @@
-// LocalSymbol.cs
+﻿// LocalSymbol.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -9,7 +9,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 {
     internal sealed class VariableSymbol : LocalSymbol
     {
-        public VariableSymbol(string name, MemberSymbol parent, TypeSymbol valueType)
+        public VariableSymbol(string name, IMemberSymbol parent, ITypeSymbol valueType)
             : base(SymbolType.Variable, name, parent, valueType)
         {
         }

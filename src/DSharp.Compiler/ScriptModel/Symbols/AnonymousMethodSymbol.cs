@@ -7,7 +7,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 {
     internal sealed class AnonymousMethodSymbol : MethodSymbol
     {
-        public AnonymousMethodSymbol(CodeMemberSymbol containingMember, ISymbolTable stackContext,
+        public AnonymousMethodSymbol(CodeMemberSymbol containingMember, IScriptSymbolTable stackContext,
                                      ITypeSymbol returnType, bool isStatic)
             : base(SymbolType.AnonymousMethod, /* name */ string.Empty, (TypeSymbol) containingMember.Parent,
                 returnType)
@@ -36,7 +36,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             }
         }
 
-        public ISymbolTable StackContext { get; }
+        public IScriptSymbolTable StackContext { get; }
 
         public override void AddAnonymousMethod(AnonymousMethodSymbol anonymousMethod)
         {

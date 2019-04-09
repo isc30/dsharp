@@ -608,22 +608,22 @@ namespace DSharp.Compiler.Importer
             if (memberSet == PseudoClassMembers.Script)
             {
                 TypeSymbol objectType =
-                    (TypeSymbol)((ISymbolTable)symbols.SystemNamespace).FindSymbol("Object", null,
+                    (TypeSymbol)((IScriptSymbolTable)symbols.SystemNamespace).FindSymbol("Object", null,
                         SymbolFilter.Types);
                 Debug.Assert(objectType != null);
 
                 TypeSymbol stringType =
-                    (TypeSymbol)((ISymbolTable)symbols.SystemNamespace).FindSymbol("String", null,
+                    (TypeSymbol)((IScriptSymbolTable)symbols.SystemNamespace).FindSymbol("String", null,
                         SymbolFilter.Types);
                 Debug.Assert(stringType != null);
 
                 TypeSymbol boolType =
-                    (TypeSymbol)((ISymbolTable)symbols.SystemNamespace).FindSymbol("Boolean", null,
+                    (TypeSymbol)((IScriptSymbolTable)symbols.SystemNamespace).FindSymbol("Boolean", null,
                         SymbolFilter.Types);
                 Debug.Assert(boolType != null);
 
                 TypeSymbol dateType =
-                    (TypeSymbol)((ISymbolTable)symbols.SystemNamespace).FindSymbol("Date", null, SymbolFilter.Types);
+                    (TypeSymbol)((IScriptSymbolTable)symbols.SystemNamespace).FindSymbol("Date", null, SymbolFilter.Types);
                 Debug.Assert(dateType != null);
 
                 // Enumerate - IEnumerable.GetEnumerator gets mapped to this
@@ -659,7 +659,7 @@ namespace DSharp.Compiler.Importer
             if (memberSet == PseudoClassMembers.Arguments)
             {
                 TypeSymbol objectType =
-                    (TypeSymbol)((ISymbolTable)symbols.SystemNamespace).FindSymbol(nameof(Object), null,
+                    (TypeSymbol)((IScriptSymbolTable)symbols.SystemNamespace).FindSymbol(nameof(Object), null,
                         SymbolFilter.Types);
                 Debug.Assert(objectType != null);
 
@@ -674,11 +674,11 @@ namespace DSharp.Compiler.Importer
             if (memberSet == PseudoClassMembers.Dictionary)
             {
                 TypeSymbol intType =
-                    (TypeSymbol)((ISymbolTable)symbols.SystemNamespace).FindSymbol(nameof(Int32), null, SymbolFilter.Types);
+                    (TypeSymbol)((IScriptSymbolTable)symbols.SystemNamespace).FindSymbol(nameof(Int32), null, SymbolFilter.Types);
                 Debug.Assert(intType != null);
 
                 TypeSymbol stringType =
-                    (TypeSymbol)((ISymbolTable)symbols.SystemNamespace).FindSymbol(nameof(String), null,
+                    (TypeSymbol)((IScriptSymbolTable)symbols.SystemNamespace).FindSymbol(nameof(String), null,
                         SymbolFilter.Types);
                 Debug.Assert(stringType != null);
 
@@ -900,7 +900,7 @@ namespace DSharp.Compiler.Importer
             }
             else
             {
-                typeSymbol = (TypeSymbol)((ISymbolTable)symbols).FindSymbol(name, null, SymbolFilter.Types);
+                typeSymbol = (TypeSymbol)((IScriptSymbolTable)symbols).FindSymbol(name, null, SymbolFilter.Types);
 
                 if (typeSymbol == null)
                 {

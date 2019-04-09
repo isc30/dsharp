@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
-    public interface ISymbolTable
+    public interface IScriptSymbolTable
     {
         IEnumerable<ISymbol> Symbols { get; }
 

@@ -1,4 +1,4 @@
-// BinaryExpression.cs
+﻿// BinaryExpression.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -15,7 +15,7 @@ namespace DSharp.Compiler.ScriptModel.Expressions
         }
 
         public BinaryExpression(Operator operatorType, Expression leftOperand, Expression rightOperand,
-                                TypeSymbol evaluatedType)
+                                ITypeSymbol evaluatedType)
             : base(ExpressionType.Binary, evaluatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers)
         {
             Operator = operatorType;

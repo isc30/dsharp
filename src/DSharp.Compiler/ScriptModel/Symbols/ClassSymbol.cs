@@ -277,7 +277,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             }
         }
 
-        public override void AddMember(MemberSymbol memberSymbol)
+        public override void AddMember(IMemberSymbol memberSymbol)
         {
             if (primaryPartialClass != null)
             {
@@ -347,7 +347,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             return indexer;
         }
 
-        public override MemberSymbol GetMember(string name)
+        public override IMemberSymbol GetMember(string name)
         {
             if (primaryPartialClass != null)
             {

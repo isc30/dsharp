@@ -1,4 +1,4 @@
-// ParseNodeList.cs
+﻿// ParseNodeList.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -7,7 +7,7 @@ using System.Collections;
 
 namespace DSharp.Compiler.CodeModel
 {
-    internal sealed class ParseNodeList : IEnumerable
+    public sealed class ParseNodeList : IEnumerable
     {
         private ArrayList list;
 

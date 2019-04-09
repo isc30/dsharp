@@ -1,4 +1,4 @@
-// MemberExpression.cs
+﻿// MemberExpression.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -9,7 +9,7 @@ namespace DSharp.Compiler.ScriptModel.Expressions
 {
     internal sealed class MemberExpression : Expression
     {
-        public MemberExpression(Expression objectReference, MemberSymbol member)
+        public MemberExpression(Expression objectReference, IMemberSymbol member)
             : base(ExpressionType.Member,
                 member.AssociatedType.Type == SymbolType.GenericParameter
                     ? objectReference.EvaluatedType
@@ -20,7 +20,7 @@ namespace DSharp.Compiler.ScriptModel.Expressions
             ObjectReference = objectReference;
         }
 
-        public MemberSymbol Member { get; }
+        public IMemberSymbol Member { get; }
 
         public Expression ObjectReference { get; }
 

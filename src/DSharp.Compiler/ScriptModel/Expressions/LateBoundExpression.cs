@@ -1,4 +1,4 @@
-// LateBoundExpression.cs
+﻿// LateBoundExpression.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -14,7 +14,7 @@ namespace DSharp.Compiler.ScriptModel.Expressions
         private readonly Collection<Expression> parameters;
 
         public LateBoundExpression(Expression objectReference, Expression nameExpression, LateBoundOperation operation,
-                                   TypeSymbol evaluatedType)
+                                   ITypeSymbol evaluatedType)
             : base(ExpressionType.LateBound, evaluatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers)
         {
             ObjectReference = objectReference;

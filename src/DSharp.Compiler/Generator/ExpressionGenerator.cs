@@ -967,7 +967,7 @@ namespace DSharp.Compiler.Generator
                     }
                     else if (expression.Parameters.Count == 1 &&
                              expression.Parameters[0].EvaluatedType ==
-                             symbol.SymbolSet.ResolveIntrinsicType(IntrinsicType.Integer))
+                             symbol.Root.ResolveIntrinsicType(IntrinsicType.Integer))
                     {
                         writer.Write("new Array(");
                         GenerateExpression(generator, symbol, expression.Parameters[0]);

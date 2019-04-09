@@ -19,7 +19,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public ICollection<InterfaceSymbol> Interfaces { get; private set; }
 
-        public override void AddMember(MemberSymbol memberSymbol)
+        public override void AddMember(IMemberSymbol memberSymbol)
         {
             Debug.Assert(memberSymbol != null);
 
@@ -34,9 +34,9 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             }
         }
 
-        public override MemberSymbol GetMember(string name)
+        public override IMemberSymbol GetMember(string name)
         {
-            MemberSymbol member = base.GetMember(name);
+            IMemberSymbol member = base.GetMember(name);
 
             if (member == null && Interfaces != null)
             {

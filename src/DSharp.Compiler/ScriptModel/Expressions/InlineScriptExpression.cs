@@ -1,4 +1,4 @@
-// InlineScriptExpression.cs
+﻿// InlineScriptExpression.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -15,12 +15,12 @@ namespace DSharp.Compiler.ScriptModel.Expressions
 
         private Collection<Expression> parameters;
 
-        public InlineScriptExpression(string script, TypeSymbol evaluatedType)
+        public InlineScriptExpression(string script, ITypeSymbol evaluatedType)
             : this(script, evaluatedType, /* parenthesize */ true)
         {
         }
 
-        public InlineScriptExpression(string script, TypeSymbol evaluatedType, bool parenthesize)
+        public InlineScriptExpression(string script, ITypeSymbol evaluatedType, bool parenthesize)
             : base(ExpressionType.InlineScript, evaluatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers)
         {
             Script = script;

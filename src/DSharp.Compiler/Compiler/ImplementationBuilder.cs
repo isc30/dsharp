@@ -33,7 +33,7 @@ namespace DSharp.Compiler.Compiler
             this.errorHandler = errorHandler;
         }
 
-        private SymbolImplementation BuildImplementation(ISymbolTable symbolTable, CodeMemberSymbol symbolContext,
+        private SymbolImplementation BuildImplementation(IScriptSymbolTable symbolTable, CodeMemberSymbol symbolContext,
                                                          BlockStatementNode implementationNode, bool addAllParameters)
         {
             rootScope = new SymbolScope(symbolTable);
@@ -111,7 +111,7 @@ namespace DSharp.Compiler.Compiler
             AccessorNode addNode = ((EventDeclarationNode) eventSymbol.ParseContext).Property.SetAccessor;
             BlockStatementNode accessorBody = addNode.Implementation;
 
-            return BuildImplementation((ISymbolTable) eventSymbol.Parent,
+            return BuildImplementation((IScriptSymbolTable) eventSymbol.Parent,
                 eventSymbol, accessorBody, /* addParameters */ true);
         }
 
@@ -120,13 +120,13 @@ namespace DSharp.Compiler.Compiler
             AccessorNode removeNode = ((EventDeclarationNode) eventSymbol.ParseContext).Property.GetAccessor;
             BlockStatementNode accessorBody = removeNode.Implementation;
 
-            return BuildImplementation((ISymbolTable) eventSymbol.Parent,
+            return BuildImplementation((IScriptSymbolTable) eventSymbol.Parent,
                 eventSymbol, accessorBody, /* addParameters */ true);
         }
 
         public SymbolImplementation BuildField(FieldSymbol fieldSymbol)
         {
-            rootScope = new SymbolScope((ISymbolTable) fieldSymbol.Parent);
+            rootScope = new SymbolScope((IScriptSymbolTable) fieldSymbol.Parent);
             currentScope = rootScope;
 
             Expression initializerExpression = null;
@@ -151,8 +151,8 @@ namespace DSharp.Compiler.Compiler
             {
                 object defaultValue = null;
 
-                TypeSymbol fieldType = fieldSymbol.AssociatedType;
-                ICompilationContext symbolSet = fieldSymbol.SymbolSet;
+                ITypeSymbol fieldType = fieldSymbol.AssociatedType;
+                ICompilationContext symbolSet = fieldSymbol.Root;
 
                 if (fieldType.Type == SymbolType.Enumeration)
                 {
@@ -209,7 +209,7 @@ namespace DSharp.Compiler.Compiler
         {
             BlockStatementNode methodBody = ((MethodDeclarationNode) methodSymbol.ParseContext).Implementation;
 
-            return BuildImplementation((ISymbolTable) methodSymbol.Parent,
+            return BuildImplementation((IScriptSymbolTable) methodSymbol.Parent,
                 methodSymbol, methodBody, /* addAllParameters */ true);
         }
 
@@ -226,7 +226,7 @@ namespace DSharp.Compiler.Compiler
             AccessorNode getterNode = ((IndexerDeclarationNode) indexerSymbol.ParseContext).GetAccessor;
             BlockStatementNode accessorBody = getterNode.Implementation;
 
-            return BuildImplementation((ISymbolTable) indexerSymbol.Parent,
+            return BuildImplementation((IScriptSymbolTable) indexerSymbol.Parent,
                 indexerSymbol, accessorBody, /* addAllParameters */ false);
         }
 
@@ -235,7 +235,7 @@ namespace DSharp.Compiler.Compiler
             AccessorNode setterNode = ((IndexerDeclarationNode) indexerSymbol.ParseContext).SetAccessor;
             BlockStatementNode accessorBody = setterNode.Implementation;
 
-            return BuildImplementation((ISymbolTable) indexerSymbol.Parent,
+            return BuildImplementation((IScriptSymbolTable) indexerSymbol.Parent,
                 indexerSymbol, accessorBody, /* addAllParameters */ true);
         }
 
@@ -250,7 +250,7 @@ namespace DSharp.Compiler.Compiler
 
             BlockStatementNode accessorBody = getterNode.Implementation;
 
-            return BuildImplementation((ISymbolTable) propertySymbol.Parent,
+            return BuildImplementation((IScriptSymbolTable) propertySymbol.Parent,
                 propertySymbol, accessorBody, /* addAllParameters */ false);
         }
 
@@ -265,32 +265,26 @@ namespace DSharp.Compiler.Compiler
 
             BlockStatementNode accessorBody = setterNode.Implementation;
 
-            return BuildImplementation((ISymbolTable) propertySymbol.Parent,
+            return BuildImplementation((IScriptSymbolTable) propertySymbol.Parent,
                 propertySymbol, accessorBody, /* addAllParameters */ true);
         }
 
-        #region ISymbolTable Members
-
-        ICollection ISymbolTable.Symbols
+        public IEnumerable<ISymbol> Symbols
         {
             get
             {
                 Debug.Assert(currentScope != null);
 
-                return ((ISymbolTable) currentScope).Symbols;
+                return ((IScriptSymbolTable) currentScope).Symbols;
             }
         }
 
-        ISymbol ISymbolTable.FindSymbol(string name, ISymbol context, SymbolFilter filter)
+        public ISymbol FindSymbol(string name, ISymbol context, SymbolFilter filter)
         {
             Debug.Assert(currentScope != null);
 
-            return ((ISymbolTable) currentScope).FindSymbol(name, context, filter);
+            return ((IScriptSymbolTable) currentScope).FindSymbol(name, context, filter);
         }
-
-        #endregion
-
-        #region ILocalSymbolTable Members
 
         void ILocalSymbolTable.AddSymbol(LocalSymbol symbol)
         {
@@ -320,7 +314,5 @@ namespace DSharp.Compiler.Compiler
             currentScope = new SymbolScope(parentScope);
             parentScope.AddChildScope(currentScope);
         }
-
-        #endregion
     }
 }

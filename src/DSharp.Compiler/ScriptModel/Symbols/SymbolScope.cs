@@ -3,29 +3,28 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
-    internal sealed class SymbolScope : ISymbolTable
+    internal sealed class SymbolScope : IScriptSymbolTable
     {
         private readonly Collection<LocalSymbol> locals;
 
         private readonly Dictionary<string, LocalSymbol> localTable;
 
-        private readonly ISymbolTable parentSymbolTable;
+        private readonly IScriptSymbolTable parentSymbolTable;
         private List<SymbolScope> childScopes;
 
         public SymbolScope(SymbolScope parentScope)
-            : this((ISymbolTable) parentScope)
+            : this((IScriptSymbolTable)parentScope)
         {
             Parent = parentScope;
         }
 
-        public SymbolScope(ISymbolTable parentSymbolTable)
+        public SymbolScope(IScriptSymbolTable parentSymbolTable)
         {
             Debug.Assert(parentSymbolTable != null);
             this.parentSymbolTable = parentSymbolTable;
@@ -58,11 +57,9 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             localTable[symbol.Name] = symbol;
         }
 
-        #region ISymbolTable Members
+        public IEnumerable<ISymbol> Symbols => locals;
 
-        ICollection ISymbolTable.Symbols => locals;
-
-        ISymbol ISymbolTable.FindSymbol(string name, ISymbol context, SymbolFilter filter)
+        public ISymbol FindSymbol(string name, ISymbol context, SymbolFilter filter)
         {
             Symbol symbol = null;
 
@@ -82,7 +79,5 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
             return symbol;
         }
-
-        #endregion
     }
 }

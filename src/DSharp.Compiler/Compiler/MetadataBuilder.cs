@@ -23,7 +23,7 @@ namespace DSharp.Compiler.Compiler
         private CompilerOptions options;
 
         private ICompilationContext symbols;
-        private ISymbolTable symbolTable;
+        private IScriptSymbolTable symbolTable;
 
         public MetadataBuilder(IErrorHandler errorHandler)
         {
@@ -54,7 +54,7 @@ namespace DSharp.Compiler.Compiler
                 {
                     string namespaceName = namespaceNode.Name;
 
-                    NamespaceSymbol namespaceSymbol = symbols.GetNamespace(namespaceName);
+                    INamespaceSymbol namespaceSymbol = symbols.GetNamespace(namespaceName);
 
                     List<string> imports = null;
                     Dictionary<string, string> aliases = null;
@@ -136,7 +136,7 @@ namespace DSharp.Compiler.Compiler
                         if ((userTypeNode.Modifiers & Modifiers.Partial) != 0)
                         {
                             partialTypeSymbol =
-                                (ClassSymbol)((ISymbolTable)namespaceSymbol).FindSymbol(userTypeNode.Name, /* context */
+                                (ClassSymbol)((IScriptSymbolTable)namespaceSymbol).FindSymbol(userTypeNode.Name, /* context */
                                     null, SymbolFilter.Types);
 
                             if (partialTypeSymbol != null && partialTypeSymbol.IsApplicationType)
@@ -268,7 +268,7 @@ namespace DSharp.Compiler.Compiler
                 errorHandler.ReportAssemblyError(scriptName, string.Format(DSharpStringResources.INVALID_SCRIPT_NAME_FORMAT, scriptName));
             }
 
-            symbols.ScriptName = scriptName;
+            symbols.ScriptModel.ScriptName = scriptName;
 
             List<AttributeNode> referenceAttributes = GetAttributes(compilationUnits, DSharpStringResources.SCRIPT_REFERENCE_ATTRIBUTE);
 
@@ -358,7 +358,7 @@ namespace DSharp.Compiler.Compiler
             Debug.Assert(typeSymbol is EnumerationSymbol);
             EnumerationSymbol enumSymbol = (EnumerationSymbol)typeSymbol;
 
-            TypeSymbol fieldTypeSymbol;
+            ITypeSymbol fieldTypeSymbol;
 
             if (enumSymbol.UseNamedValues)
             {
@@ -378,7 +378,7 @@ namespace DSharp.Compiler.Compiler
 
         private EventSymbol BuildEvent(EventDeclarationNode eventNode, TypeSymbol typeSymbol)
         {
-            TypeSymbol handlerType = typeSymbol.SymbolSet.ResolveType(eventNode.Type, symbolTable, typeSymbol);
+            ITypeSymbol handlerType = typeSymbol.Root.ResolveType(eventNode.Type, symbolTable, typeSymbol);
             Debug.Assert(handlerType != null);
 
             if (handlerType != null)
@@ -424,7 +424,7 @@ namespace DSharp.Compiler.Compiler
 
         private FieldSymbol BuildField(FieldDeclarationNode fieldNode, TypeSymbol typeSymbol)
         {
-            TypeSymbol fieldType = typeSymbol.SymbolSet.ResolveType(fieldNode.Type, symbolTable, typeSymbol);
+            ITypeSymbol fieldType = typeSymbol.Root.ResolveType(fieldNode.Type, symbolTable, typeSymbol);
             Debug.Assert(fieldType != null);
 
             if (fieldType != null)
@@ -466,7 +466,7 @@ namespace DSharp.Compiler.Compiler
 
         private IndexerSymbol BuildIndexer(IndexerDeclarationNode indexerNode, TypeSymbol typeSymbol)
         {
-            TypeSymbol indexerType = typeSymbol.SymbolSet.ResolveType(indexerNode.Type, symbolTable, typeSymbol);
+            ITypeSymbol indexerType = typeSymbol.Root.ResolveType(indexerNode.Type, symbolTable, typeSymbol);
             Debug.Assert(indexerType != null);
 
             if (indexerType != null)
@@ -526,14 +526,14 @@ namespace DSharp.Compiler.Compiler
                 return;
             }
 
-            Dictionary<string, MemberSymbol> interfaceMemberSymbols = new Dictionary<string, MemberSymbol>();
+            Dictionary<string, IMemberSymbol> interfaceMemberSymbols = new Dictionary<string, IMemberSymbol>();
             AggregateInterfaceMembers(classSymbol.Interfaces, interfaceMemberSymbols);
 
             if (interfaceMemberSymbols.Count > 0)
             {
-                foreach (MemberSymbol memberSymbol in interfaceMemberSymbols.Values)
+                foreach (IMemberSymbol memberSymbol in interfaceMemberSymbols.Values)
                 {
-                    MemberSymbol associatedSymbol = classSymbol.GetMember(memberSymbol.Name);
+                    IMemberSymbol associatedSymbol = classSymbol.GetMember(memberSymbol.Name);
 
                     if (associatedSymbol != null)
                     {
@@ -544,7 +544,7 @@ namespace DSharp.Compiler.Compiler
         }
 
         private void AggregateInterfaceMembers(ICollection<InterfaceSymbol> subInterfaceCollection,
-                                               Dictionary<string, MemberSymbol> aggregateMemberCollection)
+                                               Dictionary<string, IMemberSymbol> aggregateMemberCollection)
         {
             if (subInterfaceCollection == null)
             {
@@ -558,8 +558,8 @@ namespace DSharp.Compiler.Compiler
             }
         }
 
-        private void AddInterfaceMembers(ICollection<MemberSymbol> newMemberSymbols,
-                                         Dictionary<string, MemberSymbol> aggregateMemberCollection)
+        private void AddInterfaceMembers(IEnumerable<IMemberSymbol> newMemberSymbols,
+                                         Dictionary<string, IMemberSymbol> aggregateMemberCollection)
         {
             if (newMemberSymbols == null)
             {
@@ -645,8 +645,8 @@ namespace DSharp.Compiler.Compiler
             {
                 DelegateTypeNode delegateNode = (DelegateTypeNode)typeSymbol.ParseContext;
 
-                TypeSymbol returnType =
-                    typeSymbol.SymbolSet.ResolveType(delegateNode.ReturnType, symbolTable, typeSymbol);
+                ITypeSymbol returnType =
+                    typeSymbol.Root.ResolveType(delegateNode.ReturnType, symbolTable, typeSymbol);
                 Debug.Assert(returnType != null);
 
                 if (returnType != null)
@@ -769,7 +769,7 @@ namespace DSharp.Compiler.Compiler
             }
             else
             {
-                TypeSymbol returnType = typeSymbol.SymbolSet.ResolveType(methodNode.Type, symbolTable, typeSymbol);
+                ITypeSymbol returnType = typeSymbol.Root.ResolveType(methodNode.Type, symbolTable, typeSymbol);
                 Debug.Assert(returnType != null);
 
                 if (returnType != null)
@@ -864,8 +864,8 @@ namespace DSharp.Compiler.Compiler
                 parameterMode = ParameterMode.List;
             }
 
-            TypeSymbol parameterType =
-                methodSymbol.SymbolSet.ResolveType(parameterNode.Type, symbolTable, methodSymbol);
+            ITypeSymbol parameterType =
+                methodSymbol.Root.ResolveType(parameterNode.Type, symbolTable, methodSymbol);
             Debug.Assert(parameterType != null);
 
             if (parameterType != null)
@@ -878,8 +878,8 @@ namespace DSharp.Compiler.Compiler
 
         private ParameterSymbol BuildParameter(ParameterNode parameterNode, IndexerSymbol indexerSymbol)
         {
-            TypeSymbol parameterType =
-                indexerSymbol.SymbolSet.ResolveType(parameterNode.Type, symbolTable, indexerSymbol);
+            ITypeSymbol parameterType =
+                indexerSymbol.Root.ResolveType(parameterNode.Type, symbolTable, indexerSymbol);
             Debug.Assert(parameterType != null);
 
             if (parameterType != null)
@@ -892,7 +892,7 @@ namespace DSharp.Compiler.Compiler
 
         private PropertySymbol BuildProperty(PropertyDeclarationNode propertyNode, TypeSymbol typeSymbol)
         {
-            TypeSymbol propertyType = typeSymbol.SymbolSet.ResolveType(propertyNode.Type, symbolTable, typeSymbol);
+            ITypeSymbol propertyType = typeSymbol.Root.ResolveType(propertyNode.Type, symbolTable, typeSymbol);
             Debug.Assert(propertyType != null);
 
             if (propertyType != null)
@@ -935,7 +935,7 @@ namespace DSharp.Compiler.Compiler
                 return null;
             }
 
-            TypeSymbol fieldType = typeSymbol.SymbolSet.ResolveType(propertyNode.Type, symbolTable, typeSymbol);
+            ITypeSymbol fieldType = typeSymbol.Root.ResolveType(propertyNode.Type, symbolTable, typeSymbol);
             Debug.Assert(fieldType != null);
 
             if (fieldType != null)
@@ -975,7 +975,7 @@ namespace DSharp.Compiler.Compiler
             }
         }
 
-        private TypeSymbol BuildType(UserTypeNode typeNode, NamespaceSymbol namespaceSymbol)
+        private TypeSymbol BuildType(UserTypeNode typeNode, INamespaceSymbol namespaceSymbol)
         {
             Debug.Assert(typeNode != null);
             Debug.Assert(namespaceSymbol != null);
@@ -1243,8 +1243,18 @@ namespace DSharp.Compiler.Compiler
 
                 foreach (NameNode node in customTypeNode.BaseTypes)
                 {
+                    string symbolName;
+                    if (node is GenericNameNode genericNameNode)
+                    {
+                        symbolName = genericNameNode.Name + "`" + genericNameNode.TypeArguments.Count;
+                    }
+                    else
+                    {
+                        symbolName = node.Name;
+                    }
+
                     TypeSymbol baseTypeSymbol =
-                        (TypeSymbol)symbolTable.FindSymbol(node.Name, interfaceSymbol, SymbolFilter.Types);
+                        (TypeSymbol)symbolTable.FindSymbol(symbolName, interfaceSymbol, SymbolFilter.Types);
                     Debug.Assert(baseTypeSymbol.Type == SymbolType.Interface);
 
                     if (interfaces == null)

@@ -5,7 +5,7 @@
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
-    internal interface ILocalSymbolTable : ISymbolTable
+    internal interface ILocalSymbolTable : IScriptSymbolTable
     {
         void AddSymbol(LocalSymbol symbol);
 

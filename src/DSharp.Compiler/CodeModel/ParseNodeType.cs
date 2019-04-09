@@ -1,4 +1,4 @@
-// ParseNodeType.cs
+﻿// ParseNodeType.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -8,7 +8,7 @@ namespace DSharp.Compiler.CodeModel
     /// <summary>
     ///     List of parse node types.
     /// </summary>
-    internal enum ParseNodeType
+    public enum ParseNodeType
     {
         CompilationUnit,
         Namespace,

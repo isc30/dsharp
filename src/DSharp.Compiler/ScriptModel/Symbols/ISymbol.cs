@@ -14,11 +14,17 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         string Name { get; }
 
+        string GeneratedName { get; }
+
         ISymbol Parent { get; }
 
-        ICompilationContext SymbolSet { get; }
+        IScriptModel Root { get; }
+
+        string Documentation { get; }
 
         string DocumentationId { get; }
+
+        bool MatchFilter(SymbolFilter filter);
     }
 
     public interface INamespaceSymbol : ISymbol
@@ -32,7 +38,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         void SetTransformedName(string name);
     }
 
-    public interface ITypeSymbol : ISymbol
+    public interface ITypeSymbol : ISymbol, IScriptSymbolTable
     {
         string FullGeneratedName { get; }
 
@@ -59,11 +65,19 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         bool IsArray { get; }
 
         INamespaceSymbol Namespace { get; }
+
+        ITypeSymbol GenericType { get; }
+
+        IMemberSymbol GetMember(string name);
     }
 
     public interface IMemberSymbol : ISymbol
     {
         ITypeSymbol AssociatedType { get; }
+
+        MemberVisibility Visibility { get; }
+
+        void SetInterfaceMember(IMemberSymbol memberSymbol);
     }
 
     public class CompilationRoot : ICompilationRoot
@@ -84,10 +98,5 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         {
             return namespaceSymbols.GetEnumerator();
         }
-    }
-
-    public interface ICompilationRoot : IEnumerable<INamespaceSymbol>
-    {
-
     }
 }

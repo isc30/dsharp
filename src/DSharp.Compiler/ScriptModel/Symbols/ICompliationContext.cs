@@ -9,7 +9,7 @@ using DSharp.Compiler.CodeModel;
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
-    public interface ICompilationContext : ISymbolTable, IScriptModel
+    public interface ICompilationContext
     {
         IEnumerable<ScriptReference> Dependencies { get; }
 
@@ -17,11 +17,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         bool HasResources { get; }
 
-        ICollection<INamespaceSymbol> Namespaces { get; }
-
-        INamespaceSymbol SystemNamespace { get; }
-
-        INamespaceSymbol GlobalNamespace { get; }
+        IScriptModel ScriptModel { get; }
 
         void AddDependency(ScriptReference dependency);
 
@@ -30,8 +26,6 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         ITypeSymbol CreateGenericTypeSymbol(ITypeSymbol templateType, IList<ITypeSymbol> typeArguments);
 
         ScriptReference GetDependency(string name, out bool newReference);
-
-        INamespaceSymbol GetNamespace(string namespaceName);
 
         string GetParameterDocumentation(string id, string paramName);
 
@@ -43,17 +37,17 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         ITypeSymbol ResolveIntrinsicType(IntrinsicType type);
 
-        ITypeSymbol ResolveType(ParseNode node, ISymbolTable symbolTable, ISymbol contextSymbol);
+        ITypeSymbol ResolveType(ParseNode node, IScriptSymbolTable symbolTable, ISymbol contextSymbol);
 
         void SetComments(XmlDocument docComments);
 
         void SetEntryPoint(IMemberSymbol entryPoint);
     }
 
-    public interface IScriptModel
+    public interface IScriptModel : IScriptSymbolTable
     {
-        ICompilationRoot Root { get; }
+        INamespaceSymbolCollection Namespaces { get; }
 
-        string ScriptName { get; }
+        string ScriptName { get; set; }
     }
 }

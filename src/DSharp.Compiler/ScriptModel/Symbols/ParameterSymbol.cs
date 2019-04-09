@@ -7,13 +7,13 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 {
     internal sealed class ParameterSymbol : LocalSymbol
     {
-        public ParameterSymbol(string name, ITypeSymbol parent, ITypeSymbol valueType, ParameterMode mode)
+        public ParameterSymbol(string name, IMemberSymbol parent, ITypeSymbol valueType, ParameterMode mode)
             : base(SymbolType.Parameter, name, parent, valueType)
         {
             Mode = mode;
         }
 
-        public override string Documentation => SymbolSet.GetParameterDocumentation(Parent.DocumentationId, Name);
+        public override string Documentation => Root.GetParameterDocumentation(Parent.DocumentationId, Name);
 
         public override string DocumentationId
         {

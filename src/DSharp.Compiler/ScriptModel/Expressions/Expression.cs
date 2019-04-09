@@ -1,4 +1,4 @@
-// Expression.cs
+﻿// Expression.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -9,14 +9,14 @@ namespace DSharp.Compiler.ScriptModel.Expressions
 {
     internal abstract class Expression
     {
-        protected Expression(ExpressionType type, TypeSymbol evaluatedType, SymbolFilter memberMask)
+        protected Expression(ExpressionType type, ITypeSymbol evaluatedType, SymbolFilter memberMask)
         {
             Type = type;
             EvaluatedType = evaluatedType;
             MemberMask = memberMask | SymbolFilter.Members;
         }
 
-        public TypeSymbol EvaluatedType { get; private set; }
+        public ITypeSymbol EvaluatedType { get; private set; }
 
         protected virtual bool IsParenthesisRedundant => true;
 
@@ -36,7 +36,7 @@ namespace DSharp.Compiler.ScriptModel.Expressions
             }
         }
 
-        public void Reevaluate(TypeSymbol evaluatedType)
+        public void Reevaluate(ITypeSymbol evaluatedType)
         {
             EvaluatedType = evaluatedType;
         }

@@ -51,7 +51,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             }
         }
 
-        public MemberSymbol InterfaceMember { get; private set; }
+        public IMemberSymbol InterfaceMember { get; private set; }
 
         public bool IsCasePreserved { get; private set; }
 
@@ -121,7 +121,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             return true;
         }
 
-        public void SetInterfaceMember(MemberSymbol memberSymbol)
+        public void SetInterfaceMember(IMemberSymbol memberSymbol)
         {
             Debug.Assert(InterfaceMember == null);
             Debug.Assert(memberSymbol != null);

@@ -90,13 +90,13 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                     if (baseType == null)
                     {
                         baseType =
-                            (ClassSymbol) ((ISymbolTable) memberSymbol.SymbolSet.SystemNamespace).FindSymbol("Object",
+                            (ClassSymbol) ((IScriptSymbolTable) memberSymbol.Root.SystemNamespace).FindSymbol("Object",
                                 null, SymbolFilter.Types);
                         Debug.Assert(baseType != null);
                     }
 
                     MemberSymbol baseMember =
-                        (MemberSymbol) ((ISymbolTable) baseType).FindSymbol(memberSymbol.Name, type,
+                        (MemberSymbol) ((IScriptSymbolTable) baseType).FindSymbol(memberSymbol.Name, type,
                             SymbolFilter.Members);
                     Debug.Assert(baseMember != null);
 

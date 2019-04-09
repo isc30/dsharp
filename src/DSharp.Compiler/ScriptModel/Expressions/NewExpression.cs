@@ -1,4 +1,4 @@
-// NewExpression.cs
+﻿// NewExpression.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -13,7 +13,7 @@ namespace DSharp.Compiler.ScriptModel.Expressions
     {
         private Collection<Expression> parameters;
 
-        public NewExpression(TypeSymbol associatedType)
+        public NewExpression(ITypeSymbol associatedType)
             : base(ExpressionType.New, associatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers)
         {
             AssociatedType = associatedType;
@@ -26,7 +26,7 @@ namespace DSharp.Compiler.ScriptModel.Expressions
             AssociatedType = associatedType;
         }
 
-        public TypeSymbol AssociatedType { get; }
+        public ITypeSymbol AssociatedType { get; }
 
         public bool IsSpecificType => TypeExpression == null;
 

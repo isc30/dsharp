@@ -1,4 +1,4 @@
-// BufferPosition.cs
+﻿// BufferPosition.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -10,7 +10,7 @@ namespace DSharp.Compiler.Parser
     /// <summary>
     ///     A line and column position in a source buffer.
     /// </summary>
-    internal struct BufferPosition : IComparable
+    public struct BufferPosition : IComparable
     {
         public BufferPosition(int line, int column, int offset)
         {

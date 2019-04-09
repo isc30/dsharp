@@ -1,4 +1,4 @@
-// NewExpression.cs
+﻿// NewExpression.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -10,14 +10,14 @@ namespace DSharp.Compiler.ScriptModel.Expressions
 {
     internal sealed class NewDelegateExpression : Expression
     {
-        public NewDelegateExpression(TypeSymbol associatedType)
+        public NewDelegateExpression(ITypeSymbol associatedType)
             : base(ExpressionType.NewDelegate, associatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers)
         {
             Debug.Assert(associatedType.Type == SymbolType.Delegate);
             AssociatedType = associatedType;
         }
 
-        public NewDelegateExpression(Expression typeExpression, TypeSymbol associatedType)
+        public NewDelegateExpression(Expression typeExpression, ITypeSymbol associatedType)
             : base(ExpressionType.NewDelegate, associatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers)
         {
             Debug.Assert(associatedType.Type == SymbolType.Delegate);
@@ -25,7 +25,7 @@ namespace DSharp.Compiler.ScriptModel.Expressions
             AssociatedType = associatedType;
         }
 
-        public TypeSymbol AssociatedType { get; }
+        public ITypeSymbol AssociatedType { get; }
 
         public bool IsSpecificType => TypeExpression == null;
 

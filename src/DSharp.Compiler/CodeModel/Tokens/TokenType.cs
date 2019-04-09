@@ -1,4 +1,4 @@
-// TokenType.cs
+﻿// TokenType.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -9,7 +9,7 @@ namespace DSharp.Compiler.CodeModel.Tokens
     ///     The list of valid token types.
     ///     NOTE: Must keep this list in sync with the Token static constuctor.
     /// </summary>
-    internal enum TokenType
+    public enum TokenType
     {
         Abstract,
         As,

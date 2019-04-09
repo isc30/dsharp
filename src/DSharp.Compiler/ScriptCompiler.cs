@@ -47,7 +47,7 @@ namespace DSharp.Compiler
             this.options = options ?? throw new ArgumentNullException(nameof(options));
 
             hasErrors = false;
-            compilationContext = new MonoSymbolSet();
+            compilationContext = new MonoCompilationContext();
 
             var compilation = ImportMetadata();
 
@@ -279,7 +279,7 @@ namespace DSharp.Compiler
             try
             {
                 ScriptGenerator scriptGenerator = new ScriptGenerator(scriptWriter, options);
-                scriptGenerator.GenerateScript(compilationContext);
+                scriptGenerator.GenerateScript(compilationContext.ScriptModel);
             }
             catch (Exception e)
             {
@@ -353,7 +353,7 @@ namespace DSharp.Compiler
             depLookupBuilder.Append(";");
 
             return template.TrimStart()
-                           .Replace("{name}", compilationContext.ScriptName)
+                           .Replace("{name}", compilationContext.ScriptModel.ScriptName)
                            .Replace("{description}", options.ScriptInfo.Description ?? string.Empty)
                            .Replace("{copyright}", options.ScriptInfo.Copyright ?? string.Empty)
                            .Replace("{version}", options.ScriptInfo.Version ?? string.Empty)

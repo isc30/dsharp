@@ -16,12 +16,11 @@ using DSharp.Compiler.CodeModel.Types;
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
-    internal sealed class MonoSymbolSet : ICompilationContext
+    internal sealed class MonoCompilationContext : ICompilationContext
     {
         private readonly List<ScriptReference> dependencies;
         private readonly Dictionary<string, ScriptReference> dependencySet;
         private readonly Dictionary<string, INamespaceSymbol> namespaceMap;
-        private readonly List<INamespaceSymbol> namespaces;
         private readonly Dictionary<string, Dictionary<string, ResXItem>> resources;
 
         private Dictionary<string, ITypeSymbol> arrayTypeTable;
@@ -36,31 +35,17 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public bool HasResources => resources.Count != 0;
 
-        public ICollection<INamespaceSymbol> Namespaces => namespaces;
-
-        public string ScriptName { get; set; }
-
         public INamespaceSymbol SystemNamespace { get; }
 
-        public MonoSymbolSet()
+        public IScriptModel ScriptModel { get; }
+
+        public MonoCompilationContext()
         {
-            namespaces = new List<INamespaceSymbol>();
-            namespaceMap = new Dictionary<string, INamespaceSymbol>();
-
-            GlobalNamespace = new NamespaceSymbol(string.Empty, this);
-            GlobalNamespace.SetTransformedName(string.Empty);
-            namespaces.Add(GlobalNamespace);
-            namespaceMap[string.Empty] = GlobalNamespace;
-
-            SystemNamespace = new NamespaceSymbol("System", this);
-            namespaces.Add(SystemNamespace);
-            namespaceMap["System"] = SystemNamespace;
-
             dependencies = new List<ScriptReference>();
             dependencySet = new Dictionary<string, ScriptReference>(StringComparer.Ordinal);
             resources = new Dictionary<string, Dictionary<string, ResXItem>>(StringComparer.OrdinalIgnoreCase);
 
-            Root = new CompilationRoot(namespaces);
+            ScriptModel = new ES5ScriptModel();
         }
 
         public void AddDependency(ScriptReference dependency)
@@ -159,16 +144,6 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             return reference;
         }
 
-        public INamespaceSymbol GetNamespace(string namespaceName)
-        {
-            if (namespaceMap.ContainsKey(namespaceName) == false)
-            {
-                CreateNamespace(namespaceName);
-            }
-
-            return namespaceMap[namespaceName];
-        }
-
         public string GetParameterDocumentation(string id, string paramName)
         {
             if (docComments != null)
@@ -218,7 +193,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public bool IsSymbol(ITypeSymbol symbol, string symbolName)
         {
-            return ((ISymbolTable)this).FindSymbol(symbolName, null, SymbolFilter.Types) == symbol;
+            return ScriptModel.FindSymbol(symbolName, null, SymbolFilter.Types) == symbol;
         }
 
         public ITypeSymbol ResolveIntrinsicType(IntrinsicType type)
@@ -362,14 +337,14 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
             if (mappedNamespace != null)
             {
-                ns = GetNamespace(mappedNamespace);
+                ns = ScriptModel.Namespaces.GetNamespace(mappedNamespace);
                 Debug.Assert(ns != null);
             }
 
             if (mappedTypeName != null)
             {
                 TypeSymbol typeSymbol =
-                    (TypeSymbol)((ISymbolTable)ns).FindSymbol(mappedTypeName, null, SymbolFilter.Types);
+                    (TypeSymbol)((IScriptSymbolTable)ns).FindSymbol(mappedTypeName, null, SymbolFilter.Types);
                 Debug.Assert(typeSymbol != null);
 
                 return typeSymbol;
@@ -378,7 +353,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             return null;
         }
 
-        public ITypeSymbol ResolveType(ParseNode node, ISymbolTable symbolTable, ISymbol contextSymbol)
+        public ITypeSymbol ResolveType(ParseNode node, IScriptSymbolTable symbolTable, ISymbol contextSymbol)
         {
             if (node is IntrinsicTypeNode)
             {
@@ -522,7 +497,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         private ITypeSymbol CreateArrayTypeCore(ITypeSymbol itemTypeSymbol)
         {
             TypeSymbol arrayTypeSymbol =
-                (TypeSymbol)((ISymbolTable)SystemNamespace).FindSymbol("Array", null, SymbolFilter.Types);
+                (TypeSymbol)((IScriptSymbolTable)SystemNamespace).FindSymbol("Array", null, SymbolFilter.Types);
             Debug.Assert(arrayTypeSymbol != null);
 
             TypeSymbol specificArrayTypeSymbol = new ClassSymbol("Array", SystemNamespace);
@@ -795,168 +770,6 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             }
         }
 
-        private void CreateNamespace(string namespaceName)
-        {
-            if (namespaceName.IndexOf('.') > 0)
-            {
-                NamespaceSymbol namespaceSymbol = new NamespaceSymbol(namespaceName, this);
-
-                namespaces.Add(namespaceSymbol);
-                namespaceMap[namespaceName] = namespaceSymbol;
-            }
-            else
-            {
-                // Split up the namespace into its individual parts, and then
-                // create namespace symbols for each sub-namespace leading up
-                // to the full specified namespace
-
-                string[] namespaceParts = namespaceName.Split('.');
-
-                for (int i = 0; i < namespaceParts.Length; i++)
-                {
-                    string partialNamespace;
-
-                    if (i == 0)
-                    {
-                        partialNamespace = namespaceParts[0];
-                    }
-                    else
-                    {
-                        partialNamespace = string.Join(".", namespaceParts, 0, i + 1);
-                    }
-
-                    NamespaceSymbol namespaceSymbol = new NamespaceSymbol(partialNamespace, this);
-
-                    namespaces.Add(namespaceSymbol);
-                    namespaceMap[namespaceName] = namespaceSymbol;
-                }
-            }
-        }
-
-        public IEnumerable<ISymbol> Symbols => namespaces;
-
-        public ICompilationRoot Root { get; }
-
-        public ISymbol FindSymbol(string name, ISymbol context, SymbolFilter filter)
-        {
-            if ((filter & SymbolFilter.Types) == 0)
-            {
-                return null;
-            }
-
-            ISymbol symbol = null;
-
-            if (name.IndexOf('.') > 0)
-            {
-                int nameIndex = name.LastIndexOf('.') + 1;
-                Debug.Assert(nameIndex < name.Length);
-
-                string namespaceName = name.Substring(0, nameIndex - 1);
-                name = name.Substring(nameIndex);
-
-                if (namespaceMap.TryGetValue(namespaceName, out INamespaceSymbol namespaceSymbol))
-                {
-                    symbol = ((ISymbolTable)namespaceSymbol).FindSymbol(name, /* context */ null, SymbolFilter.Types);
-                }
-            }
-            else
-            {
-                Debug.Assert(context != null);
-
-                TypeSymbol typeSymbol = context as TypeSymbol;
-
-                if (typeSymbol == null)
-                {
-                    ISymbol parentSymbol = context.Parent;
-
-                    while (parentSymbol != null)
-                    {
-                        typeSymbol = parentSymbol as TypeSymbol;
-
-                        if (typeSymbol != null)
-                        {
-                            break;
-                        }
-
-                        parentSymbol = parentSymbol.Parent;
-                    }
-                }
-
-                Debug.Assert(typeSymbol != null);
-
-                if (typeSymbol == null)
-                {
-                    return null;
-                }
-
-                bool systemNamespaceChecked = false;
-
-                NamespaceSymbol containerNamespace = (NamespaceSymbol)typeSymbol.Parent;
-                Debug.Assert(containerNamespace != null);
-
-                symbol = ((ISymbolTable)containerNamespace).FindSymbol(name, /* context */ null, SymbolFilter.Types);
-
-                if (containerNamespace == SystemNamespace)
-                {
-                    systemNamespaceChecked = true;
-                }
-
-                if (symbol == null)
-                {
-                    if (typeSymbol.Aliases != null && typeSymbol.Aliases.ContainsKey(name))
-                    {
-                        string typeReference = typeSymbol.Aliases[name];
-                        symbol = ((ISymbolTable)this).FindSymbol(typeReference, /* context */ null,
-                            SymbolFilter.Types);
-                    }
-                    else if (typeSymbol.Imports != null)
-                    {
-                        foreach (string importedNamespaceReference in typeSymbol.Imports)
-                        {
-                            if (namespaceMap.ContainsKey(importedNamespaceReference) == false)
-                            {
-                                // Since we included all parent namespaces of the current type's
-                                // namespace, we might run into a namespace that doesn't contain
-                                // any defined types, i.e. doesn't exist.
-
-                                continue;
-                            }
-
-                            INamespaceSymbol importedNamespace = namespaceMap[importedNamespaceReference];
-
-                            if (importedNamespace == containerNamespace)
-                            {
-                                continue;
-                            }
-
-                            symbol = ((ISymbolTable)importedNamespace).FindSymbol(name, /* context */ null,
-                                SymbolFilter.Types);
-
-                            if (importedNamespace == SystemNamespace)
-                            {
-                                systemNamespaceChecked = true;
-                            }
-
-                            if (symbol != null)
-                            {
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                if (symbol == null && systemNamespaceChecked == false)
-                {
-                    symbol = ((ISymbolTable)SystemNamespace).FindSymbol(name, /* context */ null, SymbolFilter.Types);
-                }
-
-                if (symbol == null)
-                {
-                    symbol = ((ISymbolTable)GlobalNamespace).FindSymbol(name, /* context */ null, SymbolFilter.Types);
-                }
-            }
-
-            return symbol;
-        }
+        
     }
 }

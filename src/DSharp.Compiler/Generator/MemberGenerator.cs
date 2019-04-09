@@ -27,7 +27,7 @@ namespace DSharp.Compiler.Generator
 
                 Debug.Assert(eventSymbol.Parent.Type == SymbolType.Class);
 
-                Symbol fieldSymbol = ((ClassSymbol) eventSymbol.Parent).GetMember(fieldName);
+                ISymbol fieldSymbol = ((ClassSymbol) eventSymbol.Parent).GetMember(fieldName);
                 Debug.Assert(fieldSymbol != null && fieldSymbol.Type == SymbolType.Field);
 
                 fieldName = fieldSymbol.GeneratedName;

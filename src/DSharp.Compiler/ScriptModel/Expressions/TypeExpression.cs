@@ -1,4 +1,4 @@
-// TypeExpression.cs
+﻿// TypeExpression.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -14,12 +14,12 @@ namespace DSharp.Compiler.ScriptModel.Expressions
     /// </summary>
     internal sealed class TypeExpression : Expression
     {
-        public TypeExpression(TypeSymbol associatedType, SymbolFilter memberMask)
+        public TypeExpression(ITypeSymbol associatedType, SymbolFilter memberMask)
             : base(ExpressionType.Type, associatedType, memberMask)
         {
             AssociatedType = associatedType;
         }
 
-        public TypeSymbol AssociatedType { get; }
+        public ITypeSymbol AssociatedType { get; }
     }
 }

@@ -1,4 +1,4 @@
-// Token.cs
+﻿// Token.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -9,7 +9,7 @@ using DSharp.Compiler.Parser;
 
 namespace DSharp.Compiler.CodeModel.Tokens
 {
-    internal class Token : IComparable
+    public class Token : IComparable
     {
         public const int MAXIMUM_PRECEDENCE = int.MaxValue - 1;
 

@@ -11,14 +11,14 @@ namespace DSharp.Compiler.Generator
 {
     internal static class DocCommentGenerator
     {
-        public static void GenerateComment(ScriptGenerator generator, Symbol symbol)
+        public static void GenerateComment(ScriptGenerator generator, ISymbol symbol)
         {
             ScriptTextWriter writer = generator.Writer;
 
             switch (symbol.Type)
             {
                 case SymbolType.Class:
-                    GenerateClassComment(writer, (ClassSymbol) symbol);
+                    GenerateClassComment(writer, (ClassSymbol)symbol);
 
                     break;
                 case SymbolType.Enumeration:
@@ -26,23 +26,23 @@ namespace DSharp.Compiler.Generator
                     // No-op - no doc-comments get generated for enums.
                     break;
                 case SymbolType.Event:
-                    GenerateEventComment(writer, (EventSymbol) symbol);
+                    GenerateEventComment(writer, (EventSymbol)symbol);
 
                     break;
                 case SymbolType.Indexer:
-                    GenerateIndexerComment(writer, (IndexerSymbol) symbol);
+                    GenerateIndexerComment(writer, (IndexerSymbol)symbol);
 
                     break;
                 case SymbolType.Interface:
-                    GenerateInterfaceComment(writer, (InterfaceSymbol) symbol);
+                    GenerateInterfaceComment(writer, (InterfaceSymbol)symbol);
 
                     break;
                 case SymbolType.Method:
-                    GenerateMethodComment(writer, (MethodSymbol) symbol);
+                    GenerateMethodComment(writer, (MethodSymbol)symbol);
 
                     break;
                 case SymbolType.Property:
-                    GeneratePropertyComment(writer, (PropertySymbol) symbol);
+                    GeneratePropertyComment(writer, (PropertySymbol)symbol);
 
                     break;
                 default:
@@ -74,7 +74,7 @@ namespace DSharp.Compiler.Generator
 
         private static void GenerateFormattedComment(ScriptTextWriter writer, string text)
         {
-            foreach (string line in text.Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries))
+            foreach (string line in text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
             {
                 string trimmedLine = line.Trim();
 
@@ -170,7 +170,7 @@ namespace DSharp.Compiler.Generator
             writer.WriteLine("></value>");
         }
 
-        private static void GenerateReturnsComment(ScriptTextWriter writer, TypeSymbol typeSymbol)
+        private static void GenerateReturnsComment(ScriptTextWriter writer, ITypeSymbol typeSymbol)
         {
             if (IsVoid(typeSymbol))
             {
@@ -184,7 +184,7 @@ namespace DSharp.Compiler.Generator
             writer.WriteLine("></returns>");
         }
 
-        private static void GenerateSummaryComment(ScriptTextWriter writer, Symbol symbol)
+        private static void GenerateSummaryComment(ScriptTextWriter writer, ISymbol symbol)
         {
             string documentation = symbol.Documentation;
 
@@ -196,7 +196,7 @@ namespace DSharp.Compiler.Generator
             }
         }
 
-        private static void GenerateTypeAttributes(ScriptTextWriter writer, TypeSymbol typeSymbol)
+        private static void GenerateTypeAttributes(ScriptTextWriter writer, ITypeSymbol typeSymbol)
         {
             if (IsDomElement(typeSymbol))
             {
@@ -214,9 +214,9 @@ namespace DSharp.Compiler.Generator
 
             if (typeSymbol.IsArray)
             {
-                ClassSymbol classSymbol = (ClassSymbol) typeSymbol;
+                ClassSymbol classSymbol = (ClassSymbol)typeSymbol;
 
-                TypeSymbol elementTypeSymbol = classSymbol.Indexer.AssociatedType;
+                ITypeSymbol elementTypeSymbol = classSymbol.Indexer.AssociatedType;
 
                 if (IsDomElement(elementTypeSymbol))
                 {
@@ -234,7 +234,7 @@ namespace DSharp.Compiler.Generator
             }
         }
 
-        private static bool IsDomElement(TypeSymbol typeSymbol)
+        private static bool IsDomElement(ITypeSymbol typeSymbol)
         {
             ClassSymbol classSymbol = typeSymbol as ClassSymbol;
 
@@ -255,7 +255,7 @@ namespace DSharp.Compiler.Generator
             return false;
         }
 
-        private static bool IsInteger(TypeSymbol typeSymbol)
+        private static bool IsInteger(ITypeSymbol typeSymbol)
         {
             return IsSymbol(typeSymbol, "System.Byte") ||
                    IsSymbol(typeSymbol, "System.Int16") ||
@@ -267,12 +267,12 @@ namespace DSharp.Compiler.Generator
                    IsSymbol(typeSymbol, "System.UInt64");
         }
 
-        private static bool IsSymbol(TypeSymbol typeSymbol, string name)
+        private static bool IsSymbol(ITypeSymbol typeSymbol, string name)
         {
-            return typeSymbol.SymbolSet.IsSymbol(typeSymbol, name);
+            return typeSymbol.Root.IsSymbol(typeSymbol, name);
         }
 
-        private static bool IsVoid(TypeSymbol typeSymbol)
+        private static bool IsVoid(ITypeSymbol typeSymbol)
         {
             return IsSymbol(typeSymbol, "System.Void");
         }
