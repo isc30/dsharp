@@ -18,7 +18,7 @@ namespace DSharp.Build.Tasks
         private string outputPath;
         private List<ITaskItem> scripts;
 
-        private bool hasErrors;
+        public bool HasErrors { get; private set; }
 
         public ScriptCompilerTask()
         {
@@ -121,13 +121,13 @@ namespace DSharp.Build.Tasks
 
             ScriptCompiler compiler = new ScriptCompiler(this);
             compiler.Compile(options);
-            if (hasErrors == false)
+            if (HasErrors == false)
             {
                 // Only copy references once (when building language neutral scripts)
                 bool copyReferences = string.IsNullOrEmpty(locale) && CopyReferences;
 
                 OnScriptFileGenerated(scriptTaskItem, options, copyReferences);
-                if (hasErrors)
+                if (HasErrors)
                 {
                     return false;
                 }
@@ -142,7 +142,7 @@ namespace DSharp.Build.Tasks
                 CompilerOptions minimizeOptions = CreateOptions(sourceItems, resourceItems, locale, true, out scriptTaskItem);
                 ScriptCompiler minimizingCompiler = new ScriptCompiler(this);
                 minimizingCompiler.Compile(minimizeOptions);
-                if (hasErrors == false)
+                if (HasErrors == false)
                 {
                     ExecuteCruncher(scriptTaskItem);
                     OnScriptFileGenerated(scriptTaskItem, minimizeOptions, /* copyReferences */ false);
@@ -461,7 +461,7 @@ namespace DSharp.Build.Tasks
                 catch (Exception e)
                 {
                     Log.LogError("Unable to copy referenced script '" + sourceFilePath + "' as '" + targetFilePath + "' (" + e.Message + ")");
-                    hasErrors = true;
+                    HasErrors = true;
                 }
             };
 
@@ -507,7 +507,7 @@ namespace DSharp.Build.Tasks
                 columnNumber: error.ColumnNumber.GetValueOrDefault(),
                 endColumnNumber: error.ColumnNumber.GetValueOrDefault(),
                 message: error.Description);
-            hasErrors = true;
+            HasErrors = true;
         }
 
         #region Implementation of IStreamSourceResolver

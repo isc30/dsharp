@@ -16,18 +16,18 @@ namespace DSharp.Compiler.Generator
     {
         private readonly Stack<SymbolImplementation> implementationStack;
 
-        public ScriptGenerator(TextWriter writer, CompilerOptions options)
+        public ScriptGenerator(TextWriter writer, ScriptMetadata scriptMetadata)
         {
             Debug.Assert(writer != null);
             Writer = new ScriptTextWriter(writer);
 
-            Options = options;
+            ScriptMetadata = scriptMetadata;
             implementationStack = new Stack<SymbolImplementation>();
         }
 
         public SymbolImplementation CurrentImplementation => implementationStack.Peek();
 
-        public CompilerOptions Options { get; }
+        public ScriptMetadata ScriptMetadata { get; }
 
         public ScriptTextWriter Writer { get; }
 
@@ -100,11 +100,11 @@ namespace DSharp.Compiler.Generator
 
             bool initialIndent = false;
 
-            if (string.IsNullOrEmpty(Options.ScriptInfo.Template) == false)
+            if (string.IsNullOrEmpty(ScriptMetadata.Template) == false)
             {
-                int scriptIndex = Options.ScriptInfo.Template.IndexOf("{script}");
+                int scriptIndex = ScriptMetadata.Template.IndexOf("{script}");
 
-                if (scriptIndex > 0 && Options.ScriptInfo.Template[scriptIndex - 1] == ' ')
+                if (scriptIndex > 0 && ScriptMetadata.Template[scriptIndex - 1] == ' ')
                 {
                     // Heuristic to turn on initial indent:
                     // The script template has a space prior to {script}, i.e. {script} is not the
@@ -127,7 +127,7 @@ namespace DSharp.Compiler.Generator
             if (generateModule)
             {
                 Writer.Write($"var $exports = {DSharpStringResources.ScriptExportMember("module")}('");
-                Writer.Write(scriptModel.ScriptName);
+                Writer.Write(scriptModel.ScriptMetadata);
                 Writer.Write("',");
 
                 if (internalTypes.Count != 0 && hasNonModuleInternalTypes)

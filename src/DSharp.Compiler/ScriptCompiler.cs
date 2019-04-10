@@ -11,6 +11,7 @@ using DSharp.Compiler.Compiler;
 using DSharp.Compiler.Errors;
 using DSharp.Compiler.Generator;
 using DSharp.Compiler.Importer;
+using DSharp.Compiler.Metadata;
 using DSharp.Compiler.ScriptModel;
 using DSharp.Compiler.ScriptModel.Symbols;
 using DSharp.Compiler.Validator;
@@ -20,16 +21,18 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace DSharp.Compiler
 {
-    public sealed class ScriptCompiler : IErrorHandler
+    public sealed class ScriptCompiler
     {
         private readonly IErrorHandler errorHandler;
+
         private ICollection<TypeSymbol> appSymbols;
-
         private ParseNodeList compilationUnitList;
-        private bool hasErrors;
-
         private CompilerOptions options;
         private IScriptModel scriptModel;
+
+        private ScriptMetadata ScriptMetadata => scriptModel.ScriptMetadata;
+
+        private bool HasErrors => errorHandler.HasErrors;
 
         public ScriptCompiler()
             : this(null)
@@ -38,47 +41,46 @@ namespace DSharp.Compiler
 
         public ScriptCompiler(IErrorHandler errorHandler)
         {
-            this.errorHandler = errorHandler;
+            this.errorHandler = errorHandler ?? new ConsoleLoggingErrorHandler();
         }
 
         public bool Compile(CompilerOptions options)
         {
             this.options = options ?? throw new ArgumentNullException(nameof(options));
 
-            hasErrors = false;
             scriptModel = new ES5ScriptModel();
 
             var compilation = ImportMetadata();
 
-            if (hasErrors)
+            if (HasErrors)
             {
                 return false;
             }
 
             compilation = BuildCodeModel(compilation);
 
-            if (hasErrors)
+            if (HasErrors)
             {
                 return false;
             }
 
             BuildMetadata();
 
-            if (hasErrors)
+            if (HasErrors)
             {
                 return false;
             }
 
             BuildImplementation();
 
-            if (hasErrors)
+            if (HasErrors)
             {
                 return false;
             }
 
             GenerateScript();
 
-            if (hasErrors)
+            if (HasErrors)
             {
                 return false;
             }
@@ -92,7 +94,7 @@ namespace DSharp.Compiler
             var compilationContext = CSharpCompilation.Create(options.AssemblyName)
                 .AddReferences(references);
 
-            MetadataImporter mdImporter = new MetadataImporter(this);
+            MetadataImporter mdImporter = new MetadataImporter(errorHandler);
 
             mdImporter.ImportMetadata(options.References, scriptModel);
             return compilationContext;
@@ -102,8 +104,8 @@ namespace DSharp.Compiler
         {
             compilationUnitList = new ParseNodeList();
 
-            CodeModelBuilder codeModelBuilder = new CodeModelBuilder(options, this);
-            CodeModelValidator codeModelValidator = new CodeModelValidator(this);
+            CodeModelBuilder codeModelBuilder = new CodeModelBuilder(options, errorHandler);
+            CodeModelValidator codeModelValidator = new CodeModelValidator(errorHandler);
             CodeModelProcessor validationProcessor = new CodeModelProcessor(codeModelValidator, options);
 
             foreach (IStreamSource source in options.Sources)
@@ -149,7 +151,11 @@ namespace DSharp.Compiler
                 resourcesBuilder.BuildResources(options.Resources);
             }
 
-            MetadataBuilder mdBuilder = new MetadataBuilder(this);
+            IScriptModelBuilder<ParseNodeList> mdBuilder = new MonoLegacyMetadataBuilder();
+            IScriptMetadataBuilder<ParseNodeList> scriptMetadataBuilder = new MonoLegacyScriptMetadataBuilder(errorHandler);
+
+            scriptModel.ScriptMetadata = scriptMetadataBuilder.Build(compilationUnitList, scriptModel, options);
+
             appSymbols = mdBuilder.BuildMetadata(compilationUnitList, scriptModel, options);
 
             // Check if any of the types defined in this assembly conflict.
@@ -182,7 +188,7 @@ namespace DSharp.Compiler
 
                 if (types.ContainsKey(name))
                 {
-                    ((IErrorHandler)this).ReportGeneralError(string.Format(DSharpStringResources.CONFLICTING_TYPE_NAME_ERROR_FORMAT, appType.FullName, types[name].FullName));
+                    errorHandler.ReportGeneralError(string.Format(DSharpStringResources.CONFLICTING_TYPE_NAME_ERROR_FORMAT, appType.FullName, types[name].FullName));
                 }
                 else
                 {
@@ -211,7 +217,7 @@ namespace DSharp.Compiler
 
         private void BuildImplementation()
         {
-            CodeBuilder codeBuilder = new CodeBuilder(options, this);
+            CodeBuilder codeBuilder = new CodeBuilder(options, errorHandler);
             ICollection<SymbolImplementation> implementations = codeBuilder.BuildCode(scriptModel);
 
             if (options.Minimize)
@@ -241,7 +247,7 @@ namespace DSharp.Compiler
                 if (outputStream == null)
                 {
                     string scriptName = options.ScriptFile.FullName;
-                    ((IErrorHandler)this).ReportMissingStreamError(scriptName);
+                    errorHandler.ReportMissingStreamError(scriptName);
 
                     return;
                 }
@@ -259,7 +265,7 @@ namespace DSharp.Compiler
 
             try
             {
-                ScriptGenerator scriptGenerator = new ScriptGenerator(scriptWriter, options);
+                ScriptGenerator scriptGenerator = new ScriptGenerator(scriptWriter, scriptModel.ScriptMetadata);
                 scriptGenerator.GenerateScript(scriptModel);
             }
             catch (Exception e)
@@ -278,7 +284,7 @@ namespace DSharp.Compiler
         {
             string script = GenerateScriptCore();
 
-            string template = options.ScriptInfo.Template;
+            string template = ScriptMetadata.Template;
 
             if (string.IsNullOrEmpty(template))
             {
@@ -334,12 +340,12 @@ namespace DSharp.Compiler
             depLookupBuilder.Append(";");
 
             return template.TrimStart()
-                           .Replace("{name}", scriptModel.ScriptName)
-                           .Replace("{description}", options.ScriptInfo.Description ?? string.Empty)
-                           .Replace("{copyright}", options.ScriptInfo.Copyright ?? string.Empty)
-                           .Replace("{version}", options.ScriptInfo.Version ?? string.Empty)
+                           .Replace("{name}", scriptModel.ScriptMetadata.ScriptName)
+                           .Replace("{description}", ScriptMetadata.Description ?? string.Empty)
+                           .Replace("{copyright}", ScriptMetadata.Copyright ?? string.Empty)
+                           .Replace("{version}", ScriptMetadata.Version ?? string.Empty)
                            .Replace("{compiler}", typeof(ScriptCompiler).Assembly.GetName().Version.ToString())
-                           .Replace("{description}", options.ScriptInfo.Description)
+                           .Replace("{description}", ScriptMetadata.Description)
                            .Replace("{requires}", requiresBuilder.ToString())
                            .Replace("{dependencies}", dependenciesBuilder.ToString())
                            .Replace("{dependenciesLookup}", depLookupBuilder.ToString())
@@ -380,29 +386,6 @@ namespace DSharp.Compiler
                 return includedScript;
             });
         }
-
-        void IErrorHandler.ReportError(CompilerError error)
-        {
-            hasErrors = true;
-            if (errorHandler != null)
-            {
-                errorHandler.ReportError(error);
-                return;
-            }
-
-            //TODO: Look at adding a logger interface
-            LogError(error);
-        }
-
-        private void LogError(CompilerError error)
-        {
-            if (error.ColumnNumber != null || error.LineNumber != null)
-            {
-                Console.Error.WriteLine($"{error.File}({error.LineNumber.GetValueOrDefault()},{error.ColumnNumber.GetValueOrDefault()})");
-            }
-
-            Console.Error.WriteLine(error.Description);
-        }
     }
 
     public class RoslynMetadataImporter
@@ -428,6 +411,23 @@ namespace DSharp.Compiler
             }
 
             return compilation;
+        }
+    }
+
+    public class ConsoleLoggingErrorHandler : IErrorHandler
+    {
+        public bool HasErrors { get; private set; }
+
+        public void ReportError(CompilerError error)
+        {
+            HasErrors = true;
+
+            if (error.ColumnNumber != null || error.LineNumber != null)
+            {
+                Console.Error.WriteLine($"{error.File}({error.LineNumber.GetValueOrDefault()},{error.ColumnNumber.GetValueOrDefault()})");
+            }
+
+            Console.Error.WriteLine(error.Description);
         }
     }
 }

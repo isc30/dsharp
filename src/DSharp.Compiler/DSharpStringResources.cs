@@ -60,6 +60,15 @@
         public static readonly string SCRIPT_LATE_BOUND_INVALID_METHOD_NAME = "The name of a global method must be a constant string known at compile time.";
         public static readonly string SCRIPT_LATE_BOUND_INVALID_METHOD_IDENTIFIER = "The name of a global method must be a valid identifer.";
 
+        public static readonly string DEFAULT_SCRIPT_TEMPLATE = @"
+""use strict"";
+
+var {name} = (function($global){
+  {script}
+  return $exports;
+})(self);
+";
+
         public static string ScriptExportMember(string methodName)
         {
             return $"{DSHARP_SCRIPT_NAME}.{methodName}";

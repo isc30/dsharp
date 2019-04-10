@@ -39,7 +39,7 @@ namespace DSharp.Compiler.Generator
             writer.WriteLine(") {");
             writer.Indent++;
 
-            if (generator.Options.EnableDocComments)
+            if (generator.ScriptMetadata.EnableDocComments)
             {
                 DocCommentGenerator.GenerateComment(generator, classSymbol);
             }

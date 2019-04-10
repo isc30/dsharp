@@ -15,33 +15,26 @@ using DSharp.Compiler.Errors;
 using DSharp.Compiler.Extensions;
 using DSharp.Compiler.ScriptModel;
 using DSharp.Compiler.ScriptModel.Symbols;
+using Microsoft.CodeAnalysis.CSharp;
 
-namespace DSharp.Compiler.Compiler
+namespace DSharp.Compiler.Metadata
 {
-    internal sealed class MetadataBuilder
+    internal sealed class MonoLegacyMetadataBuilder : IScriptModelBuilder<ParseNodeList>
     {
-        private readonly IErrorHandler errorHandler;
-        private CompilerOptions options;
+        private IScriptCompliationOptions options;
 
         private IScriptModel scriptModel;
-
-        public MetadataBuilder(IErrorHandler errorHandler)
-        {
-            Debug.Assert(errorHandler != null);
-            this.errorHandler = errorHandler;
-        }
 
         public ICollection<TypeSymbol> BuildMetadata(
             ParseNodeList compilationUnits,
             IScriptModel scriptModel,
-            CompilerOptions options)
+            IScriptCompliationOptions options)
         {
             Debug.Assert(compilationUnits != null);
             Debug.Assert(scriptModel != null);
 
             this.scriptModel = scriptModel;
             this.options = options;
-            BuildAssembly(compilationUnits);
 
             List<TypeSymbol> types = new List<TypeSymbol>();
 
@@ -246,104 +239,6 @@ namespace DSharp.Compiler.Compiler
             }
 
             return types;
-        }
-
-        private void BuildAssembly(ParseNodeList compilationUnits)
-        {
-            string scriptName = GetAssemblyScriptName(compilationUnits);
-
-            if (string.IsNullOrEmpty(scriptName))
-            {
-                errorHandler.ReportAssemblyError(scriptName, DSharpStringResources.ASSEMBLY_SCRIPT_ATTRIBUTE_MISSING);
-            }
-            else if (!Utility.IsValidScriptName(scriptName))
-            {
-                errorHandler.ReportAssemblyError(scriptName, string.Format(DSharpStringResources.INVALID_SCRIPT_NAME_FORMAT, scriptName));
-            }
-
-            scriptModel.ScriptName = scriptName;
-
-            List<AttributeNode> referenceAttributes = GetAttributes(compilationUnits, DSharpStringResources.SCRIPT_REFERENCE_ATTRIBUTE);
-
-            foreach (AttributeNode attribNode in referenceAttributes)
-            {
-                string name = null;
-                string identifier = null;
-                string path = null;
-                bool delayLoad = false;
-
-                Debug.Assert(attribNode.Arguments.Count != 0 &&
-                             attribNode.Arguments[0].NodeType == ParseNodeType.Literal);
-                Debug.Assert(((LiteralNode)attribNode.Arguments[0]).Value is string);
-                name = (string)((LiteralNode)attribNode.Arguments[0]).Value;
-
-                if (attribNode.Arguments.Count > 1)
-                {
-                    for (int i = 1; i < attribNode.Arguments.Count; i++)
-                    {
-                        Debug.Assert(attribNode.Arguments[1] is BinaryExpressionNode);
-
-                        BinaryExpressionNode propExpression = (BinaryExpressionNode)attribNode.Arguments[1];
-                        Debug.Assert(propExpression.LeftChild.NodeType == ParseNodeType.Name);
-
-                        string propName = ((NameNode)propExpression.LeftChild).Name;
-
-                        if (string.CompareOrdinal(propName, "Identifier") == 0)
-                        {
-                            Debug.Assert(propExpression.RightChild.NodeType == ParseNodeType.Literal);
-                            Debug.Assert(((LiteralNode)propExpression.RightChild).Value is string);
-
-                            identifier = (string)((LiteralNode)propExpression.RightChild).Value;
-                        }
-
-                        if (string.CompareOrdinal(propName, "Path") == 0)
-                        {
-                            Debug.Assert(propExpression.RightChild.NodeType == ParseNodeType.Literal);
-                            Debug.Assert(((LiteralNode)propExpression.RightChild).Value is string);
-
-                            path = (string)((LiteralNode)propExpression.RightChild).Value;
-                        }
-                        else if (string.CompareOrdinal(propName, "DelayLoad") == 0)
-                        {
-                            Debug.Assert(propExpression.RightChild.NodeType == ParseNodeType.Literal);
-                            Debug.Assert(((LiteralNode)propExpression.RightChild).Value is bool);
-
-                            delayLoad = (bool)((LiteralNode)propExpression.RightChild).Value;
-                        }
-                    }
-                }
-
-                ScriptReference reference = scriptModel.GetDependency(name, out bool newReference);
-                reference.Path = path;
-                reference.DelayLoaded = delayLoad;
-
-                if (newReference)
-                {
-                    reference.Identifier = identifier;
-                }
-            }
-
-            if (GetScriptTemplate(compilationUnits, out string template))
-            {
-                options.ScriptInfo.Template = template;
-            }
-
-            GetAssemblyMetadata(compilationUnits, out string description, out string copyright, out string version);
-
-            if (description != null)
-            {
-                options.ScriptInfo.Description = description;
-            }
-
-            if (copyright != null)
-            {
-                options.ScriptInfo.Copyright = copyright;
-            }
-
-            if (version != null)
-            {
-                options.ScriptInfo.Version = version;
-            }
         }
 
         private EnumerationFieldSymbol BuildEnumField(EnumerationFieldNode fieldNode, TypeSymbol typeSymbol)
@@ -1263,82 +1158,6 @@ namespace DSharp.Compiler.Compiler
                     interfaceSymbol.SetInheritance(interfaces);
                 }
             }
-        }
-
-        private void GetAssemblyMetadata(ParseNodeList compilationUnits, out string description, out string copyright,
-                                         out string version)
-        {
-            description = null;
-            copyright = null;
-            version = null;
-
-            foreach (CompilationUnitNode compilationUnit in compilationUnits)
-                foreach (AttributeBlockNode attribBlock in compilationUnit.Attributes)
-                {
-                    if (description == null)
-                    {
-                        description = attribBlock.Attributes.GetAttributeValue(nameof(AssemblyDescriptionAttribute));
-                    }
-
-                    if (copyright == null)
-                    {
-                        copyright = attribBlock.Attributes.GetAttributeValue(nameof(AssemblyCopyrightAttribute));
-                    }
-
-                    if (version == null)
-                    {
-                        version = attribBlock.Attributes.GetAttributeValue(nameof(AssemblyFileVersionAttribute));
-                    }
-                }
-        }
-
-        private string GetAssemblyScriptName(ParseNodeList compilationUnits)
-        {
-            foreach (CompilationUnitNode compilationUnit in compilationUnits)
-                foreach (AttributeBlockNode attribBlock in compilationUnit.Attributes)
-                {
-                    string scriptName = attribBlock.Attributes.GetAttributeValue("ScriptAssembly");
-
-                    if (scriptName != null)
-                    {
-                        return scriptName;
-                    }
-                }
-
-            return options.AssemblyName;
-        }
-
-        private List<AttributeNode> GetAttributes(ParseNodeList compilationUnits, string attributeName)
-        {
-            List<AttributeNode> attributes = new List<AttributeNode>();
-
-            foreach (CompilationUnitNode compilationUnit in compilationUnits)
-                foreach (AttributeBlockNode attribBlock in compilationUnit.Attributes)
-                    foreach (AttributeNode attribNode in attribBlock.Attributes)
-                        if (attribNode.TypeName.Equals(attributeName, StringComparison.Ordinal))
-                        {
-                            attributes.Add(attribNode);
-                        }
-
-            return attributes;
-        }
-
-        private bool GetScriptTemplate(ParseNodeList compilationUnits, out string template)
-        {
-            template = null;
-
-            foreach (CompilationUnitNode compilationUnit in compilationUnits)
-                foreach (AttributeBlockNode attribBlock in compilationUnit.Attributes)
-                {
-                    template = attribBlock.Attributes.GetAttributeValue("ScriptTemplate");
-
-                    if (template != null)
-                    {
-                        return true;
-                    }
-                }
-
-            return false;
         }
 
         private MemberVisibility GetVisibility(MemberNode node, TypeSymbol typeSymbol)

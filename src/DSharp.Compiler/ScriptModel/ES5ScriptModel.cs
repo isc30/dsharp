@@ -19,7 +19,7 @@ namespace DSharp.Compiler.ScriptModel
 
         ISymbolResolver SymbolResolver { get; }
 
-        string ScriptName { get; set; }
+        ScriptMetadata ScriptMetadata { get; set; }
 
         IEnumerable<ScriptReference> Dependencies { get; }
 
@@ -40,7 +40,7 @@ namespace DSharp.Compiler.ScriptModel
 
         public INamespaceSymbolCollection Namespaces { get; }
 
-        public string ScriptName { get; set; }
+        public ScriptMetadata ScriptMetadata { get; set; }
 
         public IEnumerable<ISymbol> Symbols => Namespaces;
 
@@ -248,11 +248,15 @@ namespace DSharp.Compiler.ScriptModel
 
         public NamespaceSymbolCollection(IScriptModel root)
         {
+            this.root = root;
+
             Global = new NamespaceSymbol(string.Empty, root);
             Global.SetTransformedName(string.Empty);
 
             System = new NamespaceSymbol(SYSTEM_NAMESPACE, root);
-            this.root = root;
+
+            namespaces.Add(Global);
+            namespaces.Add(System);
         }
 
         public IEnumerator<INamespaceSymbol> GetEnumerator()

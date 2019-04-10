@@ -2,13 +2,8 @@
 
 namespace DSharp.Compiler
 {
-    public sealed class CompilerOptions
+    public sealed class CompilerOptions : IScriptCompliationOptions
     {
-        public CompilerOptions()
-        {
-            ScriptInfo = new ScriptInfo();
-        }
-
         public ICollection<string> Defines { get; set; }
 
         public IStreamSource DocCommentFile { get; set; }
@@ -26,8 +21,6 @@ namespace DSharp.Compiler
         public ICollection<IStreamSource> Sources { get; set; }
 
         public string AssemblyName { get; set; }
-
-        public ScriptInfo ScriptInfo { get; }
 
         public bool EnableDocComments => DocCommentFile != null;
 

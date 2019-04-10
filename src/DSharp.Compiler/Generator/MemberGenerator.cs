@@ -72,7 +72,7 @@ namespace DSharp.Compiler.Generator
             writer.WriteLine(") {");
             writer.Indent++;
 
-            if (generator.Options.EnableDocComments)
+            if (generator.ScriptMetadata.EnableDocComments)
             {
                 DocCommentGenerator.GenerateComment(generator, eventSymbol);
             }
@@ -126,7 +126,7 @@ namespace DSharp.Compiler.Generator
             writer.WriteLine(") {");
             writer.Indent++;
 
-            if (generator.Options.EnableDocComments)
+            if (generator.ScriptMetadata.EnableDocComments)
             {
                 DocCommentGenerator.GenerateComment(generator, eventSymbol);
             }
@@ -216,7 +216,7 @@ namespace DSharp.Compiler.Generator
             writer.WriteLine(") {");
             writer.Indent++;
 
-            if (generator.Options.EnableDocComments)
+            if (generator.ScriptMetadata.EnableDocComments)
             {
                 DocCommentGenerator.GenerateComment(generator, indexerSymbol);
             }
@@ -248,7 +248,7 @@ namespace DSharp.Compiler.Generator
                 writer.WriteLine(") {");
                 writer.Indent++;
 
-                if (generator.Options.EnableDocComments)
+                if (generator.ScriptMetadata.EnableDocComments)
                 {
                     DocCommentGenerator.GenerateComment(generator, indexerSymbol);
                 }
@@ -324,7 +324,7 @@ namespace DSharp.Compiler.Generator
             writer.WriteLine(") {");
             writer.Indent++;
 
-            if (generator.Options.EnableDocComments)
+            if (generator.ScriptMetadata.EnableDocComments)
             {
                 DocCommentGenerator.GenerateComment(generator, methodSymbol);
             }
@@ -430,7 +430,7 @@ namespace DSharp.Compiler.Generator
             writer.WriteLine("function() {");
             writer.Indent++;
 
-            if (generator.Options.EnableDocComments)
+            if (generator.ScriptMetadata.EnableDocComments)
             {
                 DocCommentGenerator.GenerateComment(generator, propertySymbol);
             }
@@ -471,7 +471,7 @@ namespace DSharp.Compiler.Generator
             writer.WriteLine(") {");
             writer.Indent++;
 
-            if (generator.Options.EnableDocComments)
+            if (generator.ScriptMetadata.EnableDocComments)
             {
                 DocCommentGenerator.GenerateComment(generator, propertySymbol);
             }

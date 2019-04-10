@@ -9,9 +9,10 @@ namespace DSharp.TestConsole
     {
         static void Main(string[] args)
         {
-            const string temp = @"C:\dev\Ace\Ace.Framework\Ace.Framework\Ace.Foundations\bin\Debug\DSharp\";
+            const string directory = @"C:\dev\Ace\ace.framework.master";
+            string outputDir = @$"{directory}\Ace.Framework\Ace.Foundations\bin\Debug\DSharp\";
 
-            var sourceFiles = Directory.EnumerateFiles(@"C:\dev\Ace\Ace.Framework\Ace.Framework\Ace.Foundations", "*.cs", SearchOption.AllDirectories)
+            var sourceFiles = Directory.EnumerateFiles($@"{directory}\Ace.Framework\Ace.Foundations", "*.cs", SearchOption.AllDirectories)
                 .Where(f => !f.Contains(".g.cs"));
 
             var options = new CompilerOptions
@@ -20,9 +21,9 @@ namespace DSharp.TestConsole
                 References = new List<string>
                 {
                     $@"C:\dev\dsharp\dsharp\src\DSharp.Mscorlib\bin\Debug\net461\DSharp.Mscorlib.dll",
-                    $"{temp}ScriptSharp.Attribute.DSharp.dll",
-                    $"{temp}Ace.Library.Build.CompilerServices.DSharp.dll",
-                    $"{temp}Ace_Loader.dll"
+                    $"{outputDir}ScriptSharp.Attribute.DSharp.dll",
+                    $"{outputDir}Ace.Library.Build.CompilerServices.DSharp.dll",
+                    $"{outputDir}Ace_Loader.dll"
                 },
                 Defines = new[] { "SCRIPTSHARP" },
                 Sources = sourceFiles.Select(sf => new FileInputStreamSource(sf)).ToList<IStreamSource>()

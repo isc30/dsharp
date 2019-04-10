@@ -16,7 +16,6 @@ namespace DSharp.Build.Tasks
         private string locale;
 
         private string outputPath;
-        private bool hasErrors;
 
         public string Defines
         {
@@ -84,6 +83,8 @@ namespace DSharp.Build.Tasks
         [Required]
         public ITaskItem[] Sources { get; set; }
 
+        public bool HasErrors { get; private set; }
+
         private bool Compile()
         {
             CompilerOptions options = new CompilerOptions();
@@ -107,7 +108,7 @@ namespace DSharp.Build.Tasks
 
             ScriptCompiler compiler = new ScriptCompiler(this);
             compiler.Compile(options);
-            if (hasErrors == false)
+            if (HasErrors == false)
             {
                 Script = scriptTaskItem;
 
@@ -240,7 +241,7 @@ namespace DSharp.Build.Tasks
                 columnNumber: error.ColumnNumber.GetValueOrDefault(),
                 endColumnNumber: error.ColumnNumber.GetValueOrDefault(),
                 message: error.Description);
-            hasErrors = true;
+            HasErrors = true;
         }
 
         #region Implementation of IStreamSourceResolver

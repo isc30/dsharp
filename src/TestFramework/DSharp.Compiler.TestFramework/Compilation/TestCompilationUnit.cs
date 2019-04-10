@@ -18,6 +18,8 @@ namespace DSharp.Compiler.TestFramework.Compilation
             compilationErrors = new List<CompilerError>();
         }
 
+        public bool HasErrors { get; private set; }
+
         public bool Compile(out ICompilationUnitResult compilationUnitResult)
         {
             bool compilerSuccess = scriptCompiler.Compile(compilerOptions);
@@ -40,6 +42,7 @@ namespace DSharp.Compiler.TestFramework.Compilation
 
         void IErrorHandler.ReportError(CompilerError error)
         {
+            HasErrors = true;
             compilationErrors.Add(error);
         }
     }
