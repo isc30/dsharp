@@ -33,19 +33,9 @@ namespace DSharp.Compiler.TestFramework.Compilation.Sources
             }
         }
 
-        void IStreamSource.CloseStream(Stream stream)
+        public Stream GetStream()
         {
-            if (stream != openStream)
-            {
-                return;
-            }
-
-            openStream.Dispose();
-        }
-
-        Stream IStreamSource.GetStream()
-        {
-            return openStream = fileInfo.OpenRead();
+            return fileInfo.OpenRead();
         }
     }
 }

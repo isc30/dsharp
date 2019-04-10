@@ -152,7 +152,8 @@ namespace DSharp.Compiler.Compiler
                 object defaultValue = null;
 
                 ITypeSymbol fieldType = fieldSymbol.AssociatedType;
-                ICompilationContext symbolSet = fieldSymbol.Root;
+                var scriptModel = fieldSymbol.Root;
+                var symbolResolver = scriptModel.SymbolResolver;
 
                 if (fieldType.Type == SymbolType.Enumeration)
                 {
@@ -166,21 +167,21 @@ namespace DSharp.Compiler.Compiler
                         defaultValue = 0;
                     }
                 }
-                else if (fieldType == symbolSet.ResolveIntrinsicType(IntrinsicType.Integer) ||
-                         fieldType == symbolSet.ResolveIntrinsicType(IntrinsicType.UnsignedInteger) ||
-                         fieldType == symbolSet.ResolveIntrinsicType(IntrinsicType.Long) ||
-                         fieldType == symbolSet.ResolveIntrinsicType(IntrinsicType.UnsignedLong) ||
-                         fieldType == symbolSet.ResolveIntrinsicType(IntrinsicType.Short) ||
-                         fieldType == symbolSet.ResolveIntrinsicType(IntrinsicType.UnsignedShort) ||
-                         fieldType == symbolSet.ResolveIntrinsicType(IntrinsicType.Byte) ||
-                         fieldType == symbolSet.ResolveIntrinsicType(IntrinsicType.SignedByte) ||
-                         fieldType == symbolSet.ResolveIntrinsicType(IntrinsicType.Double) ||
-                         fieldType == symbolSet.ResolveIntrinsicType(IntrinsicType.Single) ||
-                         fieldType == symbolSet.ResolveIntrinsicType(IntrinsicType.Decimal))
+                else if (fieldType == symbolResolver.ResolveIntrinsicType(IntrinsicType.Integer) ||
+                         fieldType == symbolResolver.ResolveIntrinsicType(IntrinsicType.UnsignedInteger) ||
+                         fieldType == symbolResolver.ResolveIntrinsicType(IntrinsicType.Long) ||
+                         fieldType == symbolResolver.ResolveIntrinsicType(IntrinsicType.UnsignedLong) ||
+                         fieldType == symbolResolver.ResolveIntrinsicType(IntrinsicType.Short) ||
+                         fieldType == symbolResolver.ResolveIntrinsicType(IntrinsicType.UnsignedShort) ||
+                         fieldType == symbolResolver.ResolveIntrinsicType(IntrinsicType.Byte) ||
+                         fieldType == symbolResolver.ResolveIntrinsicType(IntrinsicType.SignedByte) ||
+                         fieldType == symbolResolver.ResolveIntrinsicType(IntrinsicType.Double) ||
+                         fieldType == symbolResolver.ResolveIntrinsicType(IntrinsicType.Single) ||
+                         fieldType == symbolResolver.ResolveIntrinsicType(IntrinsicType.Decimal))
                 {
                     defaultValue = 0;
                 }
-                else if (fieldType == symbolSet.ResolveIntrinsicType(IntrinsicType.Boolean))
+                else if (fieldType == symbolResolver.ResolveIntrinsicType(IntrinsicType.Boolean))
                 {
                     defaultValue = false;
                 }
@@ -188,7 +189,7 @@ namespace DSharp.Compiler.Compiler
                 if (defaultValue != null)
                 {
                     initializerExpression =
-                        new LiteralExpression(symbolSet.ResolveIntrinsicType(IntrinsicType.Object),
+                        new LiteralExpression(symbolResolver.ResolveIntrinsicType(IntrinsicType.Object),
                             defaultValue);
                     fieldSymbol.SetImplementationState( /* hasInitializer */ true);
                 }

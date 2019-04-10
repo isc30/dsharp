@@ -1,18 +1,17 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Xml;
 using DSharp.Compiler.CodeModel;
 using DSharp.Compiler.CodeModel.Types;
 using DSharp.Compiler.Compiler;
 using DSharp.Compiler.Errors;
 using DSharp.Compiler.Generator;
 using DSharp.Compiler.Importer;
+using DSharp.Compiler.ScriptModel;
 using DSharp.Compiler.ScriptModel.Symbols;
 using DSharp.Compiler.Validator;
 using Microsoft.CodeAnalysis;
@@ -30,7 +29,7 @@ namespace DSharp.Compiler
         private bool hasErrors;
 
         private CompilerOptions options;
-        private ICompilationContext compilationContext;
+        private IScriptModel scriptModel;
 
         public ScriptCompiler()
             : this(null)
@@ -47,7 +46,7 @@ namespace DSharp.Compiler
             this.options = options ?? throw new ArgumentNullException(nameof(options));
 
             hasErrors = false;
-            compilationContext = new MonoCompilationContext();
+            scriptModel = new ES5ScriptModel();
 
             var compilation = ImportMetadata();
 
@@ -95,7 +94,7 @@ namespace DSharp.Compiler
 
             MetadataImporter mdImporter = new MetadataImporter(this);
 
-            mdImporter.ImportMetadata(options.References, this.compilationContext);
+            mdImporter.ImportMetadata(options.References, scriptModel);
             return compilationContext;
         }
 
@@ -146,12 +145,12 @@ namespace DSharp.Compiler
         {
             if (options.Resources != null && options.Resources.Count != 0)
             {
-                ResourcesBuilder resourcesBuilder = new ResourcesBuilder(compilationContext);
+                ResourcesBuilder resourcesBuilder = new ResourcesBuilder(scriptModel.Resources);
                 resourcesBuilder.BuildResources(options.Resources);
             }
 
             MetadataBuilder mdBuilder = new MetadataBuilder(this);
-            appSymbols = mdBuilder.BuildMetadata(compilationUnitList, compilationContext, options);
+            appSymbols = mdBuilder.BuildMetadata(compilationUnitList, scriptModel, options);
 
             // Check if any of the types defined in this assembly conflict.
             Dictionary<string, TypeSymbol> types = new Dictionary<string, TypeSymbol>();
@@ -206,14 +205,14 @@ namespace DSharp.Compiler
             {
                 SymbolSetTransformer symbolSetTransformer = new SymbolSetTransformer(transformer);
                 ICollection<Symbol> transformedSymbols =
-                    symbolSetTransformer.TransformSymbolSet(compilationContext, /* useInheritanceOrder */ true);
+                    symbolSetTransformer.TransformSymbolSet(scriptModel, useInheritanceOrder: true);
             }
         }
 
         private void BuildImplementation()
         {
             CodeBuilder codeBuilder = new CodeBuilder(options, this);
-            ICollection<SymbolImplementation> implementations = codeBuilder.BuildCode(compilationContext);
+            ICollection<SymbolImplementation> implementations = codeBuilder.BuildCode(scriptModel);
 
             if (options.Minimize)
             {
@@ -237,10 +236,8 @@ namespace DSharp.Compiler
             Stream outputStream = null;
             TextWriter outputWriter = null;
 
-            try
+            using (outputStream = options.ScriptFile.GetStream())
             {
-                outputStream = options.ScriptFile.GetStream();
-
                 if (outputStream == null)
                 {
                     string scriptName = options.ScriptFile.FullName;
@@ -254,22 +251,6 @@ namespace DSharp.Compiler
                 string script = GenerateScriptWithTemplate();
                 outputWriter.Write(script);
             }
-            catch (Exception e)
-            {
-                Debug.Fail(e.ToString());
-            }
-            finally
-            {
-                if (outputWriter != null)
-                {
-                    outputWriter.Flush();
-                }
-
-                if (outputStream != null)
-                {
-                    options.ScriptFile.CloseStream(outputStream);
-                }
-            }
         }
 
         private string GenerateScriptCore()
@@ -279,7 +260,7 @@ namespace DSharp.Compiler
             try
             {
                 ScriptGenerator scriptGenerator = new ScriptGenerator(scriptWriter, options);
-                scriptGenerator.GenerateScript(compilationContext.ScriptModel);
+                scriptGenerator.GenerateScript(scriptModel);
             }
             catch (Exception e)
             {
@@ -312,7 +293,7 @@ namespace DSharp.Compiler
 
             bool firstDependency = true;
 
-            foreach (ScriptReference dependency in compilationContext.Dependencies)
+            foreach (ScriptReference dependency in scriptModel.Dependencies)
             {
                 if (dependency.DelayLoaded)
                 {
@@ -353,7 +334,7 @@ namespace DSharp.Compiler
             depLookupBuilder.Append(";");
 
             return template.TrimStart()
-                           .Replace("{name}", compilationContext.ScriptModel.ScriptName)
+                           .Replace("{name}", scriptModel.ScriptName)
                            .Replace("{description}", options.ScriptInfo.Description ?? string.Empty)
                            .Replace("{copyright}", options.ScriptInfo.Copyright ?? string.Empty)
                            .Replace("{version}", options.ScriptInfo.Version ?? string.Empty)
@@ -387,11 +368,12 @@ namespace DSharp.Compiler
 
                     if (includeSource != null)
                     {
-                        Stream includeStream = includeSource.GetStream();
-                        StreamReader reader = new StreamReader(includeStream);
+                        using (Stream includeStream = includeSource.GetStream())
+                        {
+                            StreamReader reader = new StreamReader(includeStream);
 
-                        includedScript = reader.ReadToEnd();
-                        includeSource.CloseStream(includeStream);
+                            return reader.ReadToEnd();
+                        }
                     }
                 }
 

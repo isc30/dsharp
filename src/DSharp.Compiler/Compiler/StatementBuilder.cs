@@ -10,6 +10,7 @@ using DSharp.Compiler.CodeModel;
 using DSharp.Compiler.CodeModel.Expressions;
 using DSharp.Compiler.CodeModel.Statements;
 using DSharp.Compiler.Errors;
+using DSharp.Compiler.ScriptModel;
 using DSharp.Compiler.ScriptModel.Expressions;
 using DSharp.Compiler.ScriptModel.Statements;
 using DSharp.Compiler.ScriptModel.Symbols;
@@ -22,7 +23,7 @@ namespace DSharp.Compiler.Compiler
 
         private readonly ExpressionBuilder expressionBuilder;
         private readonly CodeMemberSymbol memberContext;
-        private readonly ICompilationContext symbolSet;
+        private readonly IScriptModel scriptModel;
 
         private readonly ILocalSymbolTable symbolTable;
 
@@ -31,7 +32,7 @@ namespace DSharp.Compiler.Compiler
         {
             this.symbolTable = symbolTable;
             this.memberContext = memberContext;
-            symbolSet = memberContext.Root;
+            scriptModel = memberContext.Root;
             this.errorHandler = errorHandler;
 
             expressionBuilder = new ExpressionBuilder(symbolTable, memberContext, errorHandler, options);
@@ -234,7 +235,7 @@ namespace DSharp.Compiler.Compiler
 
         private Statement ProcessForeachStatement(ForeachNode node)
         {
-            ITypeSymbol type = symbolSet.ResolveType(node.Type, symbolTable, memberContext);
+            ITypeSymbol type = scriptModel.SymbolResolver.ResolveType(node.Type, symbolTable, memberContext);
             Debug.Assert(type != null);
 
             bool dictionaryContainer = type.Name == "DictionaryEntry" || type.Name == "KeyValuePair`2";
@@ -264,7 +265,7 @@ namespace DSharp.Compiler.Compiler
 
                 string keyVariableName = symbolTable.CreateSymbolName("key");
                 VariableSymbol keyVariable = new VariableSymbol(keyVariableName, memberContext,
-                    symbolSet.ResolveIntrinsicType(IntrinsicType.String));
+                    scriptModel.SymbolResolver.ResolveIntrinsicType(IntrinsicType.String));
                 statement.SetLoopVariable(keyVariable);
             }
             else
@@ -273,7 +274,7 @@ namespace DSharp.Compiler.Compiler
 
                 string enumeratorVariableName = symbolTable.CreateSymbolName("enum");
                 VariableSymbol enumVariable = new VariableSymbol(enumeratorVariableName, memberContext,
-                    symbolSet.ResolveIntrinsicType(IntrinsicType.Enumerator));
+                    scriptModel.SymbolResolver.ResolveIntrinsicType(IntrinsicType.Enumerator));
                 statement.SetLoopVariable(enumVariable);
             }
 
@@ -411,7 +412,7 @@ namespace DSharp.Compiler.Compiler
                 if (catchNode.Name != null)
                 {
                     ITypeSymbol exceptionVariableType =
-                        symbolSet.ResolveType(catchNode.Type, symbolTable, memberContext);
+                        scriptModel.SymbolResolver.ResolveType(catchNode.Type, symbolTable, memberContext);
                     Debug.Assert(exceptionVariableType != null);
 
                     exceptionVariableSymbol =
@@ -420,7 +421,7 @@ namespace DSharp.Compiler.Compiler
                 else
                 {
                     ITypeSymbol exceptionVariableType =
-                        symbolSet.ResolveIntrinsicType(IntrinsicType.Exception);
+                        scriptModel.SymbolResolver.ResolveIntrinsicType(IntrinsicType.Exception);
                     Debug.Assert(exceptionVariableType != null);
 
                     exceptionVariableSymbol =
@@ -459,7 +460,7 @@ namespace DSharp.Compiler.Compiler
         private Statement ProcessVariableDeclarationStatement(VariableDeclarationNode node)
         {
             VariableDeclarationStatement statement = new VariableDeclarationStatement();
-            ITypeSymbol variableType = symbolSet.ResolveType(node.Type, symbolTable, memberContext);
+            ITypeSymbol variableType = scriptModel.SymbolResolver.ResolveType(node.Type, symbolTable, memberContext);
 
             foreach (VariableInitializerNode initializerNode in node.Initializers)
             {

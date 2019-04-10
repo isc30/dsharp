@@ -81,20 +81,13 @@ namespace DSharp.Compiler.CodeModel
 
         private char[] GetBuffer(IStreamSource source)
         {
-            char[] buffer = null;
-
-            Stream stream = source.GetStream();
-
-            if (stream != null)
+            using (Stream stream = source.GetStream())
             {
                 StreamReader reader = new StreamReader(stream);
                 string text = reader.ReadToEnd();
 
-                buffer = text.ToCharArray();
-                source.CloseStream(stream);
+                return text.ToCharArray();
             }
-
-            return buffer;
         }
 
         private void OnError(object sender, FileLexerErrorEventArgs eventArgs)

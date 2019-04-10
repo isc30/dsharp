@@ -1,4 +1,4 @@
-// FileInputStreamSource.cs
+﻿// FileInputStreamSource.cs
 // Script#/Core
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -28,14 +28,6 @@ namespace DSharp
 
         public string Name { get; }
 
-        public void CloseStream(Stream stream)
-        {
-            Debug.Assert(stream != null);
-            Debug.Assert(stream is FileStream);
-
-            stream.Close();
-        }
-
         public Stream GetStream()
         {
             try
@@ -44,7 +36,7 @@ namespace DSharp
             }
             catch
             {
-                return null;
+                return Stream.Null;
             }
         }
     }

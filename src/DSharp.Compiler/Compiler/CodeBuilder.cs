@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using DSharp.Compiler.Errors;
+using DSharp.Compiler.ScriptModel;
 using DSharp.Compiler.ScriptModel.Symbols;
 
 namespace DSharp.Compiler.Compiler
@@ -40,14 +41,14 @@ namespace DSharp.Compiler.Compiler
                     switch (type.Type)
                     {
                         case SymbolType.Class:
-                            BuildCode((ClassSymbol) type);
+                            BuildCode((ClassSymbol)type);
 
                             break;
                         case SymbolType.Record:
 
-                            if (((RecordSymbol) type).Constructor != null)
+                            if (((RecordSymbol)type).Constructor != null)
                             {
-                                BuildCode(((RecordSymbol) type).Constructor);
+                                BuildCode(((RecordSymbol)type).Constructor);
                             }
 
                             break;
@@ -79,19 +80,19 @@ namespace DSharp.Compiler.Compiler
                 switch (memberSymbol.Type)
                 {
                     case SymbolType.Event:
-                        BuildCode((EventSymbol) memberSymbol);
+                        BuildCode((EventSymbol)memberSymbol);
 
                         break;
                     case SymbolType.Field:
-                        BuildCode((FieldSymbol) memberSymbol);
+                        BuildCode((FieldSymbol)memberSymbol);
 
                         break;
                     case SymbolType.Method:
-                        BuildCode((MethodSymbol) memberSymbol);
+                        BuildCode((MethodSymbol)memberSymbol);
 
                         break;
                     case SymbolType.Property:
-                        BuildCode((PropertySymbol) memberSymbol);
+                        BuildCode((PropertySymbol)memberSymbol);
 
                         break;
                 }

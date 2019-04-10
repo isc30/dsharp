@@ -22,18 +22,29 @@ namespace DSharp.Compiler.TestFramework.Compilation
 
         public InMemoryStream() => name = Guid.NewGuid().ToString();
 
-        void IStreamSource.CloseStream(Stream stream)
+        public Stream GetStream()
         {
-            MemoryStream memoryStream = (MemoryStream)stream;
-            byte[] buffer = memoryStream.GetBuffer();
-
-            GeneratedOutput = Encoding.UTF8.GetString(buffer, 0, (int)memoryStream.Length);
-            memoryStream.Close();
+            return new NotifiableMemoryStream
+            {
+                OnBeforeDispose = HandleOnDisposed
+            };
         }
 
-        Stream IStreamSource.GetStream()
+        private void HandleOnDisposed(byte[] buffer, long length)
         {
-            return new MemoryStream();
+            GeneratedOutput = Encoding.UTF8.GetString(buffer, 0, (int)length);
+        }
+
+        private class NotifiableMemoryStream : MemoryStream
+        {
+            public Action<byte[], long> OnBeforeDispose { get; set; }
+
+            protected override void Dispose(bool disposing)
+            {
+                var buffer = GetBuffer();
+                OnBeforeDispose?.Invoke(buffer, Length);
+                base.Dispose(disposing);
+            }
         }
     }
 }

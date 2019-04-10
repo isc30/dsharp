@@ -5,17 +5,18 @@
 
 using System.Collections.Generic;
 using System.IO;
+using DSharp.Compiler.ScriptModel;
 using DSharp.Compiler.ScriptModel.Symbols;
 
 namespace DSharp.Compiler.Compiler
 {
     internal sealed class ResourcesBuilder
     {
-        private readonly ICompilationContext symbols;
+        private readonly ISourceResourceProvider resourcesProvider;
 
-        public ResourcesBuilder(ICompilationContext symbols)
+        public ResourcesBuilder(ISourceResourceProvider resourcesProvider)
         {
-            this.symbols = symbols;
+            this.resourcesProvider = resourcesProvider;
         }
 
         public void BuildResources(ICollection<IStreamSource> sources)
@@ -67,32 +68,18 @@ namespace DSharp.Compiler.Compiler
             List<ResXItem> resourceItems = ResXParser.ParseResxMarkup(resxMarkup);
 
             string resourceName = Utility.GetResourceFileName(source.Name);
-            Dictionary<string, ResXItem> existingResourceItems = symbols.GetResources(resourceName);
+            Dictionary<string, ResXItem> existingResourceItems = resourcesProvider.GetResources(resourceName);
 
             foreach (ResXItem item in resourceItems) existingResourceItems[item.Name] = item;
         }
 
         private string GetMarkup(IStreamSource source)
         {
-            string markup = null;
-
-            Stream stream = source.GetStream();
-
-            try
+            using (Stream stream = source.GetStream())
             {
                 StreamReader reader = new StreamReader(stream);
-                markup = reader.ReadToEnd();
+                return reader.ReadToEnd();
             }
-            finally
-            {
-                if (stream != null)
-                {
-                    source.CloseStream(stream);
-                    stream = null;
-                }
-            }
-
-            return markup;
         }
     }
 }

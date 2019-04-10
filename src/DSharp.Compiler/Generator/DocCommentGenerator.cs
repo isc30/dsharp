@@ -5,6 +5,7 @@
 
 using System;
 using System.Diagnostics;
+using DSharp.Compiler.ScriptModel;
 using DSharp.Compiler.ScriptModel.Symbols;
 
 namespace DSharp.Compiler.Generator

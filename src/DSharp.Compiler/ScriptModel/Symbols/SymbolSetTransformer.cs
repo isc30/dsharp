@@ -1,4 +1,4 @@
-// SymbolSetTransformer.cs
+﻿// SymbolSetTransformer.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -14,7 +14,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         private readonly ISymbolTransformer transformer;
 
         public SymbolSetTransformer(ISymbolTransformer transformer)
-            : this(transformer, /* excludeImportedTypes */ true)
+            : this(transformer, true)
         {
         }
 
@@ -24,11 +24,11 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             this.excludeImportedTypes = excludeImportedTypes;
         }
 
-        public ICollection<Symbol> TransformSymbolSet(ICompilationContext symbols, bool useInheritanceOrder)
+        public ICollection<Symbol> TransformSymbolSet(IScriptModel scriptModel, bool useInheritanceOrder)
         {
             List<TypeSymbol> symbolsToTransform = new List<TypeSymbol>();
 
-            foreach (NamespaceSymbol ns in symbols.Namespaces)
+            foreach (NamespaceSymbol ns in scriptModel.Namespaces)
             {
                 if (excludeImportedTypes && ns.HasApplicationTypes == false)
                 {

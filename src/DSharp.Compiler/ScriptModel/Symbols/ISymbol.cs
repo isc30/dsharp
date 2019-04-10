@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
-    public interface ISymbol
+    public interface ISymbol: IScriptSymbolTable
     {
         SymbolType Type { get; }
 
@@ -38,7 +38,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         void SetTransformedName(string name);
     }
 
-    public interface ITypeSymbol : ISymbol, IScriptSymbolTable
+    public interface ITypeSymbol : ISymbol
     {
         string FullGeneratedName { get; }
 

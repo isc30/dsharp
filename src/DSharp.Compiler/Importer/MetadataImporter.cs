@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using DSharp.Compiler.Errors;
+using DSharp.Compiler.ScriptModel;
 using DSharp.Compiler.ScriptModel.Symbols;
 using Mono.Cecil;
 
@@ -20,7 +21,7 @@ namespace DSharp.Compiler.Importer
         private List<TypeSymbol> importedTypes;
         private bool resolveError;
 
-        private ICompilationContext symbols;
+        private IScriptModel scriptModel;
 
         public MetadataImporter(IErrorHandler errorHandler)
         {
@@ -212,11 +213,11 @@ namespace DSharp.Compiler.Importer
 
                 if (enumSymbol.UseNamedValues)
                 {
-                    fieldType = symbols.ResolveIntrinsicType(IntrinsicType.String);
+                    fieldType = scriptModel.SymbolResolver.ResolveIntrinsicType(IntrinsicType.String);
                 }
                 else
                 {
-                    fieldType = symbols.ResolveIntrinsicType(IntrinsicType.Integer);
+                    fieldType = scriptModel.SymbolResolver.ResolveIntrinsicType(IntrinsicType.Integer);
                 }
 
                 string fieldName = field.Name;
@@ -391,12 +392,12 @@ namespace DSharp.Compiler.Importer
             }
         }
 
-        public ICollection<TypeSymbol> ImportMetadata(ICollection<string> references, ICompilationContext symbols)
+        public ICollection<TypeSymbol> ImportMetadata(ICollection<string> references, IScriptModel scriptModel)
         {
             Debug.Assert(references != null);
-            Debug.Assert(symbols != null);
+            Debug.Assert(scriptModel != null);
 
-            this.symbols = symbols;
+            this.scriptModel = scriptModel;
 
             MetadataSource mdSource = new MetadataSource();
             bool hasLoadErrors = mdSource.LoadReferences(references, errorHandler);
@@ -463,7 +464,7 @@ namespace DSharp.Compiler.Importer
                         GenericParameterSymbol arg =
                             new GenericParameterSymbol(genericParameter.Position, genericParameter.Name,
                                 /* typeArgument */ false,
-                                symbols.GlobalNamespace);
+                                scriptModel.Namespaces.System);
                         genericArguments.Add(arg);
                     }
 
@@ -607,23 +608,26 @@ namespace DSharp.Compiler.Importer
 
             if (memberSet == PseudoClassMembers.Script)
             {
+                Func<string, ISymbol, SymbolFilter, ISymbol> findSymbolMethod 
+                    = scriptModel.Namespaces.System.FindSymbol;
+
                 TypeSymbol objectType =
-                    (TypeSymbol)((IScriptSymbolTable)symbols.SystemNamespace).FindSymbol("Object", null,
+                    (TypeSymbol)findSymbolMethod("Object", null,
                         SymbolFilter.Types);
                 Debug.Assert(objectType != null);
 
                 TypeSymbol stringType =
-                    (TypeSymbol)((IScriptSymbolTable)symbols.SystemNamespace).FindSymbol("String", null,
+                    (TypeSymbol)findSymbolMethod("String", null,
                         SymbolFilter.Types);
                 Debug.Assert(stringType != null);
 
                 TypeSymbol boolType =
-                    (TypeSymbol)((IScriptSymbolTable)symbols.SystemNamespace).FindSymbol("Boolean", null,
+                    (TypeSymbol)findSymbolMethod("Boolean", null,
                         SymbolFilter.Types);
                 Debug.Assert(boolType != null);
 
                 TypeSymbol dateType =
-                    (TypeSymbol)((IScriptSymbolTable)symbols.SystemNamespace).FindSymbol("Date", null, SymbolFilter.Types);
+                    (TypeSymbol)findSymbolMethod("Date", null, SymbolFilter.Types);
                 Debug.Assert(dateType != null);
 
                 // Enumerate - IEnumerable.GetEnumerator gets mapped to this
@@ -659,7 +663,7 @@ namespace DSharp.Compiler.Importer
             if (memberSet == PseudoClassMembers.Arguments)
             {
                 TypeSymbol objectType =
-                    (TypeSymbol)((IScriptSymbolTable)symbols.SystemNamespace).FindSymbol(nameof(Object), null,
+                    (TypeSymbol)scriptModel.Namespaces.System.FindSymbol(nameof(Object), null,
                         SymbolFilter.Types);
                 Debug.Assert(objectType != null);
 
@@ -673,18 +677,20 @@ namespace DSharp.Compiler.Importer
 
             if (memberSet == PseudoClassMembers.Dictionary)
             {
+                Func<string, ISymbol, SymbolFilter, ISymbol> findSymbolMethod = scriptModel.Namespaces.System.FindSymbol;
+
                 TypeSymbol intType =
-                    (TypeSymbol)((IScriptSymbolTable)symbols.SystemNamespace).FindSymbol(nameof(Int32), null, SymbolFilter.Types);
+                    (TypeSymbol)findSymbolMethod(nameof(Int32), null, SymbolFilter.Types);
                 Debug.Assert(intType != null);
 
                 TypeSymbol stringType =
-                    (TypeSymbol)((IScriptSymbolTable)symbols.SystemNamespace).FindSymbol(nameof(String), null,
+                    (TypeSymbol)findSymbolMethod(nameof(String), null,
                         SymbolFilter.Types);
                 Debug.Assert(stringType != null);
 
                 // Define Dictionary.Keys
                 MethodSymbol getKeysMethod = new MethodSymbol("GetKeys", classSymbol,
-                    symbols.CreateArrayTypeSymbol(stringType), MemberVisibility.Public | MemberVisibility.Static);
+                    scriptModel.SymbolResolver.CreateArrayTypeSymbol(stringType), MemberVisibility.Public | MemberVisibility.Static);
                 getKeysMethod.SetTransformName(DSharpStringResources.ScriptExportMember("keys"));
                 classSymbol.AddMember(getKeysMethod);
 
@@ -718,7 +724,7 @@ namespace DSharp.Compiler.Importer
             {
                 ScriptReference dependency = new ScriptReference(scriptName, scriptIdentifier);
 
-                symbols.AddDependency(dependency);
+                scriptModel.AddDependency(dependency);
                 scriptNamespace = dependency.Identifier;
             }
 
@@ -757,7 +763,7 @@ namespace DSharp.Compiler.Importer
             bool dummy;
             string scriptName = MetadataHelpers.GetScriptName(type, out dummy, out dummy);
 
-            INamespaceSymbol namespaceSymbol = symbols.GetNamespace(namespaceName);
+            INamespaceSymbol namespaceSymbol = scriptModel.Namespaces.GetNamespace(namespaceName);
             TypeSymbol typeSymbol = null;
 
             if (type.IsInterface)
@@ -813,7 +819,7 @@ namespace DSharp.Compiler.Importer
                         GenericParameterSymbol arg =
                             new GenericParameterSymbol(genericParameter.Position, genericParameter.Name,
                                 /* typeArgument */ true,
-                                symbols.GlobalNamespace);
+                                scriptModel.Namespaces.Global);
                         genericArguments.Add(arg);
                     }
 
@@ -896,11 +902,11 @@ namespace DSharp.Compiler.Importer
             {
                 typeSymbol = new GenericParameterSymbol(genericParameter.Position, genericParameter.Name,
                     genericParameter.Owner.GenericParameterType == GenericParameterType.Type,
-                    symbols.GlobalNamespace);
+                    scriptModel.Namespaces.Global);
             }
             else
             {
-                typeSymbol = (TypeSymbol)((IScriptSymbolTable)symbols).FindSymbol(name, null, SymbolFilter.Types);
+                typeSymbol = (TypeSymbol)((IScriptSymbolTable)scriptModel).FindSymbol(name, null, SymbolFilter.Types);
 
                 if (typeSymbol == null)
                 {
@@ -920,13 +926,13 @@ namespace DSharp.Compiler.Importer
                     typeArgs.Add(argType);
                 }
 
-                typeSymbol = symbols.CreateGenericTypeSymbol(typeSymbol, typeArgs);
+                typeSymbol = scriptModel.SymbolResolver.CreateGenericTypeSymbol(typeSymbol, typeArgs);
                 Debug.Assert(typeSymbol != null);
             }
 
             if (arrayDimensions != 0)
             {
-                for (int i = 0; i < arrayDimensions; i++) typeSymbol = symbols.CreateArrayTypeSymbol(typeSymbol);
+                for (int i = 0; i < arrayDimensions; i++) typeSymbol = scriptModel.SymbolResolver.CreateArrayTypeSymbol(typeSymbol);
             }
 
             return typeSymbol;

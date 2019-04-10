@@ -422,16 +422,16 @@ namespace DSharp.Compiler.Generator
 
         private static string GetParameterTypeName(ITypeSymbol parameterType)
         {
-            ICompilationContext symbolSet = parameterType.Root;
-            ITypeSymbol nullableType = symbolSet.ResolveIntrinsicType(IntrinsicType.Nullable);
+            var symbolResolver = parameterType.Root.SymbolResolver;
+            ITypeSymbol nullableType = symbolResolver.ResolveIntrinsicType(IntrinsicType.Nullable);
 
             if (parameterType.FullName == nullableType.FullName)
             {
                 parameterType = parameterType.GenericArguments.First();
             }
 
-            ITypeSymbol typeType = symbolSet.ResolveIntrinsicType(IntrinsicType.Type);
-            ITypeSymbol functionType = symbolSet.ResolveIntrinsicType(IntrinsicType.Function);
+            ITypeSymbol typeType = symbolResolver.ResolveIntrinsicType(IntrinsicType.Type);
+            ITypeSymbol functionType = symbolResolver.ResolveIntrinsicType(IntrinsicType.Function);
 
             if (parameterType.FullName == typeType.FullName || parameterType.Type == SymbolType.Delegate)
             {
@@ -444,12 +444,12 @@ namespace DSharp.Compiler.Generator
 
                 if (enumType.UseNamedValues)
                 {
-                    ITypeSymbol stringType = symbolSet.ResolveIntrinsicType(IntrinsicType.String);
+                    ITypeSymbol stringType = symbolResolver.ResolveIntrinsicType(IntrinsicType.String);
                     parameterType = stringType;
                 }
                 else
                 {
-                    ITypeSymbol numberType = symbolSet.ResolveIntrinsicType(IntrinsicType.Number);
+                    ITypeSymbol numberType = symbolResolver.ResolveIntrinsicType(IntrinsicType.Number);
                     parameterType = numberType;
                 }
             }

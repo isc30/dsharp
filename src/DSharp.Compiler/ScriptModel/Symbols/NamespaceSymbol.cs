@@ -9,7 +9,7 @@ using System.Diagnostics;
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
-    public sealed class NamespaceSymbol : Symbol, IScriptSymbolTable, INamespaceSymbol
+    public sealed class NamespaceSymbol : Symbol, INamespaceSymbol
     {
         private readonly Dictionary<string, ITypeSymbol> typeMap;
         private readonly List<ITypeSymbol> types;
@@ -52,9 +52,9 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             return true;
         }
 
-        public IEnumerable<ISymbol> Symbols => types;
+        public override IEnumerable<ISymbol> Symbols => types;
 
-        public ISymbol FindSymbol(string name, ISymbol context, SymbolFilter filter)
+        public override ISymbol FindSymbol(string name, ISymbol context, SymbolFilter filter)
         {
             Debug.Assert(string.IsNullOrEmpty(name) == false);
             Debug.Assert(context == null);

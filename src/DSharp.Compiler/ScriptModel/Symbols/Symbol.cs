@@ -3,7 +3,9 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
@@ -20,7 +22,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             IsTransformAllowed = true;
         }
 
-        public virtual string Documentation => Root.GetSummaryDocumentation(DocumentationId);
+        public virtual string Documentation => Root.Documenation.GetSummaryDocumentation(DocumentationId);
 
         public virtual string DocumentationId
         {
@@ -67,6 +69,8 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public SymbolType Type { get; }
 
+        public virtual IEnumerable<ISymbol> Symbols { get; } = Enumerable.Empty<ISymbol>();
+
         public void DisableNameTransformation()
         {
             Debug.Assert(IsTransformAllowed);
@@ -96,5 +100,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         {
             return Name;
         }
+
+        public virtual ISymbol FindSymbol(string name, ISymbol context, SymbolFilter filter) { return null; }
     }
 }

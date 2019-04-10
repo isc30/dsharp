@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using DSharp.Compiler.ScriptModel;
 using DSharp.Compiler.ScriptModel.Symbols;
 
 namespace DSharp.Compiler.Generator
@@ -46,7 +47,7 @@ namespace DSharp.Compiler.Generator
 
             bool hasNonModuleInternalTypes = false;
 
-            foreach (NamespaceSymbol namespaceSymbol in scriptModel.Root)
+            foreach (NamespaceSymbol namespaceSymbol in scriptModel.Namespaces)
                 if (namespaceSymbol.HasApplicationTypes)
                 {
                     foreach (TypeSymbol type in namespaceSymbol.Types)

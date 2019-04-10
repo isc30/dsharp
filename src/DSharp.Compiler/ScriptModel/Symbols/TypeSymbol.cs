@@ -3,7 +3,6 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -278,9 +277,9 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             testType = true;
         }
 
-        public IEnumerable<ISymbol> Symbols => members;
+        public override IEnumerable<ISymbol> Symbols => members;
 
-        public ISymbol FindSymbol(string name, ISymbol context, SymbolFilter filter)
+        public override ISymbol FindSymbol(string name, ISymbol context, SymbolFilter filter)
         {
             Debug.Assert(string.IsNullOrEmpty(name) == false);
             Debug.Assert(context != null);
@@ -297,7 +296,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 {
                     TypeSymbol baseType = GetBaseType();
                     TypeSymbol objectType =
-                        (TypeSymbol) ((IScriptSymbolTable) Root.SystemNamespace).FindSymbol("Object", null,
+                        (TypeSymbol)Root.Namespaces.System.FindSymbol("Object", null,
                             SymbolFilter.Types);
 
                     if (baseType == null && this != objectType)
@@ -307,7 +306,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
                     if (baseType != null)
                     {
-                        symbol = (Symbol)((IScriptSymbolTable) baseType).FindSymbol(name, context, baseFilter);
+                        symbol = (Symbol)((IScriptSymbolTable)baseType).FindSymbol(name, context, baseFilter);
                     }
                 }
 
