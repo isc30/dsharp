@@ -25,7 +25,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public override IScriptModel ScriptModel { get; }
 
-        public ICollection<ITypeSymbol> Types => types;
+        public IEnumerable<ITypeSymbol> Types => types;
 
         public void AddType(ITypeSymbol typeSymbol)
         {

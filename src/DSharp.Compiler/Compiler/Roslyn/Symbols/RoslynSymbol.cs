@@ -132,4 +132,47 @@ namespace DSharp.Compiler.Roslyn.Symbols
         public override bool MatchFilter(ScriptModel.Symbols.SymbolFilter filter)
             => (filter & DSharp.Compiler.ScriptModel.Symbols.SymbolFilter.Types) != 0;
     }
+
+    public class RoslynNamespaceSymbol : RoslynSymbol<Microsoft.CodeAnalysis.INamespaceSymbol>, ScriptModel.Symbols.INamespaceSymbol
+    {
+        private readonly HashSet<ScriptModel.Symbols.ITypeSymbol> typeSymbols = new HashSet<ScriptModel.Symbols.ITypeSymbol>();
+
+        public RoslynNamespaceSymbol(
+            Microsoft.CodeAnalysis.INamespaceSymbol rootSymbol, 
+            ISymbolContext symbolContext,
+            ScriptModel.Symbols.ISymbol parent) 
+            : base(rootSymbol, symbolContext, parent)
+        {
+        }
+
+        public bool HasApplicationTypes => typeSymbols.Any(type => type.IsApplicationType);
+
+        public IEnumerable<ScriptModel.Symbols.ITypeSymbol> Types => typeSymbols;
+
+        public void AddType(ScriptModel.Symbols.ITypeSymbol typeSymbol)
+        {
+            if(typeSymbol == null)
+            {
+                throw new ArgumentNullException(nameof(typeSymbol));
+            }
+
+            typeSymbols.Add(typeSymbol);
+        }
+
+        public override bool MatchFilter(ScriptModel.Symbols.SymbolFilter filter)
+            => (filter & DSharp.Compiler.ScriptModel.Symbols.SymbolFilter.Namespaces) != 0;
+    }
+
+    //Missing interface members;
+    public class RoslynMemberSymbol : RoslynSymbol<Microsoft.CodeAnalysis.ISymbol>, IMemberSymbol
+    {
+        public ScriptModel.Symbols.ITypeSymbol AssociatedType => throw new NotImplementedException();
+
+        public MemberVisibility Visibility => throw new NotImplementedException();
+
+        public void SetInterfaceMember(IMemberSymbol memberSymbol)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

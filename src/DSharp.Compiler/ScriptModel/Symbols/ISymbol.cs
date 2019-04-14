@@ -38,7 +38,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
     {
         bool HasApplicationTypes { get; }
 
-        ICollection<ITypeSymbol> Types { get; }
+        IEnumerable<ITypeSymbol> Types { get; }
 
         void AddType(ITypeSymbol typeSymbol);
     }

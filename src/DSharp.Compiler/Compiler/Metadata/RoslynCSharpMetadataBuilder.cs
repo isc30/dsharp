@@ -52,18 +52,18 @@ namespace DSharp.Compiler.Metadata
             return importedTypes;
         }
 
-        private void ProcessSymbols(IEnumerable<Microsoft.CodeAnalysis.ISymbol> symbols, ISymbolContext symbolContext)
+        private void ProcessSymbols(IEnumerable<ISymbol> symbols, ISymbolContext symbolContext)
         {
             foreach (var symbol in symbols)
             {
-                if (symbol is Microsoft.CodeAnalysis.INamespaceSymbol namespaceSymbol)
+                if (symbol is INamespaceSymbol namespaceSymbol)
                 {
                     string namespaceName = namespaceSymbol.ResolveFullNamespaceName();
                     var dns = symbolContext.ScriptModel.Namespaces.GetNamespace(namespaceName);
                     Console.WriteLine($"Visiting Namespace: {namespaceName}");
                     ProcessSymbols(namespaceSymbol.GetMembers(), symbolContext);
                 }
-                else if (symbol is Microsoft.CodeAnalysis.ITypeSymbol typeSymbol)
+                else if (symbol is ITypeSymbol typeSymbol)
                 {
                     ProcessType(typeSymbol, symbolContext);
                 }
@@ -75,7 +75,7 @@ namespace DSharp.Compiler.Metadata
             }
         }
 
-        private void ProcessType(Microsoft.CodeAnalysis.ITypeSymbol typeSymbol, ISymbolContext symbolContext)
+        private void ProcessType(ITypeSymbol typeSymbol, ISymbolContext symbolContext)
         {
             string typeName = typeSymbol.Name;
             var isPartial = typeSymbol.DeclaringSyntaxReferences.Length > 1;
@@ -90,7 +90,8 @@ namespace DSharp.Compiler.Metadata
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
             Console.WriteLine($"Visiting Type: {typeName}, IsPartial: {isPartial}");
 
-            var namespaceSymbol = symbolContext.ScriptModel.Namespaces.GetNamespace(typeSymbol.ContainingNamespace.ResolveFullNamespaceName());
+            var namespaceName = typeSymbol.ContainingNamespace.ResolveFullNamespaceName();
+            var namespaceSymbol = symbolContext.ScriptModel.Namespaces.GetNamespace(namespaceName);
 
             var builtSymbol = new RoslynTypeSymbol(
                 typeSymbol,
@@ -102,7 +103,7 @@ namespace DSharp.Compiler.Metadata
         }
 
         //TODO: Optimise and get the parent namespace and explode into several strings instead of walking up the tree
-        private static IEnumerable<string> GetParentNamespacesForType(Microsoft.CodeAnalysis.ITypeSymbol typeSymbol)
+        private static IEnumerable<string> GetParentNamespacesForType(ITypeSymbol typeSymbol)
         {
             List<string> namespaces = new List<string>();
             var currentNamespace = typeSymbol.ContainingNamespace;
