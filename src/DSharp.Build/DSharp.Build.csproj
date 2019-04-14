@@ -24,8 +24,8 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.6.85" />
-    <PackageReference Include="NUglify" Version="1.5.11" />
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="16.0.461" />
+    <PackageReference Include="NUglify" Version="1.5.12" />
   </ItemGroup>
   
   <ItemGroup>

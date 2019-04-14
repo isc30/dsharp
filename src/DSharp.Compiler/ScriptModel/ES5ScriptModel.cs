@@ -17,7 +17,7 @@ namespace DSharp.Compiler.ScriptModel
     {
         INamespaceSymbolCollection Namespaces { get; }
 
-        ISymbolResolver SymbolResolver { get; }
+        ISymbolBuilder SymbolResolver { get; }
 
         ScriptMetadata ScriptMetadata { get; set; }
 
@@ -46,7 +46,7 @@ namespace DSharp.Compiler.ScriptModel
 
         public IEnumerable<ScriptReference> Dependencies => dependencies;
 
-        public ISymbolResolver SymbolResolver { get; }
+        public ISymbolBuilder SymbolResolver { get; }
 
         public IDocumenationResolver Documenation { get; }
 
@@ -55,7 +55,7 @@ namespace DSharp.Compiler.ScriptModel
         public ES5ScriptModel()
         {
             Namespaces = new NamespaceSymbolCollection(this);
-            SymbolResolver = new SymbolResolver(this);
+            SymbolResolver = new SymbolBuilder(this);
             Documenation = new XmlDocumentationResolver();
             Resources = new SourceResources();
         }
@@ -344,7 +344,7 @@ namespace DSharp.Compiler.ScriptModel
         }
     }
 
-    public class SymbolResolver : ISymbolResolver
+    public class SymbolBuilder : ISymbolBuilder
     {
         private const string ARRAY_SYMBOL_NAME = "Array";
 
@@ -389,7 +389,7 @@ namespace DSharp.Compiler.ScriptModel
 
         private INamespaceSymbol SystemNamespace => root.Namespaces.System;
 
-        public SymbolResolver(IScriptModel root)
+        public SymbolBuilder(IScriptModel root)
         {
             this.root = root;
         }
@@ -835,7 +835,7 @@ namespace DSharp.Compiler.ScriptModel
         }
     }
 
-    public interface ISymbolResolver
+    public interface ISymbolBuilder
     {
         ITypeSymbol CreateArrayTypeSymbol(ITypeSymbol itemTypeSymbol);
 

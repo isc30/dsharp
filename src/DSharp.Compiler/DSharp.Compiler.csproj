@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
     <OutputType>Library</OutputType>
-    <RootNamespace>DSharp.Compiler</RootNamespace>
+    <RootNamespace>DSharp</RootNamespace>
     <AssemblyName>DSharp.Compiler</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(SolutionDir)DSharp.snk</AssemblyOriginatorKeyFile>
@@ -23,7 +23,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis" Version="3.0.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.0.0" />
-    <PackageReference Include="Mono.Cecil" Version="0.10.0">
+    <PackageReference Include="Mono.Cecil" Version="0.10.3">
     </PackageReference>
   </ItemGroup>
 </Project>
