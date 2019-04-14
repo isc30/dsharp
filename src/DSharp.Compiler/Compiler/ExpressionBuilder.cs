@@ -34,7 +34,7 @@ namespace DSharp.Compiler.Compiler
             symbolContext = memberContext;
             this.memberContext = memberContext;
             classContext = ((ClassSymbol)memberContext.Parent).PrimaryPartialClass;
-            scriptModel = memberContext.Root;
+            scriptModel = memberContext.ScriptModel;
             this.errorHandler = errorHandler;
             this.options = options;
         }
@@ -45,7 +45,7 @@ namespace DSharp.Compiler.Compiler
             this.symbolTable = symbolTable;
             symbolContext = fieldContext;
             classContext = ((ClassSymbol)fieldContext.Parent).PrimaryPartialClass;
-            scriptModel = fieldContext.Root;
+            scriptModel = fieldContext.ScriptModel;
             this.errorHandler = errorHandler;
             this.options = options;
         }
@@ -159,7 +159,7 @@ namespace DSharp.Compiler.Compiler
 
             AnonymousMethodSymbol methodSymbol =
                 new AnonymousMethodSymbol(memberContext, symbolTable, voidType, createStaticDelegate);
-            methodSymbol.SetParseContext(node);
+            methodSymbol.ParseContext = node;
 
             if (node.Parameters != null && node.Parameters.Count != 0)
             {
@@ -173,7 +173,7 @@ namespace DSharp.Compiler.Compiler
 
                     if (paramSymbol != null)
                     {
-                        paramSymbol.SetParseContext(parameterNode);
+                        paramSymbol.ParseContext = parameterNode;
                         methodSymbol.AddParameter(paramSymbol);
                     }
                 }
@@ -665,6 +665,7 @@ namespace DSharp.Compiler.Compiler
 
             if (node.LeftChild.NodeType == ParseNodeType.Name || node.LeftChild.NodeType == ParseNodeType.GenericName)
             {
+                //TODO: Fix issues with invoking a type within a namespace identifier directly.
                 objectExpression = ProcessNameNode((NameNode)node.LeftChild, filter);
             }
             else
@@ -695,7 +696,7 @@ namespace DSharp.Compiler.Compiler
             {
                 if (node.RightChild.NodeType == ParseNodeType.GenericName)
                 {
-                    int genericArgIndex = ((GenericParameterSymbol)memberSymbol.AssociatedType).Index;
+                    int genericArgIndex = ((IGenericParameterSymbol)memberSymbol.AssociatedType).Index;
 
                     Debug.Assert(node.RightChild.NodeType == ParseNodeType.GenericName);
                     Debug.Assert(((GenericNameNode)node.RightChild).TypeArguments != null);

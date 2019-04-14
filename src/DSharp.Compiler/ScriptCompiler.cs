@@ -19,13 +19,14 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
 
+using ITypeSymbol = DSharp.Compiler.ScriptModel.Symbols.ITypeSymbol;
+
 namespace DSharp.Compiler
 {
     public sealed class ScriptCompiler
     {
         private readonly IErrorHandler errorHandler;
 
-        private ICollection<TypeSymbol> appSymbols;
         private ParseNodeList compilationUnitList;
         private CompilerOptions options;
         private IScriptModel scriptModel;
@@ -64,7 +65,7 @@ namespace DSharp.Compiler
                 return false;
             }
 
-            BuildMetadata();
+            BuildMetadata(compilation);
 
             if (HasErrors)
             {
@@ -143,7 +144,7 @@ namespace DSharp.Compiler
             return compilation;
         }
 
-        private void BuildMetadata()
+        private void BuildMetadata(CSharpCompilation cSharpCompilation)
         {
             if (options.Resources != null && options.Resources.Count != 0)
             {
@@ -151,51 +152,19 @@ namespace DSharp.Compiler
                 resourcesBuilder.BuildResources(options.Resources);
             }
 
+            IScriptMetadataBuilder<CSharpCompilation> roslynMetadataBuilder = new RoslynScriptMetadataBuilder();
+            scriptModel.ScriptMetadata = roslynMetadataBuilder.Build(cSharpCompilation, scriptModel, options);
+            scriptModel.ScriptMetadata.EnableDocComments = options.EnableDocComments;
+
             IScriptModelBuilder<ParseNodeList> mdBuilder = new MonoLegacyMetadataBuilder();
-            IScriptMetadataBuilder<ParseNodeList> scriptMetadataBuilder = new MonoLegacyScriptMetadataBuilder(errorHandler);
+            IScriptModelBuilder<CSharpCompilation> roslynScriptModelBuilder = new RoslynScriptModelMetadataBuilder();
 
-            scriptModel.ScriptMetadata = scriptMetadataBuilder.Build(compilationUnitList, scriptModel, options);
+            var appSymbols = mdBuilder.BuildMetadata(compilationUnitList, scriptModel, options);
+            var roslynAppSymbols = roslynScriptModelBuilder.BuildMetadata(cSharpCompilation, scriptModel, options);
 
-            appSymbols = mdBuilder.BuildMetadata(compilationUnitList, scriptModel, options);
+            CheckForDuplicateTypes(appSymbols);
 
-            // Check if any of the types defined in this assembly conflict.
-            Dictionary<string, TypeSymbol> types = new Dictionary<string, TypeSymbol>();
-
-            foreach (TypeSymbol appType in appSymbols)
-            {
-                if (appType.IsApplicationType == false || appType.Type == SymbolType.Delegate)
-                {
-                    // Skip the check for types that are marked as imported, as they
-                    // aren't going to be generated into the script.
-                    // Delegates are implicitly imported types, as they're never generated into
-                    // the script.
-                    continue;
-                }
-
-                if (appType.Type == SymbolType.Class &&
-                    ((ClassSymbol)appType).PrimaryPartialClass != appType)
-                {
-                    // Skip the check for partial types, since they should only be
-                    // checked once.
-                    continue;
-                }
-
-                // TODO: We could allow conflicting types as long as both aren't public
-                //       since they won't be on the exported types list. Internal types that
-                //       conflict could be generated using full name.
-
-                string name = appType.GeneratedName;
-
-                if (types.ContainsKey(name))
-                {
-                    errorHandler.ReportGeneralError(string.Format(DSharpStringResources.CONFLICTING_TYPE_NAME_ERROR_FORMAT, appType.FullName, types[name].FullName));
-                }
-                else
-                {
-                    types[name] = appType;
-                }
-            }
-
+            //Is this step redundant now? We minimise after instead of before, because there are better tools to minimise
             ISymbolTransformer transformer = null;
 
             if (options.Minimize)
@@ -215,6 +184,32 @@ namespace DSharp.Compiler
             }
         }
 
+        //Todo: Make this redundant by generating types with namespaces included
+        private void CheckForDuplicateTypes(IEnumerable<ITypeSymbol> appSymbols)
+        {
+            HashSet<ITypeSymbol> types = new HashSet<ITypeSymbol>(new TypeSymbolComparer(t => t.GeneratedName));
+
+            foreach (ITypeSymbol applicationSymbol in appSymbols)
+            {
+                if (applicationSymbol.ShouldSkipDuplicateTypeCheck())
+                {
+
+                    continue;
+                }
+
+                if (types.Contains(applicationSymbol))
+                {
+                    var existingType = types.First(sym => sym.GeneratedName == applicationSymbol.GeneratedName);
+                    errorHandler.ReportGeneralError(string.Format(DSharpStringResources.CONFLICTING_TYPE_NAME_ERROR_FORMAT, applicationSymbol.FullName, existingType.FullName));
+                }
+                else
+                {
+                    types.Add(applicationSymbol);
+                }
+            }
+        }
+
+        //TODO: Replace this with an AST Tree.
         private void BuildImplementation()
         {
             CodeBuilder codeBuilder = new CodeBuilder(options, errorHandler);
@@ -239,10 +234,7 @@ namespace DSharp.Compiler
 
         private void GenerateScript()
         {
-            Stream outputStream = null;
-            TextWriter outputWriter = null;
-
-            using (outputStream = options.ScriptFile.GetStream())
+            using (var outputStream = options.ScriptFile.GetStream())
             {
                 if (outputStream == null)
                 {
@@ -252,10 +244,12 @@ namespace DSharp.Compiler
                     return;
                 }
 
-                outputWriter = new StreamWriter(outputStream, new UTF8Encoding(false));
-
                 string script = GenerateScriptWithTemplate();
-                outputWriter.Write(script);
+
+                using (var outputWriter = new StreamWriter(outputStream, Encoding.UTF8))
+                {
+                    outputWriter.Write(script);
+                }
             }
         }
 
@@ -388,6 +382,26 @@ namespace DSharp.Compiler
         }
     }
 
+    public class TypeSymbolComparer : IEqualityComparer<ITypeSymbol>
+    {
+        private readonly Func<ITypeSymbol, object> comparerSelector;
+
+        public TypeSymbolComparer(Func<ITypeSymbol, object> comparerSelector)
+        {
+            this.comparerSelector = comparerSelector ?? throw new ArgumentNullException(nameof(comparerSelector));
+        }
+
+        public bool Equals(ITypeSymbol x, ITypeSymbol y)
+        {
+            return comparerSelector.Invoke(x) == comparerSelector.Invoke(y);
+        }
+
+        public int GetHashCode(ITypeSymbol obj)
+        {
+            return comparerSelector.Invoke(obj)?.GetHashCode() ?? 0;
+        }
+    }
+
     public class RoslynMetadataImporter
     {
         public CSharpCompilation ImportMetadata(CSharpCompilation compilation, IEnumerable<string> references)
@@ -428,6 +442,24 @@ namespace DSharp.Compiler
             }
 
             Console.Error.WriteLine(error.Description);
+        }
+    }
+
+    public static class MonoTypeSymbolExtensions
+    {
+        /// <summary>
+        /// Skip the check for types that are marked as imported, as they
+        /// aren't going to be generated into the script
+        /// Delegates are implicitly imported types, as they're never generated into
+        /// the script.
+        /// </summary>
+        /// <param name="typeSymbol"></param>
+        /// <returns></returns>
+        public static bool ShouldSkipDuplicateTypeCheck(this ScriptModel.Symbols.ITypeSymbol typeSymbol)
+        {
+            return typeSymbol.IsApplicationType == false
+                || typeSymbol.Type == SymbolType.Delegate
+                || (typeSymbol is ClassSymbol classSymbol && classSymbol.PrimaryPartialClass != typeSymbol);
         }
     }
 }

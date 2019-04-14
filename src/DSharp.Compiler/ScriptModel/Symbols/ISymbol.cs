@@ -3,12 +3,11 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System.Collections;
 using System.Collections.Generic;
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
-    public interface ISymbol: IScriptSymbolTable
+    public interface ISymbol : IScriptSymbolTable
     {
         SymbolType Type { get; }
 
@@ -18,13 +17,21 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         ISymbol Parent { get; }
 
-        IScriptModel Root { get; }
+        IScriptModel ScriptModel { get; }
 
         string Documentation { get; }
 
         string DocumentationId { get; }
 
+        object ParseContext { get; }
+
+        bool IsTransformAllowed { get; set; }
+
+        bool IsTransformed { get; }
+
         bool MatchFilter(SymbolFilter filter);
+
+        void SetTransformedName(string name);
     }
 
     public interface INamespaceSymbol : ISymbol
@@ -34,40 +41,34 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         ICollection<ITypeSymbol> Types { get; }
 
         void AddType(ITypeSymbol typeSymbol);
-
-        void SetTransformedName(string name);
     }
 
     public interface ITypeSymbol : ISymbol
     {
         string FullGeneratedName { get; }
-
         string FullName { get; }
-
         string GeneratedNamespace { get; }
+        bool IgnoreNamespace { get; set; }
 
         IDictionary<string, string> Aliases { get; }
-
         ScriptReference Dependency { get; }
-
-        ICollection<ITypeSymbol> GenericArguments { get; }
+        IEnumerable<string> Imports { get; }
 
         bool IsApplicationType { get; }
-
-        bool IsGeneric { get; }
-
-        ICollection<GenericParameterSymbol> GenericParameters { get; }
-
-        IEnumerable<IMemberSymbol> Members { get; }
-
-        void AddMember(IMemberSymbol memberSymbol);
-
         bool IsArray { get; }
+        bool IsCoreType { get; }
+        bool IsGeneric { get; }
+        bool IsPublic { get; }
 
-        INamespaceSymbol Namespace { get; }
-
+        IEnumerable<ITypeSymbol> GenericArguments { get; }
+        IEnumerable<IGenericParameterSymbol> GenericParameters { get; }
         ITypeSymbol GenericType { get; }
 
+        IEnumerable<IMemberSymbol> Members { get; }
+        INamespaceSymbol Namespace { get; }
+        ITypeSymbol BaseType { get; }
+
+        void AddMember(IMemberSymbol memberSymbol);
         IMemberSymbol GetMember(string name);
     }
 

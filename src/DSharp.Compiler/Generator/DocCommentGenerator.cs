@@ -270,7 +270,7 @@ namespace DSharp.Compiler.Generator
 
         private static bool IsSymbol(ITypeSymbol typeSymbol, string name)
         {
-            return typeSymbol.Root.IsSymbol(typeSymbol, name);
+            return typeSymbol.ScriptModel.IsSymbol(typeSymbol, name);
         }
 
         private static bool IsVoid(ITypeSymbol typeSymbol)

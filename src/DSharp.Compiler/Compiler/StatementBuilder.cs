@@ -32,7 +32,7 @@ namespace DSharp.Compiler.Compiler
         {
             this.symbolTable = symbolTable;
             this.memberContext = memberContext;
-            scriptModel = memberContext.Root;
+            scriptModel = memberContext.ScriptModel;
             this.errorHandler = errorHandler;
 
             expressionBuilder = new ExpressionBuilder(symbolTable, memberContext, errorHandler, options);

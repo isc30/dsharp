@@ -16,6 +16,9 @@
         public static readonly string SCRIPT_NAME_ATTRIBUTE = "ScriptName";
         public static readonly string SCRIPT_REFERENCE_ATTRIBUTE = "ScriptReference";
 
+        public const string SCRIPT_ASSEMBLY_ATTRIBUTE = "ScriptAssembly";
+        public const string SCRIPT_TEMPLATE_ATTRIBUTE = "ScriptTemplate";
+
         //errors
         public static readonly string NODE_VALIDATION_ERROR_TRY_CATCH = "Try/Catch statements are limited to a single catch clause.";
         public static readonly string THROW_NODE_VALIDATION_ERROR = "Throw statements must specify an exception object.";

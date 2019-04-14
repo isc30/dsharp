@@ -37,8 +37,7 @@ namespace DSharp.Compiler.Metadata
 
             ScriptMetadata scriptMetadata = new ScriptMetadata
             {
-                ScriptName = scriptName,
-                EnableDocComments = options.EnableDocComments
+                ScriptName = scriptName
             };
 
             List<AttributeNode> referenceAttributes = GetAttributes(compilation, DSharpStringResources.SCRIPT_REFERENCE_ATTRIBUTE);

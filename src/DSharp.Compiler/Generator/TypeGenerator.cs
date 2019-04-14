@@ -65,7 +65,7 @@ namespace DSharp.Compiler.Generator
             {
                 CodeGenerator.GenerateScript(generator, classSymbol.Constructor);
             }
-            else if (classSymbol.BaseClass != null && classSymbol.IsTestClass == false)
+            else if (classSymbol.BaseClass != null)
             {
                 writer.Write(classSymbol.BaseClass.FullGeneratedName);
                 writer.Write(".call(this);");
@@ -370,7 +370,7 @@ namespace DSharp.Compiler.Generator
             writer.Write("], ");
 
             //base class
-            if (classSymbol.BaseClass == null || classSymbol.IsTestClass)
+            if (classSymbol.BaseClass == null)
             {
                 // TODO: We need to introduce the notion of a base class that only exists in the metadata
                 //       and not at runtime. At that point this check of IsTestClass can be generalized.
@@ -422,7 +422,7 @@ namespace DSharp.Compiler.Generator
 
         private static string GetParameterTypeName(ITypeSymbol parameterType)
         {
-            var symbolResolver = parameterType.Root.SymbolResolver;
+            var symbolResolver = parameterType.ScriptModel.SymbolResolver;
             ITypeSymbol nullableType = symbolResolver.ResolveIntrinsicType(IntrinsicType.Nullable);
 
             if (parameterType.FullName == nullableType.FullName)

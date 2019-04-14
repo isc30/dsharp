@@ -6,6 +6,6 @@ namespace DSharp.Compiler.Metadata
 {
     public interface IScriptModelBuilder<T>
     {
-        ICollection<TypeSymbol> BuildMetadata(T compilation, IScriptModel scriptModel, IScriptCompliationOptions options);
+        ICollection<ITypeSymbol> BuildMetadata(T compilation, IScriptModel scriptModel, IScriptCompliationOptions options);
     }
 }

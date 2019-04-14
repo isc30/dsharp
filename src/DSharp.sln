@@ -48,7 +48,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharp.Sdk", "DSharp.Sdk\DS
 		{8780581F-7C26-4B64-9236-BA1C458DF36E} = {8780581F-7C26-4B64-9236-BA1C458DF36E}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSharp.TestConsole", "DSharp.TestConsole\DSharp.TestConsole.csproj", "{88030D6E-4BB9-4C20-B5EA-417254292248}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharp.TestConsole", "DSharp.TestConsole\DSharp.TestConsole.csproj", "{88030D6E-4BB9-4C20-B5EA-417254292248}"
+	ProjectSection(ProjectDependencies) = postProject
+		{36D4B098-A21C-4725-ACD3-400922885F38} = {36D4B098-A21C-4725-ACD3-400922885F38}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

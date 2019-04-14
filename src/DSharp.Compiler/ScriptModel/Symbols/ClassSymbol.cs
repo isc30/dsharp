@@ -22,7 +22,6 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         private ClassSymbol primaryPartialClass;
         private bool staticClass;
         private ConstructorSymbol staticConstructor;
-        private bool testClass;
         private int transformationCookie;
 
         public ClassSymbol(string name, INamespaceSymbol parent)
@@ -158,19 +157,6 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             }
         }
 
-        public bool IsTestClass
-        {
-            get
-            {
-                if (primaryPartialClass != null)
-                {
-                    return primaryPartialClass.IsTestClass;
-                }
-
-                return testClass;
-            }
-        }
-
         public int MinimizationDepth
         {
             get
@@ -293,18 +279,18 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 if ((memberSymbol.Visibility & MemberVisibility.Static) == 0)
                 {
                     Debug.Assert(constructor == null);
-                    constructor = (ConstructorSymbol) memberSymbol;
+                    constructor = (ConstructorSymbol)memberSymbol;
                 }
                 else
                 {
                     Debug.Assert(staticConstructor == null);
-                    staticConstructor = (ConstructorSymbol) memberSymbol;
+                    staticConstructor = (ConstructorSymbol)memberSymbol;
                 }
             }
             else if (memberSymbol.Type == SymbolType.Indexer)
             {
                 Debug.Assert(IsApplicationType == false || indexer == null);
-                indexer = (IndexerSymbol) memberSymbol;
+                indexer = (IndexerSymbol)memberSymbol;
             }
             else
             {
@@ -312,14 +298,17 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             }
         }
 
-        public override TypeSymbol GetBaseType()
+        public override ITypeSymbol BaseType
         {
-            if (primaryPartialClass != null)
+            get
             {
-                return primaryPartialClass.GetBaseType();
-            }
+                if (primaryPartialClass != null)
+                {
+                    return primaryPartialClass.BaseType;
+                }
 
-            return baseClass;
+                return baseClass;
+            }
         }
 
         public IndexerSymbol GetIndexer()
@@ -334,7 +323,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
             while (indexer == null)
             {
-                classSymbol = (ClassSymbol) classSymbol.GetBaseType();
+                classSymbol = (ClassSymbol)classSymbol.BaseType;
 
                 if (classSymbol == null)
                 {
@@ -403,19 +392,6 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             }
 
             staticClass = true;
-        }
-
-        public void SetTestClass()
-        {
-            if (primaryPartialClass != null)
-            {
-                primaryPartialClass.SetTestClass();
-
-                return;
-            }
-
-            Debug.Assert(testClass == false);
-            testClass = true;
         }
     }
 }

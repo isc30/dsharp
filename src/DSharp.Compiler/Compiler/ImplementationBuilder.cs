@@ -152,7 +152,7 @@ namespace DSharp.Compiler.Compiler
                 object defaultValue = null;
 
                 ITypeSymbol fieldType = fieldSymbol.AssociatedType;
-                var scriptModel = fieldSymbol.Root;
+                var scriptModel = fieldSymbol.ScriptModel;
                 var symbolResolver = scriptModel.SymbolResolver;
 
                 if (fieldType.Type == SymbolType.Enumeration)
@@ -286,6 +286,10 @@ namespace DSharp.Compiler.Compiler
 
             return ((IScriptSymbolTable) currentScope).FindSymbol(name, context, filter);
         }
+
+        public T FindSymbol<T>(string name, ISymbol context, SymbolFilter filter)
+            where T : ISymbol
+            => (T)FindSymbol(name, context, filter);
 
         void ILocalSymbolTable.AddSymbol(LocalSymbol symbol)
         {

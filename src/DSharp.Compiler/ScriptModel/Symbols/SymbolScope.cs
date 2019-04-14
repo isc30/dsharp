@@ -79,5 +79,9 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
             return symbol;
         }
+
+        public T FindSymbol<T>(string name, ISymbol context, SymbolFilter filter)
+            where T : ISymbol
+            => (T)FindSymbol(name, context, filter);
     }
 }

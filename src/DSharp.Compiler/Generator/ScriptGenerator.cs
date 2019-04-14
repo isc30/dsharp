@@ -127,7 +127,7 @@ namespace DSharp.Compiler.Generator
             if (generateModule)
             {
                 Writer.Write($"var $exports = {DSharpStringResources.ScriptExportMember("module")}('");
-                Writer.Write(scriptModel.ScriptMetadata);
+                Writer.Write(scriptModel.ScriptMetadata.ScriptName);
                 Writer.Write("',");
 
                 if (internalTypes.Count != 0 && hasNonModuleInternalTypes)

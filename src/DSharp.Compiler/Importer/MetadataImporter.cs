@@ -842,7 +842,7 @@ namespace DSharp.Compiler.Importer
 
                 if (ignoreNamespace || string.IsNullOrEmpty(scriptNamespace))
                 {
-                    typeSymbol.SetIgnoreNamespace();
+                    typeSymbol.IgnoreNamespace = true;
                 }
                 else
                 {

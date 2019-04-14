@@ -144,7 +144,7 @@ namespace DSharp.Compiler.ScriptModel
                                 continue;
                             }
 
-                            symbol = ((IScriptSymbolTable)importedNamespace).FindSymbol(name, null, SymbolFilter.Types);
+                            symbol = importedNamespace.FindSymbol(name, null, SymbolFilter.Types);
 
                             if (importedNamespace == Namespaces.System)
                             {
@@ -168,10 +168,20 @@ namespace DSharp.Compiler.ScriptModel
                 {
                     symbol = ((IScriptSymbolTable)Namespaces.Global).FindSymbol(name, /* context */ null, SymbolFilter.Types);
                 }
+
+                //We're actually a namespace instead!
+                if(symbol == null && Namespaces.TryGetNamespace(name, out var namespaceSymbol))
+                {
+                    return namespaceSymbol;
+                }
             }
 
             return symbol;
         }
+
+        public T FindSymbol<T>(string name, ISymbol context, SymbolFilter filter)
+            where T : ISymbol
+            => (T)FindSymbol(name, context, filter);
 
         public void AddDependency(ScriptReference dependency)
         {
@@ -280,6 +290,11 @@ namespace DSharp.Compiler.ScriptModel
 
         public INamespaceSymbol GetNamespace(string namespaceName)
         {
+            if(string.IsNullOrEmpty(namespaceName))
+            {
+                return Global;
+            }
+
             if (!TryGetNamespace(namespaceName, out var namespaceSymbol))
             {
                 namespaceSymbol = CreateNamespace(namespaceName);
@@ -442,7 +457,9 @@ namespace DSharp.Compiler.ScriptModel
                 return null;
             }
 
-            INamespaceSymbol namespaceSymbol = root.Namespaces.GetNamespace(result.@namespace) ?? root.Namespaces.System;
+            INamespaceSymbol namespaceSymbol = result.@namespace != null 
+                ? root.Namespaces.GetNamespace(result.@namespace)
+                : root.Namespaces.System;
             Debug.Assert(namespaceSymbol != null);
             TypeSymbol typeSymbol = (TypeSymbol)namespaceSymbol?.FindSymbol(typeName, null, SymbolFilter.Types);
             Debug.Assert(typeSymbol != null);
@@ -513,7 +530,7 @@ namespace DSharp.Compiler.ScriptModel
             IndexerSymbol indexerSymbol = new IndexerSymbol(specificArrayTypeSymbol, itemTypeSymbol, MemberVisibility.Public);
             indexerSymbol.SetScriptIndexer();
             specificArrayTypeSymbol.AddMember(indexerSymbol);
-            specificArrayTypeSymbol.SetIgnoreNamespace();
+            specificArrayTypeSymbol.IgnoreNamespace = true;
             specificArrayTypeSymbol.SetArray();
 
             return specificArrayTypeSymbol;
@@ -530,7 +547,7 @@ namespace DSharp.Compiler.ScriptModel
 
                 if (genericClass.IgnoreNamespace)
                 {
-                    instanceClass.SetIgnoreNamespace();
+                    instanceClass.IgnoreNamespace = true;
                 }
 
                 instanceClass.ScriptNamespace = genericClass.ScriptNamespace;
@@ -541,7 +558,7 @@ namespace DSharp.Compiler.ScriptModel
                 }
                 else if (genericClass.IsTransformAllowed == false)
                 {
-                    instanceClass.DisableNameTransformation();
+                    instanceClass.IsTransformAllowed = false;
                 }
 
                 if (genericClass.IsArray)
@@ -567,7 +584,7 @@ namespace DSharp.Compiler.ScriptModel
 
                 if (genericInterface.IgnoreNamespace)
                 {
-                    instanceInterface.SetIgnoreNamespace();
+                    instanceInterface.IgnoreNamespace = true;
                 }
 
                 if (genericInterface.IsTransformed)
@@ -576,7 +593,7 @@ namespace DSharp.Compiler.ScriptModel
                 }
                 else if (genericInterface.IsTransformAllowed == false)
                 {
-                    instanceInterface.DisableNameTransformation();
+                    instanceInterface.IsTransformAllowed = false;
                 }
 
                 instanceInterface.AddGenericParameters(genericInterface.GenericParameters);
@@ -715,7 +732,7 @@ namespace DSharp.Compiler.ScriptModel
                 }
                 else if (memberSymbol.AssociatedType.IsGeneric &&
                          memberSymbol.AssociatedType.GenericArguments == null &&
-                         memberSymbol.AssociatedType.GenericParameters.Count == typeArguments.Count)
+                         memberSymbol.AssociatedType.GenericParameters.Count() == typeArguments.Count())
                 {
                     ITypeSymbol genericType = CreateGenericTypeSymbol(memberSymbol.AssociatedType, typeArguments);
 
@@ -755,7 +772,7 @@ namespace DSharp.Compiler.ScriptModel
                 }
                 else if (indexer.AssociatedType.IsGeneric &&
                          indexer.AssociatedType.GenericArguments == null &&
-                         indexer.AssociatedType.GenericParameters.Count == typeArguments.Count)
+                         indexer.AssociatedType.GenericParameters.Count() == typeArguments.Count())
                 {
                     ITypeSymbol genericType = CreateGenericTypeSymbol(indexer.AssociatedType, typeArguments);
 

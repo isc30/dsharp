@@ -90,7 +90,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                     if (baseType == null)
                     {
                         baseType =
-                            (ClassSymbol)memberSymbol.Root.Namespaces.System.FindSymbol("Object",
+                            (ClassSymbol)memberSymbol.ScriptModel.Namespaces.System.FindSymbol("Object",
                                 null, SymbolFilter.Types);
                         Debug.Assert(baseType != null);
                     }

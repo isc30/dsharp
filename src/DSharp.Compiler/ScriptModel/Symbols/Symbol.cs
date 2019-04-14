@@ -22,7 +22,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             IsTransformAllowed = true;
         }
 
-        public virtual string Documentation => Root.Documenation.GetSummaryDocumentation(DocumentationId);
+        public virtual string Documentation => ScriptModel.Documenation.GetSummaryDocumentation(DocumentationId);
 
         public virtual string DocumentationId
         {
@@ -34,7 +34,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             }
         }
 
-        public string Name { get; }
+        public virtual string Name { get; }
 
         public virtual string GeneratedName
         {
@@ -49,34 +49,19 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             }
         }
 
-        public bool IsTransformAllowed { get; private set; }
+        public bool IsTransformAllowed { get; set; } = true;
 
         public bool IsTransformed => transformedName != null;
 
         public ISymbol Parent { get; }
 
-        public object ParseContext
-        {
-            get
-            {
-                Debug.Assert(parseContext != null);
+        public object ParseContext { get; set; }
 
-                return parseContext;
-            }
-        }
+        public virtual IScriptModel ScriptModel => Parent.ScriptModel;
 
-        public virtual IScriptModel Root => Parent.Root;
-
-        public SymbolType Type { get; }
+        public virtual SymbolType Type { get; }
 
         public virtual IEnumerable<ISymbol> Symbols { get; } = Enumerable.Empty<ISymbol>();
-
-        public void DisableNameTransformation()
-        {
-            Debug.Assert(IsTransformAllowed);
-
-            IsTransformAllowed = false;
-        }
 
         public abstract bool MatchFilter(SymbolFilter filter);
 
@@ -89,18 +74,15 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             IsTransformAllowed = false;
         }
 
-        public void SetParseContext(object parseContext)
-        {
-            Debug.Assert(this.parseContext == null);
-            Debug.Assert(parseContext != null);
-            this.parseContext = parseContext;
-        }
-
         public override string ToString()
         {
             return Name;
         }
 
-        public virtual ISymbol FindSymbol(string name, ISymbol context, SymbolFilter filter) { return null; }
+        public virtual ISymbol FindSymbol(string name, ISymbol context, SymbolFilter filter)
+            => null;
+
+        T IScriptSymbolTable.FindSymbol<T>(string name, ISymbol context, SymbolFilter filter)
+            => (T)FindSymbol(name, context, filter);
     }
 }

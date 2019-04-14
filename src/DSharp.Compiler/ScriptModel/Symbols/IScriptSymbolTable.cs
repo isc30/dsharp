@@ -11,6 +11,9 @@ namespace DSharp.Compiler.ScriptModel.Symbols
     {
         IEnumerable<ISymbol> Symbols { get; }
 
+        T FindSymbol<T>(string name, ISymbol context, SymbolFilter filter)
+            where T : ISymbol;
+
         ISymbol FindSymbol(string name, ISymbol context, SymbolFilter filter);
     }
 }

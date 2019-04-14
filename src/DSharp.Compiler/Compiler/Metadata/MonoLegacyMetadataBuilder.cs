@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Xml;
 using DSharp.Compiler.CodeModel;
 using DSharp.Compiler.CodeModel.Attributes;
@@ -11,11 +10,9 @@ using DSharp.Compiler.CodeModel.Members;
 using DSharp.Compiler.CodeModel.Names;
 using DSharp.Compiler.CodeModel.Tokens;
 using DSharp.Compiler.CodeModel.Types;
-using DSharp.Compiler.Errors;
 using DSharp.Compiler.Extensions;
 using DSharp.Compiler.ScriptModel;
 using DSharp.Compiler.ScriptModel.Symbols;
-using Microsoft.CodeAnalysis.CSharp;
 
 namespace DSharp.Compiler.Metadata
 {
@@ -25,7 +22,7 @@ namespace DSharp.Compiler.Metadata
 
         private IScriptModel scriptModel;
 
-        public ICollection<TypeSymbol> BuildMetadata(
+        public ICollection<ITypeSymbol> BuildMetadata(
             ParseNodeList compilationUnits,
             IScriptModel scriptModel,
             IScriptCompliationOptions options)
@@ -36,7 +33,7 @@ namespace DSharp.Compiler.Metadata
             this.scriptModel = scriptModel;
             this.options = options;
 
-            List<TypeSymbol> types = new List<TypeSymbol>();
+            List<ITypeSymbol> types = new List<ITypeSymbol>();
 
             // Build all the types first.
             // Types need to be loaded upfront so that they can be used in resolving types associated
@@ -144,30 +141,30 @@ namespace DSharp.Compiler.Metadata
 
                                 // Merge interesting bits of information onto the primary type symbol as well
                                 // representing this partial class
-                                BuildType(partialTypeSymbol, userTypeNode);
+                                MergeType(partialTypeSymbol, userTypeNode);
                             }
                         }
 
-                        TypeSymbol typeSymbol = BuildType(userTypeNode, namespaceSymbol);
+                        TypeSymbol generatedTypeSymbol = (TypeSymbol)BuildType(userTypeNode, namespaceSymbol);
 
-                        if (typeSymbol != null)
+                        if (generatedTypeSymbol != null)
                         {
-                            typeSymbol.SetParseContext(userTypeNode);
-                            typeSymbol.SetParentSymbolTable(scriptModel);
+                            generatedTypeSymbol.ParseContext = userTypeNode;
+                            generatedTypeSymbol.SetParentSymbolTable(scriptModel);
 
                             if (imports != null)
                             {
-                                typeSymbol.SetImports(imports);
+                                generatedTypeSymbol.SetImports(imports);
                             }
 
                             if (aliases != null)
                             {
-                                typeSymbol.SetAliases(aliases);
+                                generatedTypeSymbol.SetAliases(aliases);
                             }
 
                             if (isPartial == false)
                             {
-                                namespaceSymbol.AddType(typeSymbol);
+                                namespaceSymbol.AddType(generatedTypeSymbol);
                             }
                             else
                             {
@@ -184,10 +181,10 @@ namespace DSharp.Compiler.Metadata
                                 // context of type-symbol level bits of information such as the list of
                                 // imports, that are consumed when generating code for the members defined
                                 // within a specific partial class.
-                                ((ClassSymbol)typeSymbol).SetPrimaryPartialClass(partialTypeSymbol);
+                                ((ClassSymbol)generatedTypeSymbol).SetPrimaryPartialClass(partialTypeSymbol);
                             }
 
-                            types.Add(typeSymbol);
+                            types.Add(generatedTypeSymbol);
                         }
                     }
                 }
@@ -266,7 +263,7 @@ namespace DSharp.Compiler.Metadata
 
         private EventSymbol BuildEvent(EventDeclarationNode eventNode, TypeSymbol typeSymbol)
         {
-            ITypeSymbol handlerType = typeSymbol.Root.SymbolResolver.ResolveType(eventNode.Type, scriptModel, typeSymbol);
+            ITypeSymbol handlerType = typeSymbol.ScriptModel.SymbolResolver.ResolveType(eventNode.Type, scriptModel, typeSymbol);
             Debug.Assert(handlerType != null);
 
             if (handlerType != null)
@@ -312,7 +309,7 @@ namespace DSharp.Compiler.Metadata
 
         private FieldSymbol BuildField(FieldDeclarationNode fieldNode, TypeSymbol typeSymbol)
         {
-            ITypeSymbol fieldType = typeSymbol.Root.SymbolResolver.ResolveType(fieldNode.Type, scriptModel, typeSymbol);
+            ITypeSymbol fieldType = typeSymbol.ScriptModel.SymbolResolver.ResolveType(fieldNode.Type, scriptModel, typeSymbol);
             Debug.Assert(fieldType != null);
 
             if (fieldType != null)
@@ -354,7 +351,7 @@ namespace DSharp.Compiler.Metadata
 
         private IndexerSymbol BuildIndexer(IndexerDeclarationNode indexerNode, TypeSymbol typeSymbol)
         {
-            ITypeSymbol indexerType = typeSymbol.Root.SymbolResolver.ResolveType(indexerNode.Type, scriptModel, typeSymbol);
+            ITypeSymbol indexerType = typeSymbol.ScriptModel.SymbolResolver.ResolveType(indexerNode.Type, scriptModel, typeSymbol);
             Debug.Assert(indexerType != null);
 
             if (indexerType != null)
@@ -393,7 +390,7 @@ namespace DSharp.Compiler.Metadata
 
                     if (paramSymbol != null)
                     {
-                        paramSymbol.SetParseContext(parameterNode);
+                        paramSymbol.ParseContext = parameterNode;
                         indexer.AddParameter(paramSymbol);
                     }
                 }
@@ -521,7 +518,7 @@ namespace DSharp.Compiler.Metadata
 
                     if (preserveName)
                     {
-                        memberSymbol.DisableNameTransformation();
+                        memberSymbol.IsTransformAllowed = false;
                     }
                 }
             }
@@ -534,7 +531,7 @@ namespace DSharp.Compiler.Metadata
                 DelegateTypeNode delegateNode = (DelegateTypeNode)typeSymbol.ParseContext;
 
                 ITypeSymbol returnType =
-                    typeSymbol.Root.SymbolResolver.ResolveType(delegateNode.ReturnType, scriptModel, typeSymbol);
+                    typeSymbol.ScriptModel.SymbolResolver.ResolveType(delegateNode.ReturnType, scriptModel, typeSymbol);
                 Debug.Assert(returnType != null);
 
                 if (returnType != null)
@@ -605,7 +602,7 @@ namespace DSharp.Compiler.Metadata
 
                 if (memberSymbol != null)
                 {
-                    memberSymbol.SetParseContext(member);
+                    memberSymbol.ParseContext = member;
 
                     if (typeSymbol.IsApplicationType == false &&
                         (memberSymbol.Type == SymbolType.Constructor ||
@@ -638,7 +635,7 @@ namespace DSharp.Compiler.Metadata
                                 new FieldSymbol("__" + Utility.CreateCamelCaseName(eventSymbol.Name), typeSymbol,
                                     eventSymbol.AssociatedType);
                             fieldSymbol.SetVisibility(visibility);
-                            fieldSymbol.SetParseContext(((EventDeclarationNode)eventSymbol.ParseContext).Field);
+                            fieldSymbol.ParseContext = ((EventDeclarationNode)eventSymbol.ParseContext).Field;
 
                             typeSymbol.AddMember(fieldSymbol);
                         }
@@ -657,7 +654,7 @@ namespace DSharp.Compiler.Metadata
             }
             else
             {
-                ITypeSymbol returnType = typeSymbol.Root.SymbolResolver.ResolveType(methodNode.Type, scriptModel, typeSymbol);
+                ITypeSymbol returnType = typeSymbol.ScriptModel.SymbolResolver.ResolveType(methodNode.Type, scriptModel, typeSymbol);
                 Debug.Assert(returnType != null);
 
                 if (returnType != null)
@@ -721,7 +718,7 @@ namespace DSharp.Compiler.Metadata
 
                         if (paramSymbol != null)
                         {
-                            paramSymbol.SetParseContext(parameterNode);
+                            paramSymbol.ParseContext = parameterNode;
                             method.AddParameter(paramSymbol);
                         }
                     }
@@ -753,7 +750,7 @@ namespace DSharp.Compiler.Metadata
             }
 
             ITypeSymbol parameterType =
-                methodSymbol.Root.SymbolResolver.ResolveType(parameterNode.Type, scriptModel, methodSymbol);
+                methodSymbol.ScriptModel.SymbolResolver.ResolveType(parameterNode.Type, scriptModel, methodSymbol);
             Debug.Assert(parameterType != null);
 
             if (parameterType != null)
@@ -767,7 +764,7 @@ namespace DSharp.Compiler.Metadata
         private ParameterSymbol BuildParameter(ParameterNode parameterNode, IndexerSymbol indexerSymbol)
         {
             ITypeSymbol parameterType =
-                indexerSymbol.Root.SymbolResolver.ResolveType(parameterNode.Type, scriptModel, indexerSymbol);
+                indexerSymbol.ScriptModel.SymbolResolver.ResolveType(parameterNode.Type, scriptModel, indexerSymbol);
             Debug.Assert(parameterType != null);
 
             if (parameterType != null)
@@ -780,7 +777,7 @@ namespace DSharp.Compiler.Metadata
 
         private PropertySymbol BuildProperty(PropertyDeclarationNode propertyNode, TypeSymbol typeSymbol)
         {
-            ITypeSymbol propertyType = typeSymbol.Root.SymbolResolver.ResolveType(propertyNode.Type, scriptModel, typeSymbol);
+            ITypeSymbol propertyType = typeSymbol.ScriptModel.SymbolResolver.ResolveType(propertyNode.Type, scriptModel, typeSymbol);
             Debug.Assert(propertyType != null);
 
             if (propertyType != null)
@@ -823,7 +820,7 @@ namespace DSharp.Compiler.Metadata
                 return null;
             }
 
-            ITypeSymbol fieldType = typeSymbol.Root.SymbolResolver.ResolveType(propertyNode.Type, scriptModel, typeSymbol);
+            ITypeSymbol fieldType = typeSymbol.ScriptModel.SymbolResolver.ResolveType(propertyNode.Type, scriptModel, typeSymbol);
             Debug.Assert(fieldType != null);
 
             if (fieldType != null)
@@ -863,12 +860,12 @@ namespace DSharp.Compiler.Metadata
             }
         }
 
-        private TypeSymbol BuildType(UserTypeNode typeNode, INamespaceSymbol namespaceSymbol)
+        private ITypeSymbol BuildType(UserTypeNode typeNode, INamespaceSymbol namespaceSymbol)
         {
             Debug.Assert(typeNode != null);
             Debug.Assert(namespaceSymbol != null);
 
-            TypeSymbol typeSymbol = null;
+            ITypeSymbol typeSymbol = null;
             ParseNodeList attributes = typeNode.Attributes;
 
             if (typeNode.Type == TokenType.Class || typeNode.Type == TokenType.Struct)
@@ -894,12 +891,6 @@ namespace DSharp.Compiler.Metadata
                     {
                         baseTypeNameNode = customTypeNode.BaseTypes[0] as NameNode;
                     }
-
-                    if (baseTypeNameNode != null &&
-                        string.CompareOrdinal(baseTypeNameNode.Name, "TestClass") == 0)
-                    {
-                        ((ClassSymbol)typeSymbol).SetTestClass();
-                    }
                 }
             }
             else if (typeNode.Type == TokenType.Interface)
@@ -921,9 +912,10 @@ namespace DSharp.Compiler.Metadata
             }
             else if (typeNode.Type == TokenType.Delegate)
             {
-                typeSymbol = new DelegateSymbol(typeNode.Name, namespaceSymbol);
-                typeSymbol.SetTransformedName("Function");
-                typeSymbol.SetIgnoreNamespace();
+                var delegateSymbol = new DelegateSymbol(typeNode.Name, namespaceSymbol);
+                delegateSymbol.SetTransformedName("Function");
+                delegateSymbol.IgnoreNamespace = true;
+                typeSymbol = delegateSymbol;
             }
 
             Debug.Assert(typeSymbol != null, "Unexpected type node " + typeNode.Type);
@@ -932,22 +924,16 @@ namespace DSharp.Compiler.Metadata
             {
                 if ((typeNode.Modifiers & Modifiers.Public) != 0)
                 {
-                    typeSymbol.SetPublic();
+                    ((TypeSymbol)typeSymbol).SetPublic();
                 }
 
-                BuildType(typeSymbol, typeNode);
-
-                if (namespaceSymbol.Name.EndsWith(".Tests", StringComparison.Ordinal) ||
-                    namespaceSymbol.Name.IndexOf(".Tests.", StringComparison.Ordinal) > 0)
-                {
-                    typeSymbol.SetTestType();
-                }
+                MergeType(typeSymbol, typeNode);
             }
 
             return typeSymbol;
         }
 
-        private void BuildType(TypeSymbol typeSymbol, UserTypeNode typeNode)
+        private void MergeType(ITypeSymbol typeSymbol, UserTypeNode typeNode)
         {
             Debug.Assert(typeSymbol != null);
             Debug.Assert(typeNode != null);
@@ -987,22 +973,22 @@ namespace DSharp.Compiler.Metadata
                     dependency = new ScriptReference(dependencyName, dependencyIdentifier);
                 }
 
-                typeSymbol.SetImported(dependency);
+                ((TypeSymbol)typeSymbol).SetImported(dependency);
 
                 if (AttributeNode.FindAttribute(attributes, "ScriptIgnoreNamespace") != null ||
                     dependency == null)
                 {
-                    typeSymbol.SetIgnoreNamespace();
+                    typeSymbol.IgnoreNamespace = true;
                 }
                 else
                 {
-                    typeSymbol.ScriptNamespace = dependency.Identifier;
+                    ((TypeSymbol)typeSymbol).ScriptNamespace = dependency.Identifier;
                 }
             }
 
             if (AttributeNode.FindAttribute(attributes, "PreserveName") != null)
             {
-                typeSymbol.DisableNameTransformation();
+                typeSymbol.IsTransformAllowed = false;
             }
 
             string scriptName = attributes.GetAttributeValue("ScriptName");

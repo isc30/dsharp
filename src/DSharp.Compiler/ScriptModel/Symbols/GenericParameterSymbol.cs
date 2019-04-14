@@ -5,7 +5,7 @@
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
-    public sealed class GenericParameterSymbol : TypeSymbol
+    public sealed class GenericParameterSymbol : TypeSymbol, IGenericParameterSymbol
     {
         public GenericParameterSymbol(int index, string name, bool typeParameter, INamespaceSymbol parent)
             : base(SymbolType.GenericParameter, name, parent)
@@ -17,5 +17,12 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         public int Index { get; }
 
         public bool IsTypeParameter { get; }
+    }
+
+    public interface IGenericParameterSymbol : ITypeSymbol
+    {
+        int Index { get; }
+
+        bool IsTypeParameter { get; }
     }
 }

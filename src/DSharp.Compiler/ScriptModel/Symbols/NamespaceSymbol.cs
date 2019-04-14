@@ -3,7 +3,6 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -17,14 +16,14 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         public NamespaceSymbol(string name, IScriptModel root)
             : base(SymbolType.Namespace, name, null)
         {
-            Root = root;
+            ScriptModel = root;
             types = new List<ITypeSymbol>();
             typeMap = new Dictionary<string, ITypeSymbol>();
         }
 
         public bool HasApplicationTypes { get; private set; }
 
-        public override IScriptModel Root { get; }
+        public override IScriptModel ScriptModel { get; }
 
         public ICollection<ITypeSymbol> Types => types;
 
@@ -65,7 +64,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 return typeMap[name];
             }
 
-            return null;
+            return default;
         }
     }
 }

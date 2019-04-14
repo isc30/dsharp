@@ -13,7 +13,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             Mode = mode;
         }
 
-        public override string Documentation => Root.Documenation.GetParameterDocumentation(Parent.DocumentationId, Name);
+        public override string Documentation => ScriptModel.Documenation.GetParameterDocumentation(Parent.DocumentationId, Name);
 
         public override string DocumentationId
         {
