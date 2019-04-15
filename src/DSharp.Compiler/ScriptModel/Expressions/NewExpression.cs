@@ -19,7 +19,7 @@ namespace DSharp.Compiler.ScriptModel.Expressions
             AssociatedType = associatedType;
         }
 
-        public NewExpression(Expression typeExpression, TypeSymbol associatedType)
+        public NewExpression(Expression typeExpression, ITypeSymbol associatedType)
             : base(ExpressionType.New, associatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers)
         {
             TypeExpression = typeExpression;

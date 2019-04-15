@@ -7,7 +7,7 @@ namespace DSharp.Compiler.Extensions
 {
     public static class TypeSymbolExtensions
     {
-        internal static ICollection<InterfaceSymbol> GetInterfaces(this TypeSymbol symbol)
+        internal static ICollection<InterfaceSymbol> GetInterfaces(this ITypeSymbol symbol)
         {
             if (symbol is ClassSymbol classSymbol)
             {
@@ -29,7 +29,7 @@ namespace DSharp.Compiler.Extensions
             return null;
         }
 
-        internal static bool IsCollectionType(this TypeSymbol symbol)
+        internal static bool IsCollectionType(this ITypeSymbol symbol)
         {
             var interfaces = symbol.GetInterfaces();
 

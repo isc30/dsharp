@@ -76,8 +76,12 @@ namespace DSharp.Compiler.ScriptModel.Symbols
     {
         ITypeSymbol AssociatedType { get; }
 
-        MemberVisibility Visibility { get; }
+        bool IsPublic { get; }
 
-        void SetInterfaceMember(IMemberSymbol memberSymbol);
+        MemberVisibility Visibility { get; set; }
+
+        bool IsCasePreserved { get; set; }
+
+        IMemberSymbol InterfaceMember { get; set; }
     }
 }

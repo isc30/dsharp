@@ -5,7 +5,7 @@
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
-    public sealed class GenericParameterSymbol : TypeSymbol, IGenericParameterSymbol
+    public sealed class GenericParameterSymbol : ITypeSymbol, IGenericParameterSymbol
     {
         public GenericParameterSymbol(int index, string name, bool typeParameter, INamespaceSymbol parent)
             : base(SymbolType.GenericParameter, name, parent)

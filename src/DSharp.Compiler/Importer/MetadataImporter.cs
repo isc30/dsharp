@@ -18,7 +18,7 @@ namespace DSharp.Compiler.Importer
     {
         private readonly IErrorHandler errorHandler;
 
-        private List<TypeSymbol> importedTypes;
+        private List<ITypeSymbol> importedTypes;
         private bool resolveError;
 
         private IScriptModel scriptModel;
@@ -30,13 +30,13 @@ namespace DSharp.Compiler.Importer
             this.errorHandler = errorHandler;
         }
 
-        private ICollection<TypeSymbol> ImportAssemblies(MetadataSource mdSource)
+        private ICollection<ITypeSymbol> ImportAssemblies(MetadataSource mdSource)
         {
-            importedTypes = new List<TypeSymbol>();
+            importedTypes = new List<ITypeSymbol>();
 
             ImportScriptAssembly(mdSource, mdSource.CoreAssemblyPath, /* coreAssembly */ true);
 
-            foreach (TypeSymbol typeSymbol in importedTypes)
+            foreach (ITypeSymbol typeSymbol in importedTypes)
                 if (typeSymbol.Type == SymbolType.Class &&
                     typeSymbol.Name.Equals("Array", StringComparison.Ordinal))
                 {
@@ -45,7 +45,7 @@ namespace DSharp.Compiler.Importer
                     ImportMembers(typeSymbol);
                 }
 
-            foreach (TypeSymbol typeSymbol in importedTypes)
+            foreach (ITypeSymbol typeSymbol in importedTypes)
                 if (typeSymbol.IsGeneric)
                 {
                     // Generics are also special - they are used to build other generic instances
@@ -54,7 +54,7 @@ namespace DSharp.Compiler.Importer
                     ImportMembers(typeSymbol);
                 }
 
-            foreach (TypeSymbol typeSymbol in importedTypes)
+            foreach (ITypeSymbol typeSymbol in importedTypes)
             {
                 if (typeSymbol.IsGeneric == false &&
                     (typeSymbol.Type != SymbolType.Class ||
@@ -104,7 +104,7 @@ namespace DSharp.Compiler.Importer
                 ImportScriptAssembly(mdSource, assemblyPath, /* coreAssembly */ false);
 
             // Resolve Base Types
-            foreach (TypeSymbol typeSymbol in importedTypes)
+            foreach (ITypeSymbol typeSymbol in importedTypes)
                 if (typeSymbol.Type == SymbolType.Class)
                 {
                     ImportBaseType((ClassSymbol)typeSymbol);
@@ -115,7 +115,7 @@ namespace DSharp.Compiler.Importer
                 }
 
             // Import members
-            foreach (TypeSymbol typeSymbol in importedTypes)
+            foreach (ITypeSymbol typeSymbol in importedTypes)
             {
                 if (typeSymbol.IsCoreType)
                 {
@@ -167,7 +167,7 @@ namespace DSharp.Compiler.Importer
             return interfaceReferences.Select(i => (InterfaceSymbol)ResolveType(i.InterfaceType)).ToList();
         }
 
-        private void ImportDelegateInvoke(TypeSymbol delegateTypeSymbol)
+        private void ImportDelegateInvoke(ITypeSymbol delegateTypeSymbol)
         {
             TypeDefinition type = (TypeDefinition)delegateTypeSymbol.MetadataReference;
 
@@ -195,7 +195,7 @@ namespace DSharp.Compiler.Importer
             }
         }
 
-        private void ImportEnumFields(TypeSymbol enumTypeSymbol)
+        private void ImportEnumFields(ITypeSymbol enumTypeSymbol)
         {
             TypeDefinition type = (TypeDefinition)enumTypeSymbol.MetadataReference;
 
@@ -230,7 +230,7 @@ namespace DSharp.Compiler.Importer
             }
         }
 
-        private void ImportEvents(TypeSymbol typeSymbol)
+        private void ImportEvents(ITypeSymbol typeSymbol)
         {
             TypeDefinition type = (TypeDefinition)typeSymbol.MetadataReference;
 
@@ -273,7 +273,7 @@ namespace DSharp.Compiler.Importer
             }
         }
 
-        private void ImportFields(TypeSymbol typeSymbol)
+        private void ImportFields(ITypeSymbol typeSymbol)
         {
             TypeDefinition type = (TypeDefinition)typeSymbol.MetadataReference;
 
@@ -316,7 +316,7 @@ namespace DSharp.Compiler.Importer
 
                 FieldSymbol fieldSymbol = new FieldSymbol(fieldName, typeSymbol, fieldType);
 
-                fieldSymbol.SetVisibility(visibility);
+                fieldSymbol.Visibility = visibility;
                 ImportMemberDetails(fieldSymbol, null, field);
 
                 typeSymbol.AddMember(fieldSymbol);
@@ -344,12 +344,12 @@ namespace DSharp.Compiler.Importer
                     visibility |= MemberVisibility.Protected;
                 }
 
-                memberSymbol.SetVisibility(visibility);
+                memberSymbol.Visibility =visibility;
             }
 
             string scriptName = MetadataHelpers.GetScriptName(attributeProvider, out bool _, out bool preserveCase);
 
-            memberSymbol.SetNameCasing(preserveCase);
+            memberSymbol.IsCasePreserved = preserveCase;
 
             if (scriptName != null)
             {
@@ -359,7 +359,7 @@ namespace DSharp.Compiler.Importer
             // PreserveName is ignored - it only is used for internal members, which are not imported.
         }
 
-        private void ImportMembers(TypeSymbol typeSymbol)
+        private void ImportMembers(ITypeSymbol typeSymbol)
         {
             switch (typeSymbol.Type)
             {
@@ -392,7 +392,7 @@ namespace DSharp.Compiler.Importer
             }
         }
 
-        public ICollection<TypeSymbol> ImportMetadata(ICollection<string> references, IScriptModel scriptModel)
+        public ICollection<ITypeSymbol> ImportMetadata(ICollection<string> references, IScriptModel scriptModel)
         {
             Debug.Assert(references != null);
             Debug.Assert(scriptModel != null);
@@ -402,7 +402,7 @@ namespace DSharp.Compiler.Importer
             MetadataSource mdSource = new MetadataSource();
             bool hasLoadErrors = mdSource.LoadReferences(references, errorHandler);
 
-            ICollection<TypeSymbol> importedTypes = null;
+            ICollection<ITypeSymbol> importedTypes = null;
 
             if (!hasLoadErrors)
             {
@@ -414,7 +414,7 @@ namespace DSharp.Compiler.Importer
                 : importedTypes;
         }
 
-        private void ImportMethods(TypeSymbol typeSymbol)
+        private void ImportMethods(ITypeSymbol typeSymbol)
         {
             // NOTE: We do not import parameters for imported members.
             //       Parameters are used in the script model generation phase to populate
@@ -506,7 +506,7 @@ namespace DSharp.Compiler.Importer
             }
         }
 
-        private void ImportProperties(TypeSymbol typeSymbol)
+        private void ImportProperties(ITypeSymbol typeSymbol)
         {
             TypeDefinition type = (TypeDefinition)typeSymbol.MetadataReference;
 
@@ -575,7 +575,7 @@ namespace DSharp.Compiler.Importer
                 {
                     propertySymbol = new PropertySymbol(propertyName, typeSymbol, propertyType);
                     ImportMemberDetails(propertySymbol, property.GetMethod, property);
-                    propertySymbol.SetNameCasing(true);
+                    propertySymbol.IsCasePreserved = true;
                 }
 
                 if (propertySymbol != null)
@@ -611,23 +611,23 @@ namespace DSharp.Compiler.Importer
                 Func<string, ISymbol, SymbolFilter, ISymbol> findSymbolMethod 
                     = scriptModel.Namespaces.System.FindSymbol;
 
-                TypeSymbol objectType =
-                    (TypeSymbol)findSymbolMethod("Object", null,
+                ITypeSymbol objectType =
+                    (ITypeSymbol)findSymbolMethod("Object", null,
                         SymbolFilter.Types);
                 Debug.Assert(objectType != null);
 
-                TypeSymbol stringType =
-                    (TypeSymbol)findSymbolMethod("String", null,
+                ITypeSymbol stringType =
+                    (ITypeSymbol)findSymbolMethod("String", null,
                         SymbolFilter.Types);
                 Debug.Assert(stringType != null);
 
-                TypeSymbol boolType =
-                    (TypeSymbol)findSymbolMethod("Boolean", null,
+                ITypeSymbol boolType =
+                    (ITypeSymbol)findSymbolMethod("Boolean", null,
                         SymbolFilter.Types);
                 Debug.Assert(boolType != null);
 
-                TypeSymbol dateType =
-                    (TypeSymbol)findSymbolMethod("Date", null, SymbolFilter.Types);
+                ITypeSymbol dateType =
+                    (ITypeSymbol)findSymbolMethod("Date", null, SymbolFilter.Types);
                 Debug.Assert(dateType != null);
 
                 // Enumerate - IEnumerable.GetEnumerator gets mapped to this
@@ -662,8 +662,8 @@ namespace DSharp.Compiler.Importer
 
             if (memberSet == PseudoClassMembers.Arguments)
             {
-                TypeSymbol objectType =
-                    (TypeSymbol)scriptModel.Namespaces.System.FindSymbol(nameof(Object), null,
+                ITypeSymbol objectType =
+                    (ITypeSymbol)scriptModel.Namespaces.System.FindSymbol(nameof(Object), null,
                         SymbolFilter.Types);
                 Debug.Assert(objectType != null);
 
@@ -679,12 +679,12 @@ namespace DSharp.Compiler.Importer
             {
                 Func<string, ISymbol, SymbolFilter, ISymbol> findSymbolMethod = scriptModel.Namespaces.System.FindSymbol;
 
-                TypeSymbol intType =
-                    (TypeSymbol)findSymbolMethod(nameof(Int32), null, SymbolFilter.Types);
+                ITypeSymbol intType =
+                    (ITypeSymbol)findSymbolMethod(nameof(Int32), null, SymbolFilter.Types);
                 Debug.Assert(intType != null);
 
-                TypeSymbol stringType =
-                    (TypeSymbol)findSymbolMethod(nameof(String), null,
+                ITypeSymbol stringType =
+                    (ITypeSymbol)findSymbolMethod(nameof(String), null,
                         SymbolFilter.Types);
                 Debug.Assert(stringType != null);
 
@@ -764,7 +764,7 @@ namespace DSharp.Compiler.Importer
             string scriptName = MetadataHelpers.GetScriptName(type, out dummy, out dummy);
 
             INamespaceSymbol namespaceSymbol = scriptModel.Namespaces.GetNamespace(namespaceName);
-            TypeSymbol typeSymbol = null;
+            ITypeSymbol typeSymbol = null;
 
             if (type.IsInterface)
             {
@@ -863,7 +863,7 @@ namespace DSharp.Compiler.Importer
             }
         }
 
-        private void SetArrayTypeMetadata(TypeDefinition type, TypeSymbol symbol, string scriptName)
+        private void SetArrayTypeMetadata(TypeDefinition type, ITypeSymbol symbol, string scriptName)
         {
             if (scriptName == nameof(Array))
             {
@@ -906,7 +906,7 @@ namespace DSharp.Compiler.Importer
             }
             else
             {
-                typeSymbol = (TypeSymbol)((IScriptSymbolTable)scriptModel).FindSymbol(name, null, SymbolFilter.Types);
+                typeSymbol = (ITypeSymbol)((IScriptSymbolTable)scriptModel).FindSymbol(name, null, SymbolFilter.Types);
 
                 if (typeSymbol == null)
                 {
@@ -948,5 +948,32 @@ namespace DSharp.Compiler.Importer
 
             Object
         }
+
+        //Potentially replace this class with the below
+        //private class RoslynMetadataImporter
+        //{
+        //    public CSharpCompilation ImportMetadata(CSharpCompilation compilation, IEnumerable<string> references)
+        //    {
+        //        var metadataReferences = references.Select(r => MetadataReference.CreateFromFile(r));
+
+        //        compilation = compilation.WithReferences(metadataReferences);
+
+        //        foreach (var reference in metadataReferences)
+        //        {
+        //            var metadata = reference.GetMetadata() as AssemblyMetadata;
+        //            foreach (var module in metadata.GetModules())
+        //            {
+        //                var metadataReader = module.GetMetadataReader();
+        //                foreach (var typeDefinition in metadataReader.TypeDefinitions.Select(def => metadataReader.GetTypeDefinition(def)))
+        //                {
+        //                    var ns = metadataReader.GetNamespaceDefinition(typeDefinition.NamespaceDefinition);
+        //                    Console.WriteLine($"Reading Type: {metadataReader.GetString(typeDefinition.Name)}, Namespace: {metadataReader.GetString(ns.Name)}, Module: {module.Name}");
+        //                }
+        //            }
+        //        }
+
+        //        return compilation;
+        //    }
+        //}
     }
 }

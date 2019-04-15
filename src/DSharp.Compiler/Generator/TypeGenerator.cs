@@ -294,7 +294,7 @@ namespace DSharp.Compiler.Generator
             writer.WriteLine();
         }
 
-        public static void GenerateRegistrationScript(ScriptGenerator generator, TypeSymbol typeSymbol)
+        public static void GenerateRegistrationScript(ScriptGenerator generator, ITypeSymbol typeSymbol)
         {
             ClassSymbol classSymbol = typeSymbol as ClassSymbol;
 
@@ -522,7 +522,7 @@ namespace DSharp.Compiler.Generator
             writer.WriteLine();
         }
 
-        public static void GenerateScript(ScriptGenerator generator, TypeSymbol typeSymbol)
+        public static void GenerateScript(ScriptGenerator generator, ITypeSymbol typeSymbol)
         {
             Debug.Assert(generator != null);
             Debug.Assert(typeSymbol != null);

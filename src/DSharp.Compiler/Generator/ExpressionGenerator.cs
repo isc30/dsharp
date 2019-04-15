@@ -817,7 +817,7 @@ namespace DSharp.Compiler.Generator
                 {
                     textValue = Utility.QuoteString(value.ToString());
                 }
-                else if (value is TypeSymbol typeSymbol)
+                else if (value is ITypeSymbol typeSymbol)
                 {
                     textValue = typeSymbol.FullGeneratedName;
                 }

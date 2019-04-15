@@ -9,10 +9,10 @@ namespace DSharp.Compiler.ScriptModel.Symbols
     {
         public AnonymousMethodSymbol(CodeMemberSymbol containingMember, IScriptSymbolTable stackContext,
                                      ITypeSymbol returnType, bool isStatic)
-            : base(SymbolType.AnonymousMethod, /* name */ string.Empty, (TypeSymbol) containingMember.Parent,
+            : base(SymbolType.AnonymousMethod, /* name */ string.Empty, (ITypeSymbol) containingMember.Parent,
                 returnType)
         {
-            SetVisibility(isStatic ? MemberVisibility.Public | MemberVisibility.Static : MemberVisibility.Public);
+            Visibility = isStatic ? MemberVisibility.Public | MemberVisibility.Static : MemberVisibility.Public;
             ContainingMember = containingMember;
             StackContext = stackContext;
 

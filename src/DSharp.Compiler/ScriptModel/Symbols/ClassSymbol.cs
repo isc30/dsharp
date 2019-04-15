@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
-    internal class ClassSymbol : TypeSymbol
+    internal class ClassSymbol : ITypeSymbol
     {
         private ClassSymbol baseClass;
 

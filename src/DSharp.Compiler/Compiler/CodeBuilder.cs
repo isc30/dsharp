@@ -31,7 +31,7 @@ namespace DSharp.Compiler.Compiler
                     continue;
                 }
 
-                foreach (TypeSymbol type in namespaceSymbol.Types)
+                foreach (ITypeSymbol type in namespaceSymbol.Types)
                 {
                     if (type.IsApplicationType == false)
                     {

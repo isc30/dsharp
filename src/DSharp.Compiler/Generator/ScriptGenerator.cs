@@ -41,16 +41,16 @@ namespace DSharp.Compiler.Generator
         {
             Debug.Assert(scriptModel != null);
 
-            List<TypeSymbol> types = new List<TypeSymbol>();
-            List<TypeSymbol> publicTypes = new List<TypeSymbol>();
-            List<TypeSymbol> internalTypes = new List<TypeSymbol>();
+            List<ITypeSymbol> types = new List<ITypeSymbol>();
+            List<ITypeSymbol> publicTypes = new List<ITypeSymbol>();
+            List<ITypeSymbol> internalTypes = new List<ITypeSymbol>();
 
             bool hasNonModuleInternalTypes = false;
 
             foreach (NamespaceSymbol namespaceSymbol in scriptModel.Namespaces)
                 if (namespaceSymbol.HasApplicationTypes)
                 {
-                    foreach (TypeSymbol type in namespaceSymbol.Types)
+                    foreach (ITypeSymbol type in namespaceSymbol.Types)
                     {
                         if (type.IsApplicationType == false)
                         {
@@ -93,7 +93,7 @@ namespace DSharp.Compiler.Generator
 
             // Sort the types, so similar types of types are grouped, and parent classes
             // come before derived classes.
-            IComparer<TypeSymbol> typeComparer = new TypeComparer();
+            IComparer<ITypeSymbol> typeComparer = new TypeComparer();
             types = types.OrderBy(t => t, typeComparer).ToList();
             publicTypes = publicTypes.OrderBy(t => t, typeComparer).ToList();
             internalTypes = internalTypes.OrderBy(t => t, typeComparer).ToList();
@@ -119,7 +119,7 @@ namespace DSharp.Compiler.Generator
                 Writer.Indent++;
             }
 
-            foreach (TypeSymbol type in types) TypeGenerator.GenerateScript(this, type);
+            foreach (ITypeSymbol type in types) TypeGenerator.GenerateScript(this, type);
 
             bool generateModule = publicTypes.Count != 0 ||
                                   internalTypes.Count != 0 && hasNonModuleInternalTypes;
@@ -138,7 +138,7 @@ namespace DSharp.Compiler.Generator
                     Writer.Indent++;
                     bool firstType = true;
 
-                    foreach (TypeSymbol type in internalTypes)
+                    foreach (ITypeSymbol type in internalTypes)
                     {
                         if (type.Type == SymbolType.Class &&
                             (((ClassSymbol) type).IsExtenderClass || ((ClassSymbol) type).IsModuleClass))
@@ -179,7 +179,7 @@ namespace DSharp.Compiler.Generator
                     Writer.Indent++;
                     bool firstType = true;
 
-                    foreach (TypeSymbol type in publicTypes)
+                    foreach (ITypeSymbol type in publicTypes)
                     {
                         if (type.Type == SymbolType.Class &&
                             ((ClassSymbol) type).IsExtenderClass)
@@ -210,7 +210,7 @@ namespace DSharp.Compiler.Generator
                 Writer.WriteLine();
             }
 
-            foreach (TypeSymbol type in types)
+            foreach (ITypeSymbol type in types)
                 if (type.Type == SymbolType.Class)
                 {
                     TypeGenerator.GenerateClassConstructorScript(this, (ClassSymbol) type);
@@ -228,9 +228,9 @@ namespace DSharp.Compiler.Generator
             implementationStack.Push(implementation);
         }
 
-        private sealed class TypeComparer : IComparer<TypeSymbol>
+        private sealed class TypeComparer : IComparer<ITypeSymbol>
         {
-            public int Compare(TypeSymbol x, TypeSymbol y)
+            public int Compare(ITypeSymbol x, ITypeSymbol y)
             {
                 if (x.Type != y.Type)
                 {

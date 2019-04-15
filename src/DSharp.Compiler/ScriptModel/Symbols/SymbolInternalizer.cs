@@ -15,7 +15,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         {
             transformChildren = false;
 
-            if (symbol is TypeSymbol)
+            if (symbol is ITypeSymbol)
             {
                 transformChildren = symbol.Type != SymbolType.Interface &&
                                     symbol.Type != SymbolType.Delegate;
@@ -62,7 +62,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         private string TransformMember(MemberSymbol memberSymbol)
         {
-            TypeSymbol type = (TypeSymbol) memberSymbol.Parent;
+            ITypeSymbol type = (ITypeSymbol) memberSymbol.Parent;
 
             if ((memberSymbol.Visibility & MemberVisibility.Public) != 0 ||
                 (memberSymbol.Visibility & MemberVisibility.Protected) != 0 ||

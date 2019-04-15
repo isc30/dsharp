@@ -28,7 +28,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         {
             get
             {
-                TypeSymbol parent = (TypeSymbol) Parent;
+                ITypeSymbol parent = (ITypeSymbol) Parent;
 
                 StringBuilder sb = new StringBuilder();
                 sb.Append("F:");

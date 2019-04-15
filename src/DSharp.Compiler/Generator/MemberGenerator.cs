@@ -492,8 +492,8 @@ namespace DSharp.Compiler.Generator
 
         public static void GenerateScript(ScriptGenerator generator, MemberSymbol memberSymbol)
         {
-            Debug.Assert(memberSymbol.Parent is TypeSymbol);
-            TypeSymbol typeSymbol = (TypeSymbol) memberSymbol.Parent;
+            Debug.Assert(memberSymbol.Parent is ITypeSymbol);
+            ITypeSymbol typeSymbol = (ITypeSymbol) memberSymbol.Parent;
 
             string typeName = typeSymbol.FullGeneratedName;
 

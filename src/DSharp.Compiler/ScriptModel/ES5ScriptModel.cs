@@ -86,7 +86,7 @@ namespace DSharp.Compiler.ScriptModel
             {
                 Debug.Assert(context != null);
 
-                TypeSymbol typeSymbol = context as TypeSymbol;
+                ITypeSymbol typeSymbol = context as ITypeSymbol;
 
                 if (typeSymbol == null)
                 {
@@ -94,7 +94,7 @@ namespace DSharp.Compiler.ScriptModel
 
                     while (parentSymbol != null)
                     {
-                        typeSymbol = parentSymbol as TypeSymbol;
+                        typeSymbol = parentSymbol as ITypeSymbol;
 
                         if (typeSymbol != null)
                         {
@@ -170,7 +170,7 @@ namespace DSharp.Compiler.ScriptModel
                 }
 
                 //We're actually a namespace instead!
-                if(symbol == null && Namespaces.TryGetNamespace(name, out var namespaceSymbol))
+                if (symbol == null && Namespaces.TryGetNamespace(name, out var namespaceSymbol))
                 {
                     return namespaceSymbol;
                 }
@@ -290,7 +290,7 @@ namespace DSharp.Compiler.ScriptModel
 
         public INamespaceSymbol GetNamespace(string namespaceName)
         {
-            if(string.IsNullOrEmpty(namespaceName))
+            if (string.IsNullOrEmpty(namespaceName))
             {
                 return Global;
             }
@@ -409,7 +409,7 @@ namespace DSharp.Compiler.ScriptModel
 
         public ITypeSymbol CreateGenericTypeSymbol(ITypeSymbol templateType, IList<ITypeSymbol> typeArguments)
         {
-            foreach (TypeSymbol typeSymbol in typeArguments)
+            foreach (ITypeSymbol typeSymbol in typeArguments)
             {
                 if (typeSymbol.Type == SymbolType.GenericParameter)
                 {
@@ -419,7 +419,7 @@ namespace DSharp.Compiler.ScriptModel
 
             StringBuilder keyBuilder = new StringBuilder(templateType.FullName);
 
-            foreach (TypeSymbol typeSymbol in typeArguments)
+            foreach (ITypeSymbol typeSymbol in typeArguments)
             {
                 keyBuilder.Append("+");
                 keyBuilder.Append(typeSymbol.FullName);
@@ -457,11 +457,11 @@ namespace DSharp.Compiler.ScriptModel
                 return null;
             }
 
-            INamespaceSymbol namespaceSymbol = result.@namespace != null 
+            INamespaceSymbol namespaceSymbol = result.@namespace != null
                 ? root.Namespaces.GetNamespace(result.@namespace)
                 : root.Namespaces.System;
             Debug.Assert(namespaceSymbol != null);
-            TypeSymbol typeSymbol = (TypeSymbol)namespaceSymbol?.FindSymbol(typeName, null, SymbolFilter.Types);
+            ITypeSymbol typeSymbol = (ITypeSymbol)namespaceSymbol?.FindSymbol(typeName, null, SymbolFilter.Types);
             Debug.Assert(typeSymbol != null);
 
             return typeSymbol;
@@ -492,8 +492,8 @@ namespace DSharp.Compiler.ScriptModel
             else if (node is GenericNameNode genericNameNode)
             {
                 string genericTypeName = genericNameNode.Name + "`" + genericNameNode.TypeArguments.Count;
-                TypeSymbol templateType =
-                    (TypeSymbol)symbolTable.FindSymbol(genericTypeName, contextSymbol, SymbolFilter.Types);
+                ITypeSymbol templateType =
+                    (ITypeSymbol)symbolTable.FindSymbol(genericTypeName, contextSymbol, SymbolFilter.Types);
 
                 List<ITypeSymbol> typeArguments = new List<ITypeSymbol>();
 
@@ -510,7 +510,7 @@ namespace DSharp.Compiler.ScriptModel
             }
             else if (node is NameNode nameNode)
             {
-                return (TypeSymbol)symbolTable.FindSymbol(nameNode.Name, contextSymbol, SymbolFilter.Types);
+                return (ITypeSymbol)symbolTable.FindSymbol(nameNode.Name, contextSymbol, SymbolFilter.Types);
             }
 
             return null;
@@ -518,10 +518,10 @@ namespace DSharp.Compiler.ScriptModel
 
         private ITypeSymbol CreateArrayTypeCore(ITypeSymbol itemTypeSymbol)
         {
-            TypeSymbol arrayTypeSymbol = (TypeSymbol)SystemNamespace.FindSymbol(ARRAY_SYMBOL_NAME, null, SymbolFilter.Types);
+            ITypeSymbol arrayTypeSymbol = (ITypeSymbol)SystemNamespace.FindSymbol(ARRAY_SYMBOL_NAME, null, SymbolFilter.Types);
             Debug.Assert(arrayTypeSymbol != null);
 
-            TypeSymbol specificArrayTypeSymbol = new ClassSymbol(ARRAY_SYMBOL_NAME, SystemNamespace);
+            ITypeSymbol specificArrayTypeSymbol = new ClassSymbol(ARRAY_SYMBOL_NAME, SystemNamespace);
             foreach (MemberSymbol memberSymbol in arrayTypeSymbol.Members)
             {
                 specificArrayTypeSymbol.AddMember(memberSymbol);
@@ -646,7 +646,7 @@ namespace DSharp.Compiler.ScriptModel
                     instanceIndexer.SetScriptIndexer();
                 }
 
-                instanceIndexer.SetVisibility(templateIndexer.Visibility);
+                instanceIndexer.Visibility = templateIndexer.Visibility;
 
                 return instanceIndexer;
             }
@@ -662,8 +662,8 @@ namespace DSharp.Compiler.ScriptModel
                     instanceProperty.SetTransformedName(templateProperty.GeneratedName);
                 }
 
-                instanceProperty.SetNameCasing(templateProperty.IsCasePreserved);
-                instanceProperty.SetVisibility(templateProperty.Visibility);
+                instanceProperty.IsCasePreserved = templateProperty.IsCasePreserved;
+                instanceProperty.Visibility = templateProperty.Visibility;
 
                 return instanceProperty;
             }
@@ -678,8 +678,8 @@ namespace DSharp.Compiler.ScriptModel
                     instanceField.SetTransformedName(templateField.GeneratedName);
                 }
 
-                instanceField.SetNameCasing(templateField.IsCasePreserved);
-                instanceField.SetVisibility(templateField.Visibility);
+                instanceField.IsCasePreserved = templateField.IsCasePreserved;
+                instanceField.Visibility = templateField.Visibility;
 
                 return instanceField;
             }
@@ -705,17 +705,17 @@ namespace DSharp.Compiler.ScriptModel
 
                 if (templateMethod.InterfaceMember != null)
                 {
-                    instanceMethod.SetInterfaceMember(templateMethod.InterfaceMember);
+                    instanceMethod.InterfaceMember = templateMethod.InterfaceMember;
                 }
 
-                instanceMethod.SetNameCasing(templateMethod.IsCasePreserved);
-                instanceMethod.SetVisibility(templateMethod.Visibility);
+                instanceMethod.IsCasePreserved = templateMethod.IsCasePreserved;
+                instanceMethod.Visibility = templateMethod.Visibility;
 
                 return instanceMethod;
             }
 
             Debug.Fail("Unexpected generic member '" + templateMember.Name + " on type '" +
-                       ((TypeSymbol)templateMember.Parent).FullName + "'.");
+                       ((ITypeSymbol)templateMember.Parent).FullName + "'.");
 
             return null;
         }

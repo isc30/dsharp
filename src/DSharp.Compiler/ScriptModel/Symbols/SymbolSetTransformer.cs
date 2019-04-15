@@ -26,7 +26,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public ICollection<Symbol> TransformSymbolSet(IScriptModel scriptModel, bool useInheritanceOrder)
         {
-            List<TypeSymbol> symbolsToTransform = new List<TypeSymbol>();
+            List<ITypeSymbol> symbolsToTransform = new List<ITypeSymbol>();
 
             foreach (NamespaceSymbol ns in scriptModel.Namespaces)
             {
@@ -35,7 +35,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                     continue;
                 }
 
-                foreach (TypeSymbol type in ns.Types)
+                foreach (ITypeSymbol type in ns.Types)
                 {
                     if (excludeImportedTypes && type.IsApplicationType == false)
                     {
@@ -53,7 +53,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
             List<Symbol> transformedSymbols = new List<Symbol>();
 
-            foreach (TypeSymbol type in symbolsToTransform)
+            foreach (ITypeSymbol type in symbolsToTransform)
             {
                 string transformedName = transformer.TransformSymbol(type, out bool transformMembers);
 
@@ -83,9 +83,9 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             return transformedSymbols;
         }
 
-        private sealed class TypeInheritanceComparer : IComparer<TypeSymbol>
+        private sealed class TypeInheritanceComparer : IComparer<ITypeSymbol>
         {
-            public int Compare(TypeSymbol x, TypeSymbol y)
+            public int Compare(ITypeSymbol x, ITypeSymbol y)
             {
                 ClassSymbol class1 = x as ClassSymbol;
                 ClassSymbol class2 = y as ClassSymbol;

@@ -186,7 +186,7 @@ namespace DSharp.Compiler.Compiler
 
             if (createStaticDelegate == false && implementation.RequiresThisContext == false)
             {
-                methodSymbol.SetVisibility(methodSymbol.Visibility | MemberVisibility.Static);
+                methodSymbol.Visibility = methodSymbol.Visibility | MemberVisibility.Static;
                 createStaticDelegate = true;
             }
 
@@ -611,8 +611,8 @@ namespace DSharp.Compiler.Compiler
                     // In regular .net this causes a truncation to happen, and we'd like
                     // to preserve that behavior.
 
-                    TypeSymbol mathType =
-                        (TypeSymbol)scriptModel.Namespaces.System.FindSymbol("Math", null,
+                    ITypeSymbol mathType =
+                        (ITypeSymbol)scriptModel.Namespaces.System.FindSymbol("Math", null,
                             SymbolFilter.Types);
                     Debug.Assert(mathType != null);
 
@@ -857,7 +857,7 @@ namespace DSharp.Compiler.Compiler
                 }
             }
 
-            ScriptReference dependency = ((TypeSymbol)memberSymbol.Parent).Dependency;
+            ScriptReference dependency = ((ITypeSymbol)memberSymbol.Parent).Dependency;
 
             if (dependency != null)
             {
@@ -882,14 +882,14 @@ namespace DSharp.Compiler.Compiler
                 {
                     MethodSymbol genericMethod = (MethodSymbol)memberSymbol;
                     MethodSymbol instanceMethod =
-                        new MethodSymbol(genericMethod.Name, (TypeSymbol)genericMethod.Parent, returnType);
+                        new MethodSymbol(genericMethod.Name, (ITypeSymbol)genericMethod.Parent, returnType);
 
                     if (genericMethod.IsTransformed)
                     {
                         instanceMethod.SetTransformedName(genericMethod.GeneratedName);
                     }
 
-                    instanceMethod.SetNameCasing(genericMethod.IsCasePreserved);
+                    instanceMethod.IsCasePreserved = genericMethod.IsCasePreserved;
 
                     expression = new MemberExpression(objectExpression, instanceMethod);
                 }
@@ -966,8 +966,8 @@ namespace DSharp.Compiler.Compiler
 
             if (systemTypeName != null)
             {
-                TypeSymbol typeSymbol =
-                    (TypeSymbol)scriptModel.Namespaces.System.FindSymbol(systemTypeName, null,
+                ITypeSymbol typeSymbol =
+                    (ITypeSymbol)scriptModel.Namespaces.System.FindSymbol(systemTypeName, null,
                         SymbolFilter.Types);
                 Debug.Assert(typeSymbol != null);
 
@@ -1015,7 +1015,7 @@ namespace DSharp.Compiler.Compiler
 
                 if ((memberSymbol.Visibility & MemberVisibility.Static) != 0)
                 {
-                    return new MemberExpression(new TypeExpression((TypeSymbol)memberSymbol.Parent,
+                    return new MemberExpression(new TypeExpression((ITypeSymbol)memberSymbol.Parent,
                             SymbolFilter.Public | SymbolFilter.StaticMembers),
                         memberSymbol);
                 }
@@ -1024,7 +1024,7 @@ namespace DSharp.Compiler.Compiler
                     memberSymbol);
             }
 
-            if (symbol is TypeSymbol typeSymbol)
+            if (symbol is ITypeSymbol typeSymbol)
             {
                 return TransformTypeSymbol(typeSymbol);
             }
@@ -1336,7 +1336,7 @@ namespace DSharp.Compiler.Compiler
                         // However we'll re-evaluate the argument to be of dictionary type
                         // so that subsequent use of this expression sees it as a dictionary.
                         Debug.Assert(args.Count == 1);
-                        args[0].Reevaluate((TypeSymbol)method.Parent);
+                        args[0].Reevaluate((ITypeSymbol)method.Parent);
 
                         return args[0];
                     }
@@ -1923,7 +1923,7 @@ namespace DSharp.Compiler.Compiler
                         return new LiteralExpression(ResolveIntrinsicType(IntrinsicType.String),
                             fieldName);
                     }
-                    else if (((TypeSymbol)expression.Member.Parent).IsApplicationType ||
+                    else if (((ITypeSymbol)expression.Member.Parent).IsApplicationType ||
                              ((EnumerationSymbol)expression.Member.Parent).UseNumericValues)
                     {
                         // For enum types defined within the same assembly, simply use the literal value.

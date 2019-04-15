@@ -31,7 +31,7 @@ namespace DSharp.Compiler.Roslyn.Symbols
         public SymbolType Type => RootSymbol.ResolveSymbolType();
 
         public string Name => RootSymbol.Name;
-        public string GeneratedName => IsTransformed ? transformedName : Name;
+        public virtual string GeneratedName => IsTransformed ? transformedName : Name;
 
         public ScriptModel.Symbols.ISymbol Parent { get; }
         public IScriptModel ScriptModel => Context.ScriptModel;
@@ -159,6 +159,11 @@ namespace DSharp.Compiler.Roslyn.Symbols
             typeSymbols.Add(typeSymbol);
         }
 
+        public override ScriptModel.Symbols.ISymbol FindSymbol(string name, ScriptModel.Symbols.ISymbol context, ScriptModel.Symbols.SymbolFilter filter)
+        {
+            return typeSymbols.FirstOrDefault(type => type.Name == name);
+        }
+
         public override bool MatchFilter(ScriptModel.Symbols.SymbolFilter filter)
             => (filter & DSharp.Compiler.ScriptModel.Symbols.SymbolFilter.Namespaces) != 0;
     }
@@ -166,13 +171,90 @@ namespace DSharp.Compiler.Roslyn.Symbols
     //Missing interface members;
     public class RoslynMemberSymbol : RoslynSymbol<Microsoft.CodeAnalysis.ISymbol>, IMemberSymbol
     {
-        public ScriptModel.Symbols.ITypeSymbol AssociatedType => throw new NotImplementedException();
+        private string localGeneratedName;
 
-        public MemberVisibility Visibility => throw new NotImplementedException();
-
-        public void SetInterfaceMember(IMemberSymbol memberSymbol)
+        public RoslynMemberSymbol(
+            Microsoft.CodeAnalysis.ISymbol rootSymbol, 
+            ISymbolContext symbolContext, 
+            ScriptModel.Symbols.ISymbol parent,
+            ScriptModel.Symbols.ITypeSymbol associatedType) 
+            : base(rootSymbol, symbolContext, parent)
         {
-            throw new NotImplementedException();
+            AssociatedType = associatedType;
+        }
+
+        public ScriptModel.Symbols.ITypeSymbol AssociatedType { get; }
+
+        public bool IsPublic 
+            => ((ScriptModel.Symbols.ITypeSymbol)Parent).IsPublic && Visibility.HasFlag(MemberVisibility.Public);
+
+        public MemberVisibility Visibility { get; set; }
+
+        public IMemberSymbol InterfaceMember { get; set; }
+
+        public bool IsCasePreserved { get; set; }
+
+        public override string GeneratedName
+        {
+            get
+            {
+                if(InterfaceMember != null)
+                {
+                    return InterfaceMember.GeneratedName;
+                }
+                else if (IsTransformed)
+                {
+                    return base.GeneratedName;
+                }
+
+                if(string.IsNullOrEmpty(localGeneratedName))
+                {
+                    localGeneratedName = IsCasePreserved 
+                        ? Name 
+                        : Utility.CreateCamelCaseName(Name);
+                }
+
+                return localGeneratedName;
+            }
+        }
+
+        // See MemberSymbol.MatchFilter method.
+        public override bool MatchFilter(ScriptModel.Symbols.SymbolFilter filter)
+        {
+            if ((filter & DSharp.Compiler.ScriptModel.Symbols.SymbolFilter.Members) == 0)
+            {
+                return false;
+            }
+
+            ScriptModel.Symbols.SymbolFilter memberTypeFilter = filter & DSharp.Compiler.ScriptModel.Symbols.SymbolFilter.AnyMember;
+
+            if (memberTypeFilter == DSharp.Compiler.ScriptModel.Symbols.SymbolFilter.InstanceMembers &&
+                (Visibility & MemberVisibility.Static) != 0)
+            {
+                return false;
+            }
+
+            if (memberTypeFilter == DSharp.Compiler.ScriptModel.Symbols.SymbolFilter.StaticMembers &&
+                (Visibility & MemberVisibility.Static) == 0)
+            {
+                return false;
+            }
+
+            DSharp.Compiler.ScriptModel.Symbols.SymbolFilter visibilityFilter = filter & DSharp.Compiler.ScriptModel.Symbols.SymbolFilter.AnyVisibility;
+
+            if (visibilityFilter == DSharp.Compiler.ScriptModel.Symbols.SymbolFilter.Public &&
+                (Visibility & (MemberVisibility.Public | MemberVisibility.Internal)) == 0)
+            {
+                return false;
+            }
+
+            if (visibilityFilter == (DSharp.Compiler.ScriptModel.Symbols.SymbolFilter.Public | DSharp.Compiler.ScriptModel.Symbols.SymbolFilter.Protected) &&
+                (Visibility & (MemberVisibility.Public | MemberVisibility.Internal | MemberVisibility.Protected)) == 0)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

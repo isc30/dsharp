@@ -22,7 +22,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         public MethodSymbol(string name, ITypeSymbol parent, ITypeSymbol returnType, MemberVisibility visibility)
             : this(SymbolType.Method, name, parent, returnType)
         {
-            SetVisibility(visibility);
+            Visibility = visibility;
         }
 
         protected MethodSymbol(SymbolType type, string name, ITypeSymbol parent, ITypeSymbol returnType)
@@ -38,7 +38,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         {
             get
             {
-                TypeSymbol parent = (TypeSymbol) Parent;
+                ITypeSymbol parent = (ITypeSymbol) Parent;
 
                 StringBuilder sb = new StringBuilder();
                 sb.Append("M:");

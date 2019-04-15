@@ -51,15 +51,15 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             }
         }
 
-        public IMemberSymbol InterfaceMember { get; private set; }
+        public IMemberSymbol InterfaceMember { get; set; }
 
-        public bool IsCasePreserved { get; private set; }
+        public bool IsCasePreserved { get; set; }
 
         public bool IsPublic
         {
             get
             {
-                if (((TypeSymbol) Parent).IsPublic == false)
+                if (((ITypeSymbol) Parent).IsPublic == false)
                 {
                     return false;
                 }
@@ -73,7 +73,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             }
         }
 
-        public MemberVisibility Visibility { get; private set; }
+        public MemberVisibility Visibility { get; set; }
 
         public override bool MatchFilter(SymbolFilter filter)
         {
@@ -119,24 +119,6 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             }
 
             return true;
-        }
-
-        public void SetInterfaceMember(IMemberSymbol memberSymbol)
-        {
-            Debug.Assert(InterfaceMember == null);
-            Debug.Assert(memberSymbol != null);
-
-            InterfaceMember = memberSymbol;
-        }
-
-        public void SetNameCasing(bool preserveCase)
-        {
-            IsCasePreserved = preserveCase;
-        }
-
-        public void SetVisibility(MemberVisibility visibility)
-        {
-            Visibility = visibility;
         }
     }
 }

@@ -382,51 +382,7 @@ namespace DSharp.Compiler
         }
     }
 
-    public class TypeSymbolComparer : IEqualityComparer<ITypeSymbol>
-    {
-        private readonly Func<ITypeSymbol, object> comparerSelector;
-
-        public TypeSymbolComparer(Func<ITypeSymbol, object> comparerSelector)
-        {
-            this.comparerSelector = comparerSelector ?? throw new ArgumentNullException(nameof(comparerSelector));
-        }
-
-        public bool Equals(ITypeSymbol x, ITypeSymbol y)
-        {
-            return comparerSelector.Invoke(x) == comparerSelector.Invoke(y);
-        }
-
-        public int GetHashCode(ITypeSymbol obj)
-        {
-            return comparerSelector.Invoke(obj)?.GetHashCode() ?? 0;
-        }
-    }
-
-    public class RoslynMetadataImporter
-    {
-        public CSharpCompilation ImportMetadata(CSharpCompilation compilation, IEnumerable<string> references)
-        {
-            var metadataReferences = references.Select(r => MetadataReference.CreateFromFile(r));
-
-            compilation = compilation.WithReferences(metadataReferences);
-
-            foreach (var reference in metadataReferences)
-            {
-                var metadata = reference.GetMetadata() as AssemblyMetadata;
-                foreach (var module in metadata.GetModules())
-                {
-                    var metadataReader = module.GetMetadataReader();
-                    foreach (var typeDefinition in metadataReader.TypeDefinitions.Select(def => metadataReader.GetTypeDefinition(def)))
-                    {
-                        var ns = metadataReader.GetNamespaceDefinition(typeDefinition.NamespaceDefinition);
-                        Console.WriteLine($"Reading Type: {metadataReader.GetString(typeDefinition.Name)}, Namespace: {metadataReader.GetString(ns.Name)}, Module: {module.Name}");
-                    }
-                }
-            }
-
-            return compilation;
-        }
-    }
+    
 
     public class ConsoleLoggingErrorHandler : IErrorHandler
     {

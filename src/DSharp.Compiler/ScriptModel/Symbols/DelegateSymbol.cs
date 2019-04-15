@@ -5,7 +5,7 @@
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
-    internal sealed class DelegateSymbol : TypeSymbol
+    internal sealed class DelegateSymbol : ITypeSymbol
     {
         public DelegateSymbol(string name, INamespaceSymbol parent)
             : base(SymbolType.Delegate, name, parent)

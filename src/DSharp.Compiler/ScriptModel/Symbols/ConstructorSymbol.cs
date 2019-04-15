@@ -1,4 +1,4 @@
-// MethodSymbol.cs
+﻿// MethodSymbol.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -9,17 +9,17 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 {
     internal sealed class ConstructorSymbol : MethodSymbol
     {
-        public ConstructorSymbol(TypeSymbol parent, bool isStatic)
+        public ConstructorSymbol(ITypeSymbol parent, bool isStatic)
             : base(SymbolType.Constructor, /* name */ string.Empty, parent, /* associatedType */ parent)
         {
-            SetVisibility(isStatic ? MemberVisibility.Public | MemberVisibility.Static : MemberVisibility.Public);
+            Visibility = isStatic ? MemberVisibility.Public | MemberVisibility.Static : MemberVisibility.Public;
         }
 
         public override string DocumentationId
         {
             get
             {
-                TypeSymbol parent = (TypeSymbol) Parent;
+                ITypeSymbol parent = (ITypeSymbol) Parent;
 
                 StringBuilder sb = new StringBuilder();
                 sb.Append("M:");

@@ -145,7 +145,7 @@ namespace DSharp.Compiler.Metadata
                             }
                         }
 
-                        TypeSymbol generatedTypeSymbol = (TypeSymbol)BuildType(userTypeNode, namespaceSymbol);
+                        ITypeSymbol generatedTypeSymbol = (ITypeSymbol)BuildType(userTypeNode, namespaceSymbol);
 
                         if (generatedTypeSymbol != null)
                         {
@@ -190,7 +190,7 @@ namespace DSharp.Compiler.Metadata
                 }
 
             // Build inheritance chains
-            foreach (TypeSymbol typeSymbol in types)
+            foreach (ITypeSymbol typeSymbol in types)
                 if (typeSymbol.Type == SymbolType.Class)
                 {
                     BuildTypeInheritance((ClassSymbol)typeSymbol);
@@ -201,10 +201,10 @@ namespace DSharp.Compiler.Metadata
                 }
 
             // Import members
-            foreach (TypeSymbol typeSymbol in types) BuildMembers(typeSymbol);
+            foreach (ITypeSymbol typeSymbol in types) BuildMembers(typeSymbol);
 
             // Associate interface members with interface member symbols
-            foreach (TypeSymbol typeSymbol in types)
+            foreach (ITypeSymbol typeSymbol in types)
                 if (typeSymbol.Type == SymbolType.Class)
                 {
                     BuildInterfaceAssociations((ClassSymbol)typeSymbol);
@@ -213,7 +213,7 @@ namespace DSharp.Compiler.Metadata
             // Load resource values
             if (this.scriptModel.Resources.HasResources)
             {
-                foreach (TypeSymbol typeSymbol in types)
+                foreach (ITypeSymbol typeSymbol in types)
                     if (typeSymbol.Type == SymbolType.Resources)
                     {
                         BuildResources((ResourcesSymbol)typeSymbol);
@@ -238,7 +238,7 @@ namespace DSharp.Compiler.Metadata
             return types;
         }
 
-        private EnumerationFieldSymbol BuildEnumField(EnumerationFieldNode fieldNode, TypeSymbol typeSymbol)
+        private EnumerationFieldSymbol BuildEnumField(EnumerationFieldNode fieldNode, ITypeSymbol typeSymbol)
         {
             Debug.Assert(typeSymbol is EnumerationSymbol);
             EnumerationSymbol enumSymbol = (EnumerationSymbol)typeSymbol;
@@ -261,7 +261,7 @@ namespace DSharp.Compiler.Metadata
             return fieldSymbol;
         }
 
-        private EventSymbol BuildEvent(EventDeclarationNode eventNode, TypeSymbol typeSymbol)
+        private EventSymbol BuildEvent(EventDeclarationNode eventNode, ITypeSymbol typeSymbol)
         {
             ITypeSymbol handlerType = typeSymbol.ScriptModel.SymbolResolver.ResolveType(eventNode.Type, scriptModel, typeSymbol);
             Debug.Assert(handlerType != null);
@@ -307,7 +307,7 @@ namespace DSharp.Compiler.Metadata
             return null;
         }
 
-        private FieldSymbol BuildField(FieldDeclarationNode fieldNode, TypeSymbol typeSymbol)
+        private FieldSymbol BuildField(FieldDeclarationNode fieldNode, ITypeSymbol typeSymbol)
         {
             ITypeSymbol fieldType = typeSymbol.ScriptModel.SymbolResolver.ResolveType(fieldNode.Type, scriptModel, typeSymbol);
             Debug.Assert(fieldType != null);
@@ -349,7 +349,7 @@ namespace DSharp.Compiler.Metadata
             return null;
         }
 
-        private IndexerSymbol BuildIndexer(IndexerDeclarationNode indexerNode, TypeSymbol typeSymbol)
+        private IndexerSymbol BuildIndexer(IndexerDeclarationNode indexerNode, ITypeSymbol typeSymbol)
         {
             ITypeSymbol indexerType = typeSymbol.ScriptModel.SymbolResolver.ResolveType(indexerNode.Type, scriptModel, typeSymbol);
             Debug.Assert(indexerType != null);
@@ -422,7 +422,7 @@ namespace DSharp.Compiler.Metadata
 
                     if (associatedSymbol != null)
                     {
-                        associatedSymbol.SetInterfaceMember(memberSymbol);
+                        associatedSymbol.InterfaceMember = memberSymbol;
                     }
                 }
             }
@@ -458,12 +458,12 @@ namespace DSharp.Compiler.Metadata
                 }
         }
 
-        private void BuildMemberDetails(MemberSymbol memberSymbol, TypeSymbol typeSymbol, MemberNode memberNode,
+        private void BuildMemberDetails(MemberSymbol memberSymbol, ITypeSymbol typeSymbol, MemberNode memberNode,
                                         ParseNodeList attributes)
         {
             if (memberSymbol.Type != SymbolType.EnumerationField)
             {
-                memberSymbol.SetVisibility(GetVisibility(memberNode, typeSymbol));
+                memberSymbol.Visibility = GetVisibility(memberNode, typeSymbol);
             }
 
             AttributeNode nameAttribute = AttributeNode.FindAttribute(attributes, "ScriptName");
@@ -514,7 +514,7 @@ namespace DSharp.Compiler.Metadata
                 }
                 else
                 {
-                    memberSymbol.SetNameCasing(preserveCase);
+                    memberSymbol.IsCasePreserved = preserveCase;
 
                     if (preserveName)
                     {
@@ -524,7 +524,7 @@ namespace DSharp.Compiler.Metadata
             }
         }
 
-        private void BuildMembers(TypeSymbol typeSymbol)
+        private void BuildMembers(ITypeSymbol typeSymbol)
         {
             if (typeSymbol.Type == SymbolType.Delegate)
             {
@@ -634,7 +634,7 @@ namespace DSharp.Compiler.Metadata
                             FieldSymbol fieldSymbol =
                                 new FieldSymbol("__" + Utility.CreateCamelCaseName(eventSymbol.Name), typeSymbol,
                                     eventSymbol.AssociatedType);
-                            fieldSymbol.SetVisibility(visibility);
+                            fieldSymbol.Visibility = visibility;
                             fieldSymbol.ParseContext = ((EventDeclarationNode)eventSymbol.ParseContext).Field;
 
                             typeSymbol.AddMember(fieldSymbol);
@@ -644,7 +644,7 @@ namespace DSharp.Compiler.Metadata
             }
         }
 
-        private MethodSymbol BuildMethod(MethodDeclarationNode methodNode, TypeSymbol typeSymbol)
+        private MethodSymbol BuildMethod(MethodDeclarationNode methodNode, ITypeSymbol typeSymbol)
         {
             MethodSymbol method = null;
 
@@ -775,7 +775,7 @@ namespace DSharp.Compiler.Metadata
             return null;
         }
 
-        private PropertySymbol BuildProperty(PropertyDeclarationNode propertyNode, TypeSymbol typeSymbol)
+        private PropertySymbol BuildProperty(PropertyDeclarationNode propertyNode, ITypeSymbol typeSymbol)
         {
             ITypeSymbol propertyType = typeSymbol.ScriptModel.SymbolResolver.ResolveType(propertyNode.Type, scriptModel, typeSymbol);
             Debug.Assert(propertyType != null);
@@ -784,7 +784,7 @@ namespace DSharp.Compiler.Metadata
             {
                 PropertySymbol property = new PropertySymbol(propertyNode.Name, typeSymbol, propertyType);
                 BuildMemberDetails(property, typeSymbol, propertyNode, propertyNode.Attributes);
-                property.SetNameCasing(true);
+                property.IsCasePreserved = true;
                 SymbolImplementationFlags implFlags = SymbolImplementationFlags.Regular;
 
                 if (propertyNode.SetAccessor == null)
@@ -811,7 +811,7 @@ namespace DSharp.Compiler.Metadata
             return null;
         }
 
-        private FieldSymbol BuildPropertyAsField(PropertyDeclarationNode propertyNode, TypeSymbol typeSymbol)
+        private FieldSymbol BuildPropertyAsField(PropertyDeclarationNode propertyNode, ITypeSymbol typeSymbol)
         {
             AttributeNode scriptFieldAttribute = AttributeNode.FindAttribute(propertyNode.Attributes, "ScriptField");
 
@@ -924,7 +924,7 @@ namespace DSharp.Compiler.Metadata
             {
                 if ((typeNode.Modifiers & Modifiers.Public) != 0)
                 {
-                    ((TypeSymbol)typeSymbol).SetPublic();
+                    ((ITypeSymbol)typeSymbol).SetPublic();
                 }
 
                 MergeType(typeSymbol, typeNode);
@@ -973,7 +973,7 @@ namespace DSharp.Compiler.Metadata
                     dependency = new ScriptReference(dependencyName, dependencyIdentifier);
                 }
 
-                ((TypeSymbol)typeSymbol).SetImported(dependency);
+                ((ITypeSymbol)typeSymbol).SetImported(dependency);
 
                 if (AttributeNode.FindAttribute(attributes, "ScriptIgnoreNamespace") != null ||
                     dependency == null)
@@ -982,7 +982,7 @@ namespace DSharp.Compiler.Metadata
                 }
                 else
                 {
-                    ((TypeSymbol)typeSymbol).ScriptNamespace = dependency.Identifier;
+                    ((ITypeSymbol)typeSymbol).ScriptNamespace = dependency.Identifier;
                 }
             }
 
@@ -1078,8 +1078,8 @@ namespace DSharp.Compiler.Metadata
 
                 foreach (NameNode node in customTypeNode.BaseTypes)
                 {
-                    TypeSymbol baseTypeSymbol =
-                        (TypeSymbol)scriptModel.FindSymbol(node.Name, classSymbol, SymbolFilter.Types);
+                    ITypeSymbol baseTypeSymbol =
+                        (ITypeSymbol)scriptModel.FindSymbol(node.Name, classSymbol, SymbolFilter.Types);
                     Debug.Assert(baseTypeSymbol != null);
 
                     if (baseTypeSymbol.Type == SymbolType.Class)
@@ -1127,8 +1127,8 @@ namespace DSharp.Compiler.Metadata
                         symbolName = node.Name;
                     }
 
-                    TypeSymbol baseTypeSymbol =
-                        (TypeSymbol)scriptModel.FindSymbol(symbolName, interfaceSymbol, SymbolFilter.Types);
+                    ITypeSymbol baseTypeSymbol =
+                        (ITypeSymbol)scriptModel.FindSymbol(symbolName, interfaceSymbol, SymbolFilter.Types);
                     Debug.Assert(baseTypeSymbol.Type == SymbolType.Interface);
 
                     if (interfaces == null)
@@ -1146,7 +1146,7 @@ namespace DSharp.Compiler.Metadata
             }
         }
 
-        private MemberVisibility GetVisibility(MemberNode node, TypeSymbol typeSymbol)
+        private MemberVisibility GetVisibility(MemberNode node, ITypeSymbol typeSymbol)
         {
             if (typeSymbol.Type == SymbolType.Interface)
             {

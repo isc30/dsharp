@@ -10,7 +10,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         public EnumerationFieldSymbol(string name, ITypeSymbol parent, object value, ITypeSymbol valueType)
             : base(SymbolType.EnumerationField, name, parent, valueType)
         {
-            SetVisibility(MemberVisibility.Public | MemberVisibility.Static);
+            Visibility = MemberVisibility.Public | MemberVisibility.Static;
             Value = value;
         }
     }

@@ -18,14 +18,14 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         public IndexerSymbol(ITypeSymbol parent, ITypeSymbol propertyType, MemberVisibility visibility)
             : this(parent, propertyType)
         {
-            SetVisibility(visibility);
+            Visibility = visibility;
         }
 
         public override string DocumentationId
         {
             get
             {
-                TypeSymbol parent = (TypeSymbol) Parent;
+                ITypeSymbol parent = (ITypeSymbol) Parent;
 
                 StringBuilder sb = new StringBuilder();
                 sb.Append("P:");

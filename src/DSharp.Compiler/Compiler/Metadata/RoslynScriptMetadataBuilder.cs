@@ -4,8 +4,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-
-
 namespace DSharp.Compiler.Metadata
 {
     public class RoslynScriptMetadataBuilder : IScriptMetadataBuilder<CSharpCompilation>
@@ -22,7 +20,7 @@ namespace DSharp.Compiler.Metadata
 
             if(!scriptMetadataWalker.HasAllRequiredMetadata)
             {
-                throw new Exception("FRED: Missing metadata");
+                throw new InvalidOperationException("Missing Required metadata");
             }
 
             return new ScriptMetadata

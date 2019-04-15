@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
-    internal sealed class EnumerationSymbol : TypeSymbol
+    internal sealed class EnumerationSymbol : ITypeSymbol
     {
         public EnumerationSymbol(string name, INamespaceSymbol parent, bool flags)
             : base(SymbolType.Enumeration, name, parent)
