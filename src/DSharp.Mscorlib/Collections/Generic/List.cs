@@ -11,7 +11,7 @@ namespace System.Collections.Generic
     [ScriptIgnoreNamespace]
     [ScriptImport]
     [ScriptName("Array")]
-    public sealed class List<T> : IList<T>, IList
+    public sealed partial class List<T> : IList<T>, IList
     {
         public List() { }
 

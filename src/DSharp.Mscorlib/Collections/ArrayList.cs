@@ -8,7 +8,7 @@ namespace System.Collections
     [ScriptIgnoreNamespace]
     [ScriptImport]
     [ScriptName("Array")]
-    public sealed class ArrayList : IList
+    public sealed partial class ArrayList : IList
     {
         public ArrayList() { }
 
