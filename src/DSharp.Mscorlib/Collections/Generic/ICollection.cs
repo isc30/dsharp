@@ -2,6 +2,7 @@
 
 namespace System.Collections.Generic
 {
+    //
     [ScriptImport]
     [ScriptName("ICollection")]
     public interface ICollection<T> : IEnumerable<T>
@@ -10,7 +11,17 @@ namespace System.Collections.Generic
         [ScriptName("length")]
         int Count { get; }
 
-        [ScriptField]
-        T this[int index] { get; set; }
+        [ScriptName("push")]
+        void Add(T item);
+
+        [ScriptName("push")]
+        void AddRange(params T[] items);
+
+        void Clear();
+
+        bool Contains(T item);
+
+        [DSharpScriptMemberName("remove")]
+        bool Remove(T item);
     }
 }

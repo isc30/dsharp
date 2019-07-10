@@ -4,5 +4,5 @@ namespace System.Collections.Generic
 {
     [ScriptIgnoreNamespace]
     [ScriptImport]
-    public delegate TTarget ListMapCallback<TSource, TTarget>(TSource value, int index, IReadonlyCollection<TSource> list);
+    public delegate TTarget ListMapCallback<TSource, TTarget>(TSource value, int index, IReadOnlyCollection<TSource> list);
 }

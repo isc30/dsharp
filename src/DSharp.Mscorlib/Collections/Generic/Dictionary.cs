@@ -19,7 +19,7 @@ namespace System.Collections.Generic
 
         public extern int Count { get; }
 
-        public extern IReadonlyCollection<TKey> Keys { get; }
+        public extern IReadOnlyCollection<TKey> Keys { get; }
 
         [ScriptField]
         public extern TValue this[TKey key] { get; set; }

@@ -1,24 +1,14 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace System.Collections.Generic
+namespace System.Collections.ObjectModel
 {
-    // NOTE: Keep in sync with ArrayList and Array
-
-    /// <summary>
-    /// Equivalent to the Array type in Javascript.
-    /// </summary>
+    //
     [ScriptIgnoreNamespace]
     [ScriptImport]
     [ScriptName("Array")]
-    public sealed class List<T> : IList<T>, IList
+    public class ReadOnlyCollection<T> : IList<T>, IList, IReadOnlyList<T>
     {
-        public List() { }
-
-        public List(int capacity) { }
-
-        public List(params T[] items) { }
-
         [ScriptField]
         [ScriptName("length")]
         public extern int Count { get; }
@@ -27,16 +17,19 @@ namespace System.Collections.Generic
         extern T IList<T>.this[int index] { get; set; }
 
         [ScriptField]
+        extern T IReadOnlyList<T>.this[int index] { get; }
+
+        [ScriptField]
         public extern object this[int index] { get; set; }
 
         [ScriptName("push")]
         public extern int Add(object value);
 
         [ScriptName("push")]
-        public extern void AddRange(params object[] items);
+        public extern void Add(T item);
 
         [ScriptName("push")]
-        public extern void Add(T item);
+        public extern void AddRange(params object[] items);
 
         [ScriptName("push")]
         public extern void AddRange(params T[] items);
@@ -64,25 +57,5 @@ namespace System.Collections.Generic
         extern IEnumerator<T> IEnumerable<T>.GetEnumerator();
 
         public extern void Insert(int index, T item);
-
-        public extern void ForEach(ListCallback<T> callback);
-
-        public extern void ForEach(ListItemCallback<T> itemCallback);
-
-        [ScriptSkip]
-        public extern T[] ToArray();
-
-        [ScriptSkip]
-        public extern ReadOnlyCollection<T> AsReadOnly();
-
-        public extern static explicit operator Array(List<T> list);
-
-        public extern static explicit operator object[] (List<T> list);
-
-        public extern static implicit operator T[] (List<T> list);
-
-        public extern static explicit operator ArrayList(List<T> list);
-
-        public extern static explicit operator List<T>(T[] array);
     }
 }
