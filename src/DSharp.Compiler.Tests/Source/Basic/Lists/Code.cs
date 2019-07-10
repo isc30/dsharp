@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Testing;
@@ -18,6 +18,8 @@ namespace ListTests
             list.Add("one");
             list.AddRange("two", "three");
             //Assert.Equals(3, list.Count);
+
+            IReadOnlyList<string> readOnlyList = list.AsReadOnly();
 
             string[] array = list.ToArray();
             //Assert.Equals(array, list);

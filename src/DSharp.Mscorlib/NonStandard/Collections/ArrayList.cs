@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using NonStandard;
 
-namespace System.NonStandard
+namespace System.Collections
 {
     public sealed partial class ArrayList
     {
@@ -27,16 +27,10 @@ namespace System.NonStandard
         public extern void ForEach(ArrayItemCallback itemCallback);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
-        public extern IEnumerator GetEnumerator();
-
-        [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
         public extern Array GetRange(int index);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
         public extern Array GetRange(int index, int count);
-
-        [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
-        public extern int IndexOf(object item);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
         public extern int IndexOf(object item, int startIndex);
@@ -91,9 +85,6 @@ namespace System.NonStandard
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
         public extern object ReduceRight(ArrayItemReduceCallback callback, object initialValue);
-
-        [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
-        public extern void RemoveAt(int index);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
         public extern Array RemoveRange(int index, int count);

@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using NonStandard;
+﻿using NonStandard;
 
-namespace System.NonStandard.Collections
+namespace System.Collections.Generic
 {
     public sealed partial class List<T>
     {
