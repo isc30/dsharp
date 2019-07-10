@@ -7,7 +7,7 @@ namespace System
     /// </summary>
     [ScriptIgnoreNamespace]
     [ScriptImport]
-    public class Object
+    public partial class Object
     {
         //TODO: Look at removing
         [ScriptName("name")]
@@ -26,11 +26,9 @@ namespace System
         /// <returns>The string representation of the object.</returns>
         public extern virtual string ToString();
 
-        //TODO: Move to JSObject 
-        /// <summary>
-        /// Converts an object to its culture-sensitive string representation.
-        /// </summary>
-        /// <returns>The culture-sensitive string representation of the object.</returns>
-        public extern virtual string ToLocaleString();
+        // In CLR object has 
+        // bool Equals(object o), 
+        // static bool Equals(object a, object b) and 
+        // static bool ReferenceEquals(object a, object b)
     }
 }
