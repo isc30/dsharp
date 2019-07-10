@@ -1,6 +1,6 @@
 ﻿using NonStandard;
 
-namespace System.NonStandard
+namespace System
 {
     public partial class Object
     {

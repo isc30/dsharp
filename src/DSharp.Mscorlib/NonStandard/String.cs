@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using NonStandard;
 
-namespace System.NonStandard
+namespace System
 {
     public sealed partial class String
     {
