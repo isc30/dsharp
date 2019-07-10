@@ -9,7 +9,7 @@ namespace System
     [ScriptIgnoreNamespace]
     [ScriptImport]
     [ScriptName("Array")]
-    public abstract class Array : IList
+    public abstract partial class Array : IList
     {
         [ScriptField]
         public extern object this[int index]
@@ -21,9 +21,6 @@ namespace System
         [ScriptField]
         [ScriptName("length")]
         public extern int Count { get; }
-
-        [DSharpScriptMemberName("array")]
-        public extern static Array ToArray(object o);
 
         [ScriptName("push")]
         public extern int Add(object value);
