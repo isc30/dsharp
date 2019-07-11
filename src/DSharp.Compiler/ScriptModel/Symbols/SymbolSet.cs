@@ -641,6 +641,12 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                     break;
                 case IntrinsicType.Type:
                     mappedTypeName = "Type";
+                    mappedNamespace = "System";
+
+                    break;
+                case IntrinsicType.MemberInfo:
+                    mappedTypeName = "MemberInfo";
+                    mappedNamespace = "System.Reflection";
 
                     break;
                 case IntrinsicType.Enumerator:

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace System
@@ -8,14 +9,11 @@ namespace System
     /// </summary>
     [ScriptIgnoreNamespace]
     [ScriptImport]
-    public sealed partial class Type
+    public sealed partial class Type : MemberInfo
     {
         [ScriptName("$base")]
         [ScriptField]
         public extern Type BaseType { get; }
-
-        // This has been changed from Name to FullName, we need to adjust the usage
-        public extern string FullName { get; }
 
         [DSharpScriptMemberName("type")]
         public extern static Type GetType(string typeName);

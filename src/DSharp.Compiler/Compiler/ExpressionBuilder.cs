@@ -747,6 +747,7 @@ namespace DSharp.Compiler.Compiler
             TypeSymbol genericDictionaryType = symbolSet.ResolveIntrinsicType(IntrinsicType.GenericDictionary);
             TypeSymbol nullableType = symbolSet.ResolveIntrinsicType(IntrinsicType.Nullable);
             TypeSymbol typeType = symbolSet.ResolveIntrinsicType(IntrinsicType.Type);
+            TypeSymbol memberInfoType = symbolSet.ResolveIntrinsicType(IntrinsicType.MemberInfo);
 
             if (memberSymbol.Type == SymbolType.Property)
             {
@@ -805,7 +806,7 @@ namespace DSharp.Compiler.Compiler
                         return methodExpression;
                     }
                 }
-                else if (memberSymbol.Parent == typeType)
+                else if (memberSymbol.Parent == memberInfoType || memberSymbol.Parent == typeType)
                 {
                     if (string.CompareOrdinal(memberSymbol.Name, "Name") == 0)
                     {
