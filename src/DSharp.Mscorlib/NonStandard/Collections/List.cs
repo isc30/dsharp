@@ -35,9 +35,11 @@ namespace System.Collections.Generic
         public extern string Join(string delimiter);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
+        // arg should be -> T item
         public extern int LastIndexOf(object item);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
+        // arg should be -> T item
         public extern int LastIndexOf(object item, int fromIndex);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
@@ -74,7 +76,8 @@ namespace System.Collections.Generic
         public extern TReduced ReduceRight<TReduced>(ListItemReduceCallback<TReduced, T> callback, TReduced initialValue);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
-        public extern List<T> RemoveRange(int index, int count);
+        // Modified to return void. Check implementation
+        public extern void RemoveRange(int index, int count);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
         public extern void Reverse();
@@ -95,6 +98,7 @@ namespace System.Collections.Generic
         public extern void Sort();
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
+        // The compare callback should be instead -> IComparer<T>? comparer
         public extern void Sort(CompareCallback<T> compareCallback);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]

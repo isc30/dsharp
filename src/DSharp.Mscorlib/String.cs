@@ -9,7 +9,13 @@ namespace System
     /// </summary>
     [ScriptIgnoreNamespace]
     [ScriptImport]
-    public sealed class String
+    // CLR reference: https://source.dot.net/#q=String
+    public sealed partial class String
+    /* String implements these interfaces: IComparable, IEnumerable, IConvertible, IEnumerable<char>, IComparable<string?>
+#nullable disable
+    IEquatable<string>,
+#nullable restore
+    ICloneable */
     {
         /// <summary>
         /// An empty zero-length string.
@@ -29,20 +35,6 @@ namespace System
         /// <returns>The character within the string.</returns>
         [ScriptField]
         public extern char this[int index] { get; }
-
-        /// <summary>
-        /// Retrieves the character at the specified position.
-        /// </summary>
-        /// <param name="index">The specified 0-based position.</param>
-        /// <returns>The character within the string.</returns>
-        public extern char CharAt(int index);
-
-        /// <summary>
-        /// Retrieves the character code of the character at the specified position.
-        /// </summary>
-        /// <param name="index">The specified 0-based position.</param>
-        /// <returns>The character code of the character within the string.</returns>
-        public extern int CharCodeAt(int index);
 
         [DSharpScriptMemberName("compareStrings")]
         public extern static int Compare(string s1, string s2);
@@ -84,34 +76,6 @@ namespace System
         public extern static string Concat(params object[] o);
 
         /// <summary>
-        /// Returns the unencoded version of a complete encoded URI.
-        /// </summary>
-        /// <returns>The unencoded string.</returns>
-        [ScriptAlias("decodeURI")]
-        public extern string DecodeUri();
-
-        /// <summary>
-        /// Returns the unencoded version of a single part or component of an encoded URI.
-        /// </summary>
-        /// <returns>The unencoded string.</returns>
-        [ScriptAlias("decodeURIComponent")]
-        public extern string DecodeUriComponent();
-
-        /// <summary>
-        /// Encodes the complete URI.
-        /// </summary>
-        /// <returns>The encoded string.</returns>
-        [ScriptAlias("encodeURI")]
-        public extern string EncodeUri();
-
-        /// <summary>
-        /// Encodes a single part or component of a URI.
-        /// </summary>
-        /// <returns>The encoded string.</returns>
-        [ScriptAlias("encodeURIComponent")]
-        public extern string EncodeUriComponent();
-
-        /// <summary>
         /// Determines if the string ends with the specified character.
         /// </summary>
         /// <param name="ch">The character to test for.</param>
@@ -127,52 +91,23 @@ namespace System
         [DSharpScriptMemberName("endsWith")]
         public extern bool EndsWith(string suffix);
 
-        /// <summary>
-        /// Encodes a string by replacing punctuation, spaces etc. with their escaped equivalents.
-        /// </summary>
-        /// <returns>The escaped string.</returns>
-        [ScriptAlias("escape")]
-        public extern string Escape();
-
         [DSharpScriptMemberName("format")]
+        // The CLR signature most similar to this is:  Format(IFormatProvider? provider, string format, params object?[] args)
         public extern static string Format(string format, params object[] values);
 
         [DSharpScriptMemberName("format")]
         public extern static string Format(CultureInfo culture, string format, params object[] values);
 
-        [DSharpScriptMemberName("string")]
-        public extern static string FromChar(char ch, int count);
-
-        public extern static string FromCharCode(int charCode);
-
-        public extern static string FromCharCode(params int[] charCodes);
-
-        public extern int IndexOf(char ch);
-
         public extern int IndexOf(string subString);
-
-        public extern int IndexOf(char ch, int startIndex);
 
         public extern int IndexOf(string subString, int startIndex);
 
         [DSharpScriptMemberName("insertString")]
         public extern string Insert(int index, string value);
 
-        [DSharpScriptMemberName("emptyString")]
-        public extern static bool IsNullOrEmpty(string s);
-
-        [DSharpScriptMemberName("whitespace")]
-        public extern static bool IsNullOrWhiteSpace(string s);
-
         public extern int LastIndexOf(Char ch);
 
-        public extern int LastIndexOf(string subString);
-
         public extern int LastIndexOf(char ch, int startIndex);
-
-        public extern int LastIndexOf(string subString, int startIndex);
-
-        public extern string[] Match(RegExp regex);
 
         [DSharpScriptMemberName("padLeft")]
         public extern string PadLeft(int totalWidth);
@@ -195,28 +130,17 @@ namespace System
         [DSharpScriptMemberName("replaceString")]
         public extern string Replace(string oldText, string replaceText);
 
-        [ScriptName("replace")]
-        public extern string ReplaceFirst(string oldText, string replaceText);
-
-        [ScriptName("replace")]
-        public extern string ReplaceRegex(RegExp regex, string replaceText);
-
-        [ScriptName("replace")]
-        public extern string ReplaceRegex(RegExp regex, StringReplaceCallback callback);
-
-        public extern int Search(RegExp regex);
-
+        // I guess this methoud is totally equivalent to this one on the CLR: string[] Split(char separator, StringSplitOptions options = StringSplitOptions.None)
         public extern string[] Split(char ch);
 
+        // I guess this methoud is totally equivalent to this one on the CLR: string[] Split(string? separator, StringSplitOptions options = StringSplitOptions.None)
         public extern string[] Split(string separator);
 
+        // I guess this methoud is totally equivalent to this one on the CLR: string[] Split(char separator, int count, StringSplitOptions options = StringSplitOptions.None)
         public extern string[] Split(char ch, int limit);
 
+        // I guess this methoud is totally equivalent to this one on the CLR: string[] Split(string? separator, int count, StringSplitOptions options = StringSplitOptions.None)
         public extern string[] Split(string separator, int limit);
-
-        public extern string[] Split(RegExp regex);
-
-        public extern string[] Split(RegExp regex, int limit);
 
         [DSharpScriptMemberName("startsWith")]
         public extern bool StartsWith(char ch);
@@ -224,26 +148,18 @@ namespace System
         [DSharpScriptMemberName("startsWith")]
         public extern bool StartsWith(string prefix);
 
-        public extern string Substr(int startIndex);
-
-        public extern string Substr(int startIndex, int length);
-
         public extern string Substring(int startIndex);
 
         public extern string Substring(int startIndex, int endIndex);
 
+        // This method is called ToLowerInvariant() on CLR
         public extern string ToLocaleLowerCase();
 
+        // This method is called ToUpperInvariant() on CLR
         public extern string ToLocaleUpperCase();
-
-        [Obsolete("ToLowerCase() should not be used, switch to ToLower()")]
-        public extern string ToLowerCase();
 
         [ScriptName("toLowerCase")]
         public extern string ToLower();
-
-        [Obsolete("ToUpperCase() should not be used, switch to ToUpper()")]
-        public extern string ToUpperCase();
 
         [ScriptName("toUpperCase")]
         public extern string ToUpper();
@@ -252,31 +168,21 @@ namespace System
         public extern string Trim();
 
         [DSharpScriptMemberName("trim")]
-        public extern string Trim(char[] trimCharacters);
+        // the signature for this is has been changed. Test the implementation pls
+        public extern string Trim(params char[] trimChars);
 
         [DSharpScriptMemberName("trimEnd")]
         public extern string TrimEnd();
 
         [DSharpScriptMemberName("trimEnd")]
-        public extern string TrimEnd(char[] trimCharacters);
+        // the signature for this is has been changed. Test the implementation pls
+        public extern string TrimEnd(params char[] trimChars);
 
         [DSharpScriptMemberName("trimStart")]
         public extern string TrimStart();
 
         [DSharpScriptMemberName("trimStart")]
-        public extern string TrimStart(char[] trimCharacters);
-
-        /// <summary>
-        /// Decodes a string by replacing escaped parts with their equivalent textual representation.
-        /// </summary>
-        /// <returns>The unescaped string.</returns>
-        [ScriptAlias("unescape")]
-        public extern string Unescape();
-
-        /// <internalonly />
-        public extern static bool operator ==(string s1, string s2);
-
-        /// <internalonly />
-        public extern static bool operator !=(string s1, string s2);
+        // the signature for this is has been changed. Test the implementation pls
+        public extern string TrimStart(params char[] trimChars);
     }
 }

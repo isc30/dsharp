@@ -11,13 +11,13 @@ namespace System.Collections.Generic
     [ScriptIgnoreNamespace]
     [ScriptImport]
     [ScriptName("Array")]
-    public sealed partial class List<T> : IList<T>, IList
+    public sealed partial class List<T> : IList<T>, IList /*IList<T>, IList, IReadOnlyList<T>*/ //NOTE: IList<T> inherits from ICollection<T>
     {
         public List() { }
 
         public List(int capacity) { }
 
-        public List(params T[] items) { }
+        public List(params T[] items) { } /*items type should be IEnumerable<T> and not params T*/
 
         [ScriptField]
         [ScriptName("length")]
@@ -33,15 +33,13 @@ namespace System.Collections.Generic
         public extern int Add(object value);
 
         [ScriptName("push")]
-        public extern void AddRange(params object[] items);
+        public extern void AddRange(params object[] items);  /*items type should be IEnumerable<T> and not params T*/
 
         [ScriptName("push")]
         public extern void Add(T item);
 
         [ScriptName("push")]
         public extern void AddRange(params T[] items);
-
-        public extern bool Contains(object value);
 
         public extern bool Contains(T item);
 
@@ -50,6 +48,8 @@ namespace System.Collections.Generic
         public extern int IndexOf(object value);
 
         public extern int IndexOf(T item);
+
+        //In CLR we also have this signature -> IndexOf(T item, int index, int count)
 
         [DSharpScriptMemberName("remove")]
         public extern void Remove(object value);
@@ -65,6 +65,7 @@ namespace System.Collections.Generic
 
         public extern void Insert(int index, T item);
 
+        //In CLR we just have a single ForEach method that takes Action<T> as parameter
         public extern void ForEach(ListCallback<T> callback);
 
         public extern void ForEach(ListItemCallback<T> itemCallback);

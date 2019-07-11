@@ -14,6 +14,7 @@ namespace System.Collections
 
         public ArrayList(int capacity) { }
 
+        // It sould take a single ICollection rather then params object[]
         public ArrayList(params object[] items) { }
 
         [ScriptField]
@@ -24,9 +25,11 @@ namespace System.Collections
         public extern object this[int index] { get; set; }
 
         [ScriptName("push")]
+        // It used to return void. Double check this implementation
         public extern int Add(object item);
 
         [ScriptName("push")]
+        // In CLR this method accept a single ICollection item rather than params object []
         public extern void AddRange(params object[] items);
 
         public extern bool Contains(object value);

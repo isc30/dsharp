@@ -39,6 +39,7 @@ namespace System.Collections
         public extern void Insert(int index, object item);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
+        // ICollection c instead of params object[] itmes
         public extern void InsertRange(int index, params object[] items);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
