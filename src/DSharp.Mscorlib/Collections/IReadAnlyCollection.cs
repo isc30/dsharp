@@ -4,8 +4,8 @@ namespace System.Collections
 {
     [ScriptImport]
     [ScriptName("ICollection")]
-    public interface IReadonlyCollection : IEnumerable {
-
+    public interface IReadOnlyCollection : IEnumerable
+    {
         [ScriptField]
         [ScriptName("length")]
         int Count { get; }

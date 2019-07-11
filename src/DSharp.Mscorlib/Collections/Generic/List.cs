@@ -11,7 +11,7 @@ namespace System.Collections.Generic
     [ScriptIgnoreNamespace]
     [ScriptImport]
     [ScriptName("Array")]
-    public sealed partial class List<T> : IList<T>, IList /*IList<T>, IList, IReadOnlyList<T>*/ //NOTE: IList<T> inherits from ICollection<T>
+    public sealed partial class List<T> : IList<T>, IList, IReadOnlyList<T>
     {
         public List() { }
 
@@ -22,6 +22,9 @@ namespace System.Collections.Generic
         [ScriptField]
         [ScriptName("length")]
         public extern int Count { get; }
+
+        [ScriptField]
+        extern T IReadOnlyList<T>.this[int index] { get; }
 
         [ScriptField]
         extern T IList<T>.this[int index] { get; set; }
