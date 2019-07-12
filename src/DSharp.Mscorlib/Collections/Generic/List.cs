@@ -38,12 +38,6 @@ namespace System.Collections.Generic
         [ScriptName("push")]
         public extern int Add(object value);
 
-        [ScriptName("push")]
-        public extern void AddRange(params T[] items);
-
-        [ScriptName("push")]
-        public extern void AddRange(params object[] items);  /*items type should be IEnumerable<T> and not params T*/
-
         public extern bool Contains(T item);
 
         public extern bool Contains(object value);

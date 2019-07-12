@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using DSharp.Compiler.CodeModel;
 using DSharp.Compiler.CodeModel.Expressions;
 using DSharp.Compiler.CodeModel.Members;
@@ -756,14 +757,19 @@ namespace DSharp.Compiler.Compiler
                 {
                     MethodSymbol methodSymbol = null;
 
-                    if (string.CompareOrdinal(memberSymbol.Name, "Count") == 0)
+                    if (string.CompareOrdinal(memberSymbol.Name, nameof(Dictionary<object, object>.Count)) == 0)
                     {
                         methodSymbol = (MethodSymbol)dictionaryType.GetMember("GetKeyCount");
                         Debug.Assert(methodSymbol != null);
                     }
-                    else if (string.CompareOrdinal(memberSymbol.Name, "Keys") == 0)
+                    else if (string.CompareOrdinal(memberSymbol.Name, nameof(Dictionary<object, object>.Keys)) == 0)
                     {
                         methodSymbol = (MethodSymbol)dictionaryType.GetMember("GetKeys");
+                        Debug.Assert(methodSymbol != null);
+                    }
+                    else if (string.CompareOrdinal(memberSymbol.Name, nameof(Dictionary<object, object>.Values)) == 0)
+                    {
+                        methodSymbol = (MethodSymbol)dictionaryType.GetMember("GetValues");
                         Debug.Assert(methodSymbol != null);
                     }
 
@@ -780,7 +786,7 @@ namespace DSharp.Compiler.Compiler
                 }
                 else if (memberSymbol.Parent == nullableType)
                 {
-                    if (string.CompareOrdinal(memberSymbol.Name, "Value") == 0)
+                    if (string.CompareOrdinal(memberSymbol.Name, nameof(Nullable<int>.Value)) == 0)
                     {
                         // Nullable<T>.Value becomes Nullable<T>
 
@@ -790,7 +796,7 @@ namespace DSharp.Compiler.Compiler
                         return objectExpression;
                     }
 
-                    if (string.CompareOrdinal(memberSymbol.Name, "HasValue") == 0)
+                    if (string.CompareOrdinal(memberSymbol.Name, nameof(Nullable<int>.HasValue)) == 0)
                     {
                         // Nullable<T>.Value becomes Script.IsValue(Nullable<T>)
 
@@ -808,7 +814,7 @@ namespace DSharp.Compiler.Compiler
                 }
                 else if (memberSymbol.Parent == memberInfoType || memberSymbol.Parent == typeType)
                 {
-                    if (string.CompareOrdinal(memberSymbol.Name, "Name") == 0)
+                    if (string.CompareOrdinal(memberSymbol.Name, nameof(MemberInfo.Name)) == 0)
                     {
                         // type.Name becomes ss.typeName(type)
 
@@ -1334,6 +1340,17 @@ namespace DSharp.Compiler.Compiler
                 }
                 else if (method.Parent == dictionaryType || method.Parent == genericDictionaryType)
                 {
+                    if (method.Name.Equals("Add", StringComparison.Ordinal))
+                    {
+                        // Switch the instance Remove method on Dictionary to
+                        // calls to the delete operator.
+                        Debug.Assert(args.Count == 1);
+
+                        return new LateBoundExpression(memberExpression.ObjectReference,
+                            args[0], LateBoundOperation.DeleteField,
+                            objectType);
+                    }
+
                     if (method.Name.Equals("Remove", StringComparison.Ordinal))
                     {
                         // Switch the instance Remove method on Dictionary to

@@ -7,9 +7,7 @@ namespace System.Collections.Generic
     [ScriptName("Object")]
     public sealed class KeyValuePair<TKey, TValue>
     {
-        internal KeyValuePair()
-        {
-        }
+        internal KeyValuePair() { }
 
         [ScriptField]
         public extern TKey Key { get; }

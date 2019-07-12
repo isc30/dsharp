@@ -17,9 +17,6 @@ namespace System.Collections
         [ScriptName("push")]
         int Add(object value);
 
-        [ScriptName("push")]
-        void AddRange(params object[] items);
-
         bool Contains(object value);
 
         void Clear();

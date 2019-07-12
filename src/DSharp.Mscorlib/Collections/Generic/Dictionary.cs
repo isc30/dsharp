@@ -9,25 +9,44 @@ namespace System.Collections.Generic
     [ScriptImport]
     [ScriptName("Object")]
     // In CLR this is an interface (IDictionary) therefore no ctors are defined.
-    public sealed partial class Dictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>> // In CLR is inheriting from ICollection<KeyValuePair<TKey, TValue>> where TKey : notnull.
-
+    public sealed partial class Dictionary<TKey, TValue>
+        : IDictionary<TKey, TValue>
+        , IDictionary
+        , IReadOnlyDictionary<TKey, TValue>
     {
         public Dictionary() { }
 
-        public Dictionary(params object[] nameValuePairs) { }
+        public Dictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection) { }
 
         [Obsolete("This is only for use by the c# compiler, and cannot be used for generating script.", /* error */ true)]
         public extern Dictionary(int count);
 
-        public extern IReadOnlyCollection<TKey> Keys { get; } // Return type should be ICollection<TKey>
+        public extern ICollection<TKey> Keys { get; }
 
-        // We are missing the Values property -> ICollection<TValue> Values { get; }
+        extern ICollection IDictionary.Keys { get; }
+
+        extern IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys { get; }
+
+        public extern ICollection<TValue> Values { get; }
+
+        extern ICollection IDictionary.Values { get; }
+
+        extern IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values { get; }
 
         [ScriptField]
         public extern TValue this[TKey key] { get; set; }
 
-        [Obsolete("This is only for use by the c# compiler, and cannot be used for generating script.", /* error */ true)]
+        [ScriptField]
+        public extern object this[object key] { get; set; }
+
+        [DSharpScriptMemberName("addKeyValue")]
         public extern void Add(TKey key, TValue value);
+
+        [DSharpScriptMemberName("addKeyValue")]
+        public extern void Add(object key, object value);
+
+        [DSharpScriptMemberName("addPair")]
+        public extern void Add(KeyValuePair<TKey, TValue> item);
 
         [DSharpScriptMemberName("clearKeys")]
         public extern void Clear();
@@ -35,8 +54,17 @@ namespace System.Collections.Generic
         [DSharpScriptMemberName("keyExists")]
         public extern bool ContainsKey(TKey key);
 
-        // Modified to return bool. Check implementation.
-        public extern void Remove(TKey key);
+        [DSharpScriptMemberName("keyExists")]
+        public extern bool Contains(object key);
+
+        [DSharpScriptMemberName("keyValueExists")]
+        public extern bool Contains(KeyValuePair<TKey, TValue> item);
+
+        public extern bool Remove(TKey key);
+
+        public extern void Remove(object key);
+
+        public extern bool Remove(KeyValuePair<TKey, TValue> item);
 
         public extern static implicit operator Dictionary(Dictionary<TKey, TValue> dictionary);
 

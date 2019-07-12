@@ -707,6 +707,12 @@ namespace DSharp.Compiler.Importer
                 getKeysMethod.SetTransformName(DSharpStringResources.ScriptExportMember("keys"));
                 classSymbol.AddMember(getKeysMethod);
 
+                // Define Dictionary.Values
+                MethodSymbol getValuesMethod = new MethodSymbol("GetValues", classSymbol,
+                    symbols.CreateArrayTypeSymbol(stringType), MemberVisibility.Public | MemberVisibility.Static);
+                getValuesMethod.SetTransformName(DSharpStringResources.ScriptExportMember("values"));
+                classSymbol.AddMember(getValuesMethod);
+
                 // Define Dictionary.GetCount
                 MethodSymbol countMethod = new MethodSymbol("GetKeyCount", classSymbol, intType,
                     MemberVisibility.Public | MemberVisibility.Static);

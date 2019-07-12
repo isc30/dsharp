@@ -19,6 +19,9 @@ function clearKeys(obj) {
 function keyExists(obj, key) {
     return obj[key] !== undefined;
 }
+function keyValueExists(obj, keyValue) {
+    return obj[keyValue.key] === keyValue.value;
+}
 function keys(obj) {
     if (Object.keys) {
         return Object.keys(obj);
@@ -29,6 +32,18 @@ function keys(obj) {
     }
     return keys;
 }
+
+function values(obj) {
+    if (Object.values) {
+        return Object.values(obj);
+    }
+    var values = [];
+    for (var key in obj) {
+        values.push(obj[key]);
+    }
+    return values;
+}
+
 function keyCount(obj) {
     return keys(obj).length;
 }

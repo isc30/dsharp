@@ -14,9 +14,6 @@ namespace System.Collections.Generic
         [ScriptName("push")]
         void Add(T item);
 
-        [ScriptName("push")]
-        void AddRange(params T[] items);
-
         void Clear();
 
         bool Contains(T item);
