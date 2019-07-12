@@ -5,9 +5,9 @@ namespace System.Collections.Generic
     [ScriptIgnoreNamespace]
     [ScriptImport]
     [ScriptName("Object")]
-    public sealed class KeyValuePair<TKey, TValue>
+    public struct KeyValuePair<TKey, TValue>
     {
-        internal KeyValuePair() { }
+        internal KeyValuePair(TKey key, TValue value) { }
 
         [ScriptField]
         public extern TKey Key { get; }

@@ -1,4 +1,4 @@
-// Code.cs
+﻿// Code.cs
 //
 
 using System;
@@ -104,7 +104,7 @@ namespace Basic {
             Echo(((Button)sender).text + " was clicked as well!");
         }
 
-        public static void Main(Dictionary args) {
+        public static void Main(IDictionary args) {
             App theApp = new App();
 
             theApp._btn1.performClick();

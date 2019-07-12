@@ -47,11 +47,15 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         Array,
 
-        Dictionary,
-
         GenericList,
 
         GenericDictionary,
+
+        IDictionary,
+
+        GenericIDictionary,
+
+        GenericIReadOnlyDictionary,
 
         Type,
 

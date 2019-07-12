@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
+﻿using System.Runtime.CompilerServices;
 
 namespace System.Collections.Generic
 {
@@ -22,6 +18,7 @@ namespace System.Collections.Generic
         [DSharpScriptMemberName("keyExists")]
         bool ContainsKey(TKey key);
 
+        [DSharpScriptMemberName("addKeyValue")]
         void Add(TKey key, TValue value);
 
         bool Remove(TKey key);

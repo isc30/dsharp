@@ -38,7 +38,7 @@ namespace DSharp.Compiler.Extensions
                 return false;
             }
 
-            if (interfaces.Any(i => i.FullName.StartsWith("System.Collections") && i.FullGeneratedName == "ICollection"))
+            if (interfaces.Any(i => i.FullName.StartsWith("System.Collections") && i.FullGeneratedName.EndsWith("ICollection")))
             {
                 return true;
             }

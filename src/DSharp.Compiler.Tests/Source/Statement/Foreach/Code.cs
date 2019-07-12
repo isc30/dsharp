@@ -40,7 +40,7 @@ namespace StatementTests {
                 sum += i;
             }
 
-            Dictionary d = new Dictionary();
+            IDictionary d = new Dictionary<string, object>();
             foreach (DictionaryEntry entry in d) {
                 string s = entry.Key + " = " + entry.Value;
             }
@@ -56,11 +56,11 @@ namespace StatementTests {
         }
 
         private void DoStuff(object o) {
-            foreach (DictionaryEntry entry in Dictionary.GetDictionary(o)) {
+            foreach (DictionaryEntry entry in (IDictionary)o) {
             }
         }
 
-        private Dictionary GetDictionary() {
+        private IDictionary GetDictionary() {
             return null;
         }
     }

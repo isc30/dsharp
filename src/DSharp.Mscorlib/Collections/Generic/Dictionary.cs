@@ -8,18 +8,12 @@ namespace System.Collections.Generic
     [ScriptIgnoreNamespace]
     [ScriptImport]
     [ScriptName("Object")]
-    // In CLR this is an interface (IDictionary) therefore no ctors are defined.
     public sealed partial class Dictionary<TKey, TValue>
         : IDictionary<TKey, TValue>
         , IDictionary
         , IReadOnlyDictionary<TKey, TValue>
     {
         public Dictionary() { }
-
-        public Dictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection) { }
-
-        [Obsolete("This is only for use by the c# compiler, and cannot be used for generating script.", /* error */ true)]
-        public extern Dictionary(int count);
 
         public extern ICollection<TKey> Keys { get; }
 
@@ -45,7 +39,7 @@ namespace System.Collections.Generic
         [DSharpScriptMemberName("addKeyValue")]
         public extern void Add(object key, object value);
 
-        [DSharpScriptMemberName("addPair")]
+        [Obsolete("This is only for use by the c# compiler, and cannot be used for generating script.", error: true)]
         public extern void Add(KeyValuePair<TKey, TValue> item);
 
         [DSharpScriptMemberName("clearKeys")]
@@ -57,17 +51,14 @@ namespace System.Collections.Generic
         [DSharpScriptMemberName("keyExists")]
         public extern bool Contains(object key);
 
-        [DSharpScriptMemberName("keyValueExists")]
+        [Obsolete("This is only for use by the c# compiler, and cannot be used for generating script.", error: true)]
         public extern bool Contains(KeyValuePair<TKey, TValue> item);
 
         public extern bool Remove(TKey key);
 
         public extern void Remove(object key);
 
+        [Obsolete("This is only for use by the c# compiler, and cannot be used for generating script.", error: true)]
         public extern bool Remove(KeyValuePair<TKey, TValue> item);
-
-        public extern static implicit operator Dictionary(Dictionary<TKey, TValue> dictionary);
-
-        public extern static implicit operator Dictionary<TKey, TValue>(Dictionary dictionary);
     }
 }

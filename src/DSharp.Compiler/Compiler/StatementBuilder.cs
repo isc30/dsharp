@@ -4,6 +4,7 @@
 //
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using DSharp.Compiler.CodeModel;
@@ -237,7 +238,7 @@ namespace DSharp.Compiler.Compiler
             TypeSymbol type = symbolSet.ResolveType(node.Type, symbolTable, memberContext);
             Debug.Assert(type != null);
 
-            bool dictionaryContainer = type.Name == "DictionaryEntry" || type.Name == "KeyValuePair`2";
+            bool dictionaryContainer = type.Name == typeof(DictionaryEntry).Name || type.Name == typeof(KeyValuePair<,>).Name;
 
             Expression collectionExpression = expressionBuilder.BuildExpression(node.Container);
 

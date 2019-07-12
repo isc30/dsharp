@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using DSharp.Compiler.CodeModel;
@@ -537,6 +538,11 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             return ((ISymbolTable) this).FindSymbol(symbolName, null, SymbolFilter.Types) == symbol;
         }
 
+        public TypeSymbol[] ResolveIntrinsicTypes(params IntrinsicType[] types)
+        {
+            return types.Select(t => ResolveIntrinsicType(t)).ToArray();
+        }
+
         /// <summary>
         ///     This maps C# intrinsic types (managed types that have an equivalent
         ///     C# keyword)
@@ -622,23 +628,33 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                     break;
                 case IntrinsicType.Array:
                     mappedTypeName = "Array";
-
                     break;
-                case IntrinsicType.Dictionary:
-                    mappedTypeName = "Dictionary";
-                    mappedNamespace = "System.Collections";
 
-                    break;
                 case IntrinsicType.GenericList:
                     mappedTypeName = "List`1";
                     mappedNamespace = "System.Collections.Generic";
-
                     break;
+
                 case IntrinsicType.GenericDictionary:
                     mappedTypeName = "Dictionary`2";
                     mappedNamespace = "System.Collections.Generic";
-
                     break;
+
+                case IntrinsicType.IDictionary:
+                    mappedTypeName = "IDictionary";
+                    mappedNamespace = "System.Collections";
+                    break;
+
+                case IntrinsicType.GenericIDictionary:
+                    mappedTypeName = "IDictionary`2";
+                    mappedNamespace = "System.Collections.Generic";
+                    break;
+
+                case IntrinsicType.GenericIReadOnlyDictionary:
+                    mappedTypeName = "IReadOnlyDictionary`2";
+                    mappedNamespace = "System.Collections.Generic";
+                    break;
+
                 case IntrinsicType.Type:
                     mappedTypeName = "Type";
                     mappedNamespace = "System";

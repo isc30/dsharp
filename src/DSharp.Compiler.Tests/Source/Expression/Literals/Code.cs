@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 [assembly: ScriptAssembly("test")]
@@ -36,7 +37,7 @@ namespace ExpressionTests {
             Type t = typeof(App);
             Type t2 = typeof(Int32);
             Type t3 = typeof(int);
-            Type t4 = typeof(Dictionary);
+            Type t4 = typeof(Dictionary<object, object>);
 
             int[] items = new int[] { 1, 2, 3 };
         }

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace System
@@ -27,9 +27,9 @@ namespace System
         public extern object this[string key] { get; }
 
         [DSharpScriptMemberName("error")] //TODO: Should be createError
-        public extern static Exception Create(string message, Dictionary errorInfo);
+        public extern static Exception Create(string message, Dictionary<string, object> errorInfo);
 
         [DSharpScriptMemberName("error")] //TODO: Should be createError
-        public extern static Exception Create(string message, Dictionary errorInfo, Exception innerException);
+        public extern static Exception Create(string message, Dictionary<string, object> errorInfo, Exception innerException);
     }
 }

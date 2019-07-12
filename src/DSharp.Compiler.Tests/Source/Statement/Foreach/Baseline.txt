@@ -56,8 +56,9 @@ define('test', ['ss'], function(ss) {
       }
     },
     _doStuff: function(o) {
-      for (var $key1 in o) {
-        var entry = { key: $key1, value: o[$key1] };
+      var $dict1 = o;
+      for (var $key2 in $dict1) {
+        var entry = { key: $key2, value: $dict1[$key2] };
       }
     },
     _getDictionary: function() {

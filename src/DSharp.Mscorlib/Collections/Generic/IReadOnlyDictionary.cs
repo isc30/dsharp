@@ -7,11 +7,11 @@ namespace System.Collections.Generic
     public interface IReadOnlyDictionary<TKey, TValue>
         : IReadOnlyCollection<KeyValuePair<TKey, TValue>>
     {
-        [DSharpScriptMemberName("keyExists")]
-        bool ContainsKey(TKey key);
-
         [ScriptField]
         TValue this[TKey key] { get; }
+
+        [DSharpScriptMemberName("keyExists")]
+        bool ContainsKey(TKey key);
 
         IEnumerable<TKey> Keys { get; }
 

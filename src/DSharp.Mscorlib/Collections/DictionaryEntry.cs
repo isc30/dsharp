@@ -1,5 +1,4 @@
-﻿
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 namespace System.Collections
 {
@@ -10,7 +9,7 @@ namespace System.Collections
         internal DictionaryEntry() { }
 
         [ScriptField]
-        public extern string Key { get; }
+        public extern object Key { get; }
 
         [ScriptField]
         public extern object Value { get; }

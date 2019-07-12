@@ -83,7 +83,7 @@ namespace DSharp.Compiler.Importer
 
                         ImportPseudoMembers(PseudoClassMembers.Object, (ClassSymbol) typeSymbol);
                     }
-                    else if (typeSymbol.Name.Equals("Dictionary", StringComparison.Ordinal))
+                    else if (typeSymbol.Name.Equals("Dictionary`2", StringComparison.Ordinal))
                     {
                         // The Dictionary class contains static methods at runtime, rather
                         // than instance methods.

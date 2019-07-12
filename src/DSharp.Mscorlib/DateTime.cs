@@ -22,11 +22,11 @@ namespace System
         [ScriptAlias("ss.DateTime.Equals")]
         public extern static bool Equals(DateTime d1, DateTime d2);
 
-        public extern DateTime(int year, int month, int day);
+        public DateTime(int year, int month, int day) { }
 
-        public extern DateTime(int year, int month, int day, int hour, int minute, int second);
+        public DateTime(int year, int month, int day, int hour, int minute, int second) { }
 
-        public extern DateTime(int year, int month, int day, int hour, int minute, int second, int millisecond);
+        public DateTime(int year, int month, int day, int hour, int minute, int second, int millisecond) { }
 
         public extern DayOfWeek DayOfWeek
         {
