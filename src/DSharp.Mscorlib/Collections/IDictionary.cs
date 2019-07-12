@@ -2,6 +2,7 @@
 
 namespace System.Collections
 {
+    [ScriptImport]
     public interface IDictionary : IEnumerable
     {
         [ScriptField]
