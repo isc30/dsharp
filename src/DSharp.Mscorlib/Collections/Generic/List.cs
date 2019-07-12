@@ -17,8 +17,6 @@ namespace System.Collections.Generic
 
         public List(int capacity) { }
 
-        public List(params T[] items) { } /*items type should be IEnumerable<T> and not params T*/
-
         [ScriptField]
         [ScriptName("length")]
         public extern int Count { get; }
@@ -48,8 +46,6 @@ namespace System.Collections.Generic
 
         public extern int IndexOf(T item);
 
-        //In CLR we also have this signature -> IndexOf(T item, int index, int count)
-
         [DSharpScriptMemberName("remove")]
         public extern void Remove(object value);
 
@@ -64,10 +60,7 @@ namespace System.Collections.Generic
 
         public extern void Insert(int index, T item);
 
-        //In CLR we just have a single ForEach method that takes Action<T> as parameter
-        public extern void ForEach(ListCallback<T> callback);
-
-        public extern void ForEach(ListItemCallback<T> itemCallback);
+        public extern void ForEach(Action<T> action);
 
         [ScriptSkip]
         public extern T[] ToArray();

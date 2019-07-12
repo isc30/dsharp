@@ -16,7 +16,7 @@ define('test', ['ss'], function(ss) {
     var f2 = this._func;
     ss.trim(f2(11));
     var d = {};
-    var keys = ss.keyCount(d);
+    var keys = ss.keys(d).length;
     var b = ss.keyExists(d, 'abc');
     delete d.abc;
     for (var $key1 in d) {

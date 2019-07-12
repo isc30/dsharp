@@ -4,9 +4,12 @@ namespace System.Collections.Generic
 {
     public sealed partial class List<T>
     {
+        [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
+        public extern void ForEach(ListCallback<T> callback);
+
         [ScriptName("push")]
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
-        public extern void AddRange(IEnumerable<T> items);
+        public extern void AddRange(params T[] items);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
         public extern List<T> Concat(params T[] objects);

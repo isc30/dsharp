@@ -13,7 +13,7 @@ namespace ExpressionTests {
             return null;
         }
 
-        public Dictionary<string, int> GetData2() {
+        public IDictionary<string, int> GetData2() {
             return null;
         }
 
@@ -24,9 +24,9 @@ namespace ExpressionTests {
         public void Test2(int arg) {
             Dictionary<string, object> dictionary1 = new Dictionary<string, object>();
             string key = "blah";
-            int c = dictionary1.Count;
+            int c = dictionary1.Keys.Count;
 
-            int c2 = GetData().Count;
+            int c2 = GetData().Keys.Count;
 
             dictionary1.Remove("aaa");
             dictionary1.Remove("Proxy-Connection");
@@ -55,9 +55,9 @@ namespace ExpressionTests {
         public void Test3(int arg) {
             Dictionary<string, int> dictionary1 = new Dictionary<string, int>();
             string key = "blah";
-            int c = dictionary1.Count;
+            int c = dictionary1.Keys.Count;
 
-            int c2 = GetData2().Count;
+            int c2 = GetData2().Keys.Count;
 
             bool b = dictionary1.ContainsKey("aaa");
 

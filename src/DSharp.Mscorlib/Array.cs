@@ -4,7 +4,6 @@ using System.Runtime.CompilerServices;
 
 namespace System
 {
-    //
     // NOTE: Keep in sync with ArrayList and List
     [ScriptIgnoreNamespace]
     [ScriptImport]
@@ -24,9 +23,6 @@ namespace System
 
         [ScriptName("push")]
         public extern int Add(object value);
-
-        [ScriptName("push")]
-        public extern void AddRange(params object[] items);
 
         public extern void Clear();
 

@@ -19,8 +19,8 @@ define('test', ['ss'], function(ss) {
     test2: function(arg) {
       var dictionary1 = {};
       var key = 'blah';
-      var c = ss.keyCount(dictionary1);
-      var c2 = ss.keyCount(this.getData());
+      var c = ss.keys(dictionary1).length;
+      var c2 = ss.keys(this.getData()).length;
       delete dictionary1.aaa;
       delete dictionary1['Proxy-Connection'];
       delete dictionary1[key];
@@ -41,8 +41,8 @@ define('test', ['ss'], function(ss) {
     test3: function(arg) {
       var dictionary1 = {};
       var key = 'blah';
-      var c = ss.keyCount(dictionary1);
-      var c2 = ss.keyCount(this.getData2());
+      var c = ss.keys(dictionary1).length;
+      var c2 = ss.keys(this.getData2()).length;
       var b = ss.keyExists(dictionary1, 'aaa');
       delete dictionary1.aaa;
       delete dictionary1['Proxy-Connection'];

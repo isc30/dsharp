@@ -2,10 +2,9 @@
 
 namespace System.Collections.Generic
 {
-    //
     [ScriptImport]
     [ScriptName("ICollection")]
-    public interface ICollection<T> : IEnumerable<T>
+    public interface ICollection<T> : IEnumerable<T>, IEnumerable
     {
         [ScriptField]
         [ScriptName("length")]

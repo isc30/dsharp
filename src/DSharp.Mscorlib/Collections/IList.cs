@@ -2,7 +2,6 @@
 
 namespace System.Collections
 {
-    //
     [ScriptImport]
     [ScriptName("IList")]
     public interface IList : ICollection

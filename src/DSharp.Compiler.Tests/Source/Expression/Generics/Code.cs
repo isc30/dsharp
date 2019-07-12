@@ -26,7 +26,7 @@ namespace ExpressionTests {
             f2(11).Trim();
             
             Dictionary<string, int> d = new Dictionary<string, int>();
-            int keys = d.Count;
+            int keys = d.Keys.Count;
             bool b = d.ContainsKey("abc");
             d.Remove("abc");
             

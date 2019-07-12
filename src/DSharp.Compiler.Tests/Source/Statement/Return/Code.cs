@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -29,7 +29,7 @@ namespace StatementTests {
         }
 
         public Dictionary<string, object> Test4() {
-            return new Dictionary<string, object>("a", 123, "b", "456");
+            return new Dictionary<string, object>();
         }
     }
 }

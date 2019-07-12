@@ -2,7 +2,8 @@
 
 namespace System.Collections.Generic
 {
-    public interface IDictionary<TKey, TValue> : ICollection<KeyValuePair<TKey, TValue>>
+    public interface IDictionary<TKey, TValue>
+        : IEnumerable<KeyValuePair<TKey, TValue>>
     {
         [ScriptField]
         TValue this[TKey key]

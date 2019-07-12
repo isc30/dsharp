@@ -5,7 +5,7 @@ namespace System
     [ScriptIgnoreNamespace]
     [ScriptImport]
     [ScriptName("Date")]
-    public sealed class DateTime
+    public readonly struct DateTime
     {
         public extern static implicit operator Date(DateTime d);
 

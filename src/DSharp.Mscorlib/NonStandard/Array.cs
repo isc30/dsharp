@@ -6,6 +6,10 @@ namespace System
 {
     public abstract partial class Array
     {
+        [ScriptName("push")]
+        [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
+        public extern void AddRange(params object[] items);
+
         [ScriptField]
         [ScriptName("length")]
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]

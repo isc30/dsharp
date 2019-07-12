@@ -5,6 +5,10 @@ namespace System.Collections
 {
     public sealed partial class ArrayList
     {
+        [ScriptName("push")]
+        [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
+        public extern void AddRange(params object[] items);
+
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
         public extern ArrayList Concat(params object[] objects);
 

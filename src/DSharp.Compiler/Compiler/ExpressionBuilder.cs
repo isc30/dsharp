@@ -749,41 +749,44 @@ namespace DSharp.Compiler.Compiler
             TypeSymbol typeType = symbolSet.ResolveIntrinsicType(IntrinsicType.Type);
             TypeSymbol memberInfoType = symbolSet.ResolveIntrinsicType(IntrinsicType.MemberInfo);
 
-            if (memberSymbol.Type == SymbolType.Property)
+            TypeSymbol evaluatedDictionaryType = dictionaryTypes.SingleOrDefault(
+                t => t.FullName == objectExpression.EvaluatedType.FullName);
+
+            if (evaluatedDictionaryType != null)
             {
-                if (dictionaryTypes.Contains(memberSymbol.Parent))
+                TypeSymbol dictionarySymbol = symbolSet.ResolveIntrinsicType(IntrinsicType.GenericDictionary);
+                MethodSymbol methodSymbol = null;
+
+                if (string.CompareOrdinal(memberSymbol.Name, nameof(Dictionary<object, object>.Count)) == 0)
                 {
-                    TypeSymbol dictionarySymbol = symbolSet.ResolveIntrinsicType(IntrinsicType.GenericDictionary);
-                    MethodSymbol methodSymbol = null;
-
-                    if (string.CompareOrdinal(memberSymbol.Name, nameof(Dictionary<object, object>.Count)) == 0)
-                    {
-                        methodSymbol = (MethodSymbol)dictionarySymbol.GetMember("GetKeyCount");
-                        Debug.Assert(methodSymbol != null);
-                    }
-                    else if (string.CompareOrdinal(memberSymbol.Name, nameof(Dictionary<object, object>.Keys)) == 0)
-                    {
-                        methodSymbol = (MethodSymbol)dictionarySymbol.GetMember("GetKeys");
-                        Debug.Assert(methodSymbol != null);
-                    }
-                    else if (string.CompareOrdinal(memberSymbol.Name, nameof(Dictionary<object, object>.Values)) == 0)
-                    {
-                        methodSymbol = (MethodSymbol)dictionarySymbol.GetMember("GetValues");
-                        Debug.Assert(methodSymbol != null);
-                    }
-
-                    if (methodSymbol != null)
-                    {
-                        MethodExpression methodExpression =
-                            new MethodExpression(
-                                new TypeExpression(dictionarySymbol, SymbolFilter.Public | SymbolFilter.StaticMembers),
-                                methodSymbol);
-                        methodExpression.AddParameterValue(objectExpression);
-
-                        return methodExpression;
-                    }
+                    methodSymbol = (MethodSymbol)dictionarySymbol.GetMember("GetKeyCount");
+                    Debug.Assert(methodSymbol != null);
                 }
-                else if (memberSymbol.Parent == nullableType)
+                else if (string.CompareOrdinal(memberSymbol.Name, nameof(Dictionary<object, object>.Keys)) == 0)
+                {
+                    methodSymbol = (MethodSymbol)dictionarySymbol.GetMember("GetKeys");
+                    Debug.Assert(methodSymbol != null);
+                }
+                else if (string.CompareOrdinal(memberSymbol.Name, nameof(Dictionary<object, object>.Values)) == 0)
+                {
+                    methodSymbol = (MethodSymbol)dictionarySymbol.GetMember("GetValues");
+                    Debug.Assert(methodSymbol != null);
+                }
+
+                if (methodSymbol != null)
+                {
+                    MethodExpression methodExpression =
+                        new MethodExpression(
+                            new TypeExpression(evaluatedDictionaryType, SymbolFilter.Public | SymbolFilter.StaticMembers),
+                            methodSymbol);
+                    methodExpression.AddParameterValue(objectExpression);
+
+                    return methodExpression;
+                }
+            }
+            else if (memberSymbol.Type == SymbolType.Property)
+            {
+                if (memberSymbol.Parent == nullableType)
                 {
                     if (string.CompareOrdinal(memberSymbol.Name, nameof(Nullable<int>.Value)) == 0)
                     {

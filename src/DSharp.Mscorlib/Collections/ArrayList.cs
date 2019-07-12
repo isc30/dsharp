@@ -3,7 +3,6 @@ using System.Runtime.CompilerServices;
 
 namespace System.Collections
 {
-    //
     [Obsolete("Use List<T> instead")]
     [ScriptIgnoreNamespace]
     [ScriptImport]
@@ -13,9 +12,6 @@ namespace System.Collections
         public ArrayList() { }
 
         public ArrayList(int capacity) { }
-
-        // It sould take a single ICollection rather then params object[]
-        public ArrayList(params object[] items) { }
 
         [ScriptField]
         [ScriptName("length")]
@@ -27,10 +23,6 @@ namespace System.Collections
         [ScriptName("push")]
         // It used to return void. Double check this implementation
         public extern int Add(object item);
-
-        [ScriptName("push")]
-        // In CLR this method accept a single ICollection item rather than params object []
-        public extern void AddRange(params object[] items);
 
         public extern bool Contains(object value);
 

@@ -2,7 +2,7 @@
 
 namespace System.Collections
 {
-    public interface IDictionary : ICollection
+    public interface IDictionary : IEnumerable
     {
         [ScriptField]
         object this[object key]
