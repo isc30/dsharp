@@ -126,5 +126,11 @@ namespace System
         [ScriptAlias("unescape")]
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
         public extern string Unescape();
+
+        // This method is called ToLowerInvariant() on CLR
+        public extern string ToLocaleLowerCase();
+
+        // This method is called ToUpperInvariant() on CLR
+        public extern string ToLocaleUpperCase();
     }
 }

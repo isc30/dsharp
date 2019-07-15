@@ -152,12 +152,6 @@ namespace System
 
         public extern string Substring(int startIndex, int endIndex);
 
-        // This method is called ToLowerInvariant() on CLR
-        public extern string ToLocaleLowerCase();
-
-        // This method is called ToUpperInvariant() on CLR
-        public extern string ToLocaleUpperCase();
-
         [ScriptName("toLowerCase")]
         public extern string ToLower();
 
