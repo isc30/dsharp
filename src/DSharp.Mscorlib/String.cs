@@ -130,16 +130,16 @@ namespace System
         [DSharpScriptMemberName("replaceString")]
         public extern string Replace(string oldText, string replaceText);
 
-        // I guess this methoud is totally equivalent to this one on the CLR: string[] Split(char separator, StringSplitOptions options = StringSplitOptions.None)
+        // I guess this method is totally equivalent to this one on the CLR: string[] Split(char separator, StringSplitOptions options = StringSplitOptions.None)
         public extern string[] Split(char ch);
 
-        // I guess this methoud is totally equivalent to this one on the CLR: string[] Split(string? separator, StringSplitOptions options = StringSplitOptions.None)
+        // I guess this method is totally equivalent to this one on the CLR: string[] Split(string? separator, StringSplitOptions options = StringSplitOptions.None)
         public extern string[] Split(string separator);
 
-        // I guess this methoud is totally equivalent to this one on the CLR: string[] Split(char separator, int count, StringSplitOptions options = StringSplitOptions.None)
+        // I guess this method is totally equivalent to this one on the CLR: string[] Split(char separator, int count, StringSplitOptions options = StringSplitOptions.None)
         public extern string[] Split(char ch, int limit);
 
-        // I guess this methoud is totally equivalent to this one on the CLR: string[] Split(string? separator, int count, StringSplitOptions options = StringSplitOptions.None)
+        // I guess this method is totally equivalent to this one on the CLR: string[] Split(string? separator, int count, StringSplitOptions options = StringSplitOptions.None)
         public extern string[] Split(string separator, int limit);
 
         [DSharpScriptMemberName("startsWith")]
