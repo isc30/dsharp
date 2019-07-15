@@ -184,5 +184,15 @@ namespace System
         [DSharpScriptMemberName("trimStart")]
         // the signature for this is has been changed. Test the implementation pls
         public extern string TrimStart(params char[] trimChars);
+
+        [DSharpScriptMemberName("emptyString")]
+        public extern static bool IsNullOrEmpty(string s);
+
+        [DSharpScriptMemberName("whitespace")]
+        public extern static bool IsNullOrWhiteSpace(string s);
+
+        public extern static bool operator ==(string s1, string s2);
+
+        public extern static bool operator !=(string s1, string s2);
     }
 }

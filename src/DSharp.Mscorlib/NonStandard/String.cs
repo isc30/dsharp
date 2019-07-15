@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+﻿ using System.Runtime.CompilerServices;
 using NonStandard;
 
 namespace System
@@ -77,14 +77,6 @@ namespace System
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
         public extern int IndexOf(char ch, int startIndex);
 
-        [DSharpScriptMemberName("emptyString")]
-        [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
-        public extern static bool IsNullOrEmpty(string s);
-
-        [DSharpScriptMemberName("whitespace")]
-        [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
-        public extern static bool IsNullOrWhiteSpace(string s);
-
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
         public extern int LastIndexOf(string subString);
 
@@ -134,11 +126,5 @@ namespace System
         [ScriptAlias("unescape")]
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
         public extern string Unescape();
-
-        [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
-        public extern static bool operator ==(string s1, string s2);
-
-        [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
-        public extern static bool operator !=(string s1, string s2);
     }
 }
