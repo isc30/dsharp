@@ -4,13 +4,9 @@ namespace System.Collections.Generic
 {
     [ScriptImport]
     [ScriptName("IEnumerator")]
-    public interface IEnumerator<T>
+    public interface IEnumerator<T> : IEnumerator
     {
         [ScriptField]
-        T Current { get; }
-
-        bool MoveNext();
-
-        void Reset();
+        new T Current { get; }
     }
 }
