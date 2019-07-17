@@ -12,7 +12,7 @@ DSharp requires .NET 4.0 and Visual Studio 2012.
 
 ### Credits ###
 
-DSharp is a fork of the excellent Script#  project.
+DSharp is a fork of the Script#  project.
 
 ### License ###
 Copyright (c) 2015, DSharp Project.
