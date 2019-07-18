@@ -15,10 +15,8 @@ namespace System.Collections.Generic
     {
         public Dictionary() { }
 
-        [Obsolete("This is only for use by the c# compiler, and cannot be used for generating script.", error: true)]
         public extern IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator();
 
-        [Obsolete("This is only for use by the c# compiler, and cannot be used for generating script.", error: true)]
         extern IEnumerator IEnumerable.GetEnumerator();
 
         public extern ICollection<TKey> Keys { get; }
