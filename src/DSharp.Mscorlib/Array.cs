@@ -8,7 +8,7 @@ namespace System
     [ScriptIgnoreNamespace]
     [ScriptImport]
     [ScriptName("Array")]
-    public abstract partial class Array : IList
+    public abstract partial class Array : IList, ICollection, IEnumerable
     {
         [ScriptField]
         public extern object this[int index]
