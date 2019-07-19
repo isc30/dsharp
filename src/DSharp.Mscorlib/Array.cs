@@ -19,6 +19,10 @@ namespace System
 
         [ScriptField]
         [ScriptName("length")]
+        public extern int Length { get; }
+
+        [ScriptField]
+        [ScriptName("length")]
         public extern int Count { get; }
 
         [ScriptName("push")]
