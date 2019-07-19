@@ -22,13 +22,10 @@ namespace System.Collections.Generic
         public extern int Count { get; }
 
         [ScriptField]
-        extern T IReadOnlyList<T>.this[int index] { get; }
+        public extern T this[int index] { get; set; }
 
         [ScriptField]
-        extern T IList<T>.this[int index] { get; set; }
-
-        [ScriptField]
-        public extern object this[int index] { get; set; }
+        extern object IList.this[int index] { get; set; }
 
         [ScriptName("push")]
         public extern void Add(T item);
