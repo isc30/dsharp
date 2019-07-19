@@ -35,7 +35,7 @@ namespace System.Collections.Generic
         public extern TValue this[TKey key] { get; set; }
 
         [ScriptField]
-        public extern object this[object key] { get; set; }
+        extern object IDictionary.this[object key] { get; set; }
 
         [DSharpScriptMemberName("addKeyValue")]
         public extern void Add(TKey key, TValue value);
