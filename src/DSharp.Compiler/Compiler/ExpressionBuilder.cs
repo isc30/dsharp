@@ -744,6 +744,11 @@ namespace DSharp.Compiler.Compiler
 
             Debug.Assert(objectExpression != null);
 
+            if (objectExpression == null)
+            {
+                throw new InvalidOperationException($"Unable to resolve expression: {node.RightChild.Token.Location}");
+            }
+
             TypeSymbol[] dictionaryTypes = symbolSet.ResolveIntrinsicTypes(IntrinsicType.GenericDictionary, IntrinsicType.IDictionary, IntrinsicType.GenericIDictionary, IntrinsicType.GenericIReadOnlyDictionary);
             TypeSymbol nullableType = symbolSet.ResolveIntrinsicType(IntrinsicType.Nullable);
             TypeSymbol typeType = symbolSet.ResolveIntrinsicType(IntrinsicType.Type);
