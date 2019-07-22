@@ -15,10 +15,8 @@ namespace System.Collections.Generic
     {
         public Dictionary() { }
 
-        [Obsolete("This is only for use by the c# compiler, and cannot be used for generating script.", error: true)]
         public extern IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator();
 
-        [Obsolete("This is only for use by the c# compiler, and cannot be used for generating script.", error: true)]
         extern IEnumerator IEnumerable.GetEnumerator();
 
         public extern ICollection<TKey> Keys { get; }
@@ -37,7 +35,7 @@ namespace System.Collections.Generic
         public extern TValue this[TKey key] { get; set; }
 
         [ScriptField]
-        public extern object this[object key] { get; set; }
+        extern object IDictionary.this[object key] { get; set; }
 
         [DSharpScriptMemberName("addKeyValue")]
         public extern void Add(TKey key, TValue value);

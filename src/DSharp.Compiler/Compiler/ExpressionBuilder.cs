@@ -755,7 +755,7 @@ namespace DSharp.Compiler.Compiler
             TypeSymbol memberInfoType = symbolSet.ResolveIntrinsicType(IntrinsicType.MemberInfo);
 
             TypeSymbol evaluatedDictionaryType = dictionaryTypes.SingleOrDefault(
-                t => t.FullName == objectExpression.EvaluatedType.FullName);
+                t => t.FullName == objectExpression.EvaluatedType?.FullName);
 
             if (evaluatedDictionaryType != null)
             {
