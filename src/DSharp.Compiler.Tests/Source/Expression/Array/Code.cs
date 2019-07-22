@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -41,6 +41,24 @@ namespace ExpressionTests {
             bool b3 = words.Contains("hi");
             string[] newWords = words.GetRange(5, 2);
             string[] newWords2 = words.GetRange(5, arg);
+
+            IEnumerator<int> enumerator;
+            int count;
+
+            IList<int> x = new List<int>();
+            x.Add(2);
+            enumerator = x.GetEnumerator();
+            count = x.Count;
+
+            IList a = new List<int>();
+            a.Add(2);
+            enumerator = a.GetEnumerator();
+            count = a.Count;
+
+            ICollection<int> c = new List<int>();
+            c.Add(2);
+            enumerator = c.GetEnumerator();
+            count = c.Count;
         }
     }
 }

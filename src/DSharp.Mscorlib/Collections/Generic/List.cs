@@ -31,29 +31,29 @@ namespace System.Collections.Generic
         public extern void Add(T item);
 
         [ScriptName("push")]
-        public extern int Add(object value);
+        extern int IList.Add(object value);
 
         public extern bool Contains(T item);
 
-        public extern bool Contains(object value);
+        extern bool IList.Contains(object value);
 
         public extern void Clear();
 
-        public extern int IndexOf(object value);
-
         public extern int IndexOf(T item);
 
-        [DSharpScriptMemberName("remove")]
-        public extern void Remove(object value);
+        extern int IList.IndexOf(object value);
 
         [DSharpScriptMemberName("remove")]
         public extern bool Remove(T item);
 
+        [DSharpScriptMemberName("remove")]
+        extern void IList.Remove(object value);
+
         public extern void RemoveAt(int index);
 
-        public extern IEnumerator GetEnumerator();
+        public extern IEnumerator<T> GetEnumerator();
 
-        extern IEnumerator<T> IEnumerable<T>.GetEnumerator();
+        extern IEnumerator IEnumerable.GetEnumerator();
 
         public extern void Insert(int index, T item);
 

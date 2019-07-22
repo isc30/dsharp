@@ -895,10 +895,11 @@ namespace DSharp.Compiler.Compiler
 
             MemberExpression expression = new MemberExpression(objectExpression, memberSymbol);
 
-            if (memberSymbol.Type == SymbolType.Method &&
-                memberSymbol.AssociatedType.IsGeneric && memberSymbol.AssociatedType.GenericArguments == null)
+            if (memberSymbol.Type == SymbolType.Method
+                && memberSymbol.AssociatedType.IsGeneric
+                && memberSymbol.AssociatedType.GenericArguments == null
+                && node.RightChild.NodeType == ParseNodeType.GenericName)
             {
-                Debug.Assert(node.RightChild.NodeType == ParseNodeType.GenericName);
                 Debug.Assert(((GenericNameNode)node.RightChild).TypeArguments != null);
 
                 List<TypeSymbol> typeArgs = new List<TypeSymbol>();
