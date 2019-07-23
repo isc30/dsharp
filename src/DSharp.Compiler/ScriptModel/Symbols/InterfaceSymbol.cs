@@ -8,15 +8,10 @@ using System.Diagnostics;
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
-    internal class InterfaceSymbol : TypeSymbol
+    internal sealed class InterfaceSymbol : TypeSymbol
     {
         public InterfaceSymbol(string name, NamespaceSymbol parent)
             : base(SymbolType.Interface, name, parent)
-        {
-        }
-
-        protected InterfaceSymbol(SymbolType type, string name, NamespaceSymbol parent)
-            : base(type, name, parent)
         {
         }
 
