@@ -981,6 +981,16 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             {
                 Debug.Assert(context != null);
 
+                if (context is MethodSymbol methodContext)
+                {
+                    var genericType = methodContext.GenericArguments?.SingleOrDefault(a => a.Name == name);
+
+                    if (genericType != null)
+                    {
+                        return genericType;
+                    }
+                }
+
                 TypeSymbol typeSymbol = context as TypeSymbol;
 
                 if (typeSymbol == null)

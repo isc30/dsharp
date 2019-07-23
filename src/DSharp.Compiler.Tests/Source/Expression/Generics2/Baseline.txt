@@ -1,0 +1,49 @@
+"use strict";
+
+define('g_b4bdbc8e390b4f5c8e02af2037e648c6', ['ss'], function(ss) {
+  var $global = this;
+  // ExpressionTests.Program
+
+  function Program() {
+  }
+  var Program$ = {
+    main: function() {
+      this.AAAAA(new DisposeMe(), new DisposeMe());
+    },
+    noParameters: function() {
+    },
+    noParametersConstrained: function(x) {
+      var t = T;
+      x.dispose();
+    },
+    inParameter: function(inGenericParameter) {
+      return inGenericParameter;
+    },
+    AAAAA: function(a1, a2) {
+      a1.dispose();
+      a2.main();
+      a2.dispose();
+    }
+  };
+
+
+  // ExpressionTests.DisposeMe
+
+  function DisposeMe() {
+    Program.call(this);
+  }
+  var DisposeMe$ = {
+    dispose: function() {
+    }
+  };
+
+
+  var $exports = ss.module('g_b4bdbc8e390b4f5c8e02af2037e648c6', null,
+    {
+      Program: ss.defineClass(Program, Program$, [], null),
+      DisposeMe: ss.defineClass(DisposeMe, DisposeMe$, [], Program, [ss.IDisposable])
+    });
+
+
+  return $exports;
+});

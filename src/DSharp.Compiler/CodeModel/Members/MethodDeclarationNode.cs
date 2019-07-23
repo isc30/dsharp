@@ -67,5 +67,9 @@ namespace DSharp.Compiler.CodeModel.Members
         public override ParseNode Type { get; }
 
         public bool IsExensionMethod => Parameters.FirstOrDefault()?.As<ParameterNode>().IsExtensionMethodTarget ?? false;
+
+        internal ParseNodeList TypeParameters => typeParameters;
+
+        internal ParseNodeList Constraints => constraints;
     }
 }

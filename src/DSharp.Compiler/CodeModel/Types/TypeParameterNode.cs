@@ -1,4 +1,4 @@
-// TypeParameterNode.cs
+﻿// TypeParameterNode.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -19,5 +19,7 @@ namespace DSharp.Compiler.CodeModel.Types
             this.attributes = attributes;
             this.name = name;
         }
+
+        internal AtomicNameNode NameNode => name;
     }
 }

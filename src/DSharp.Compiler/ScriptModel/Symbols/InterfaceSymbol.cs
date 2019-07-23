@@ -1,4 +1,4 @@
-// InterfaceSymbol.cs
+﻿// InterfaceSymbol.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -8,10 +8,15 @@ using System.Diagnostics;
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
-    internal sealed class InterfaceSymbol : TypeSymbol
+    internal class InterfaceSymbol : TypeSymbol
     {
         public InterfaceSymbol(string name, NamespaceSymbol parent)
             : base(SymbolType.Interface, name, parent)
+        {
+        }
+
+        protected InterfaceSymbol(SymbolType type, string name, NamespaceSymbol parent)
+            : base(type, name, parent)
         {
         }
 

@@ -1063,11 +1063,6 @@ namespace DSharp.Compiler.Compiler
         {
             string name = node.Name;
 
-            if (node.NodeType == ParseNodeType.GenericName)
-            {
-                name = name + "`" + ((GenericNameNode)node).TypeArguments.Count;
-            }
-
             // TODO: When inside a static method, we should only lookup static members
 
             Symbol symbol = symbolTable.FindSymbol(name, symbolContext, filter);
@@ -1825,6 +1820,10 @@ namespace DSharp.Compiler.Compiler
                 }
 
                 methodExpression = new MethodExpression(memberExpression.ObjectReference, method);
+
+                // iterate over the parameters. If the parameter is generic, then get args[i].EvaluatedType
+                // add it as SetGenericType and the SymbolTable
+                // (method symbol signature might need to be decorated)
             }
 
             if (methodExpression != null)
@@ -1838,7 +1837,10 @@ namespace DSharp.Compiler.Compiler
 
                 if (args != null)
                 {
-                    foreach (Expression paramExpr in args) methodExpression.AddParameterValue(paramExpr);
+                    foreach (Expression paramExpr in args)
+                    {
+                        methodExpression.AddParameterValue(paramExpr);
+                    }
                 }
 
                 if (isDelegateInvoke)

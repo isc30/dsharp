@@ -801,6 +801,44 @@ namespace DSharp.Compiler.Compiler
                 if (returnType != null)
                 {
                     method = new MethodSymbol(methodNode.Name, typeSymbol, returnType, methodNode.IsExensionMethod);
+
+                    if (methodNode.TypeParameters.Any())
+                    {
+                        List<GenericParameterSymbol> genericArguments = new List<GenericParameterSymbol>();
+
+                        int i = 0;
+                        foreach (TypeParameterNode genericParameter in methodNode.TypeParameters)
+                        {
+                            GenericParameterSymbol arg =
+                                new GenericParameterSymbol(i++, genericParameter.NameNode.Name,
+                                    /* typeArgument */ false,
+                                    symbols.GlobalNamespace);
+
+                            var constraints = methodNode.Constraints
+                                .Cast<TypeParameterConstraintNode>()
+                                .Where(c => c.TypeParameter.Name == genericParameter.NameNode.Name)
+                                .SelectMany(c => c.TypeConstraints)
+                                .Select(c => typeSymbol.SymbolSet.ResolveType(c, symbolTable, typeSymbol))
+                                .Distinct()
+                                .ToList();
+
+                            var baseClass = constraints.OfType<ClassSymbol>().SingleOrDefault();
+                            var interfaces = constraints.OfType<InterfaceSymbol>().ToList();
+
+                            arg.SetInheritance(baseClass, interfaces);
+
+                            // add members for the interfaces
+                            foreach (var member in interfaces.SelectMany(x => x.Members).Distinct())
+                            {
+                                arg.AddMember(member);
+                            }
+
+                            genericArguments.Add(arg);
+                        }
+
+                        method.AddGenericArguments(genericArguments);
+                    }
+
                     BuildMemberDetails(method, typeSymbol, methodNode, methodNode.Attributes);
 
                     ICollection<string> conditions = null;
@@ -892,6 +930,7 @@ namespace DSharp.Compiler.Compiler
 
             TypeSymbol parameterType =
                 methodSymbol.SymbolSet.ResolveType(parameterNode.Type, symbolTable, methodSymbol);
+
             Debug.Assert(parameterType != null);
 
             if (parameterType != null)
