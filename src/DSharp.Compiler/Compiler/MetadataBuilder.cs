@@ -806,11 +806,12 @@ namespace DSharp.Compiler.Compiler
                     {
                         List<GenericParameterSymbol> genericArguments = new List<GenericParameterSymbol>();
 
-                        int i = 0;
-                        foreach (TypeParameterNode genericParameter in methodNode.TypeParameters)
+                        for (var i = 0; i < methodNode.TypeParameters.Count; ++i)
                         {
+                            TypeParameterNode genericParameter = (TypeParameterNode)methodNode.TypeParameters[i];
+
                             GenericParameterSymbol arg =
-                                new GenericParameterSymbol(i++, genericParameter.NameNode.Name,
+                                new GenericParameterSymbol(i, genericParameter.NameNode.Name,
                                     /* typeArgument */ false,
                                     symbols.GlobalNamespace);
 

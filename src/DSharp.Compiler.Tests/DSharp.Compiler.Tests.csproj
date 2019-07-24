@@ -46,6 +46,7 @@
     <Compile Remove="Source\Expression\EnumToString\Code2.cs" />
     <Compile Remove="Source\Expression\Events\Code.cs" />
     <Compile Remove="Source\Expression\ExtensionMethods\Code.cs" />
+    <Compile Remove="Source\Expression\Generics2\Code.cs" />
     <Compile Remove="Source\Expression\Generics\Code.cs" />
     <Compile Remove="Source\Expression\GetType\Code.cs" />
     <Compile Remove="Source\Expression\InlineScript\Code.cs" />
@@ -155,6 +156,7 @@
     <None Remove="Source\Expression\EnumToString\NormalBaseline.txt" />
     <None Remove="Source\Expression\Events\Baseline.txt" />
     <None Remove="Source\Expression\ExtensionMethods\Baseline.txt" />
+    <None Remove="Source\Expression\Generics2\Baseline.txt" />
     <None Remove="Source\Expression\Generics\Baseline.txt" />
     <None Remove="Source\Expression\GetType\Baseline.txt" />
     <None Remove="Source\Expression\InlineScript\Baseline.txt" />
@@ -425,6 +427,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Source\Expression\ExtensionMethods\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Source\Expression\Generics2\Baseline.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Source\Expression\Generics\Baseline.txt">
@@ -767,6 +772,9 @@
     <None Include="Source\Basic\Resources\Strings2.Designer.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Content Include="Source\Expression\Generics2\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

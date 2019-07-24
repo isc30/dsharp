@@ -774,7 +774,12 @@ namespace DSharp.Compiler.Compiler
                         throw new ExpressionBuildException($"Unable to resolve type '{typeName}' from symbol table.");
                     }
 
-                    return CreateExtensionMethodInvocationExpression(node, typeSymbol);
+                    Expression extensionMethodInvocation = CreateExtensionMethodInvocationExpression(node, typeSymbol);
+
+                    if (extensionMethodInvocation != null)
+                    {
+                        return extensionMethodInvocation;
+                    }
                 }
                 else if (node.LeftChild.Token is IdentifierToken identifier)
                 {
@@ -782,7 +787,12 @@ namespace DSharp.Compiler.Compiler
                     var token = parentMethod.Parameters.First().Token;
                     var typeNode = symbolSet.ResolveIntrinsicToken(token);
 
-                    return CreateExtensionMethodInvocationExpression(node, typeNode);
+                    Expression extensionMethodInvocation = CreateExtensionMethodInvocationExpression(node, typeNode);
+
+                    if (extensionMethodInvocation != null)
+                    {
+                        return extensionMethodInvocation;
+                    }
                 }
             }
 
@@ -976,6 +986,11 @@ namespace DSharp.Compiler.Compiler
         {
             string memberName = ((NameNode)node.RightChild).Name;
             MethodSymbol methodSymbol = symbolSet.ResolveExtensionMethodSymbol(typeToExtend.FullName, memberName);
+
+            if (methodSymbol == null)
+            {
+                return null;
+            }
 
             MethodExpression methodExpression = new MethodExpression(
                         new TypeExpression((TypeSymbol)methodSymbol.Parent, SymbolFilter.Public | SymbolFilter.StaticMembers),

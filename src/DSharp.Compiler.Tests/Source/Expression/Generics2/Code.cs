@@ -1,29 +1,49 @@
 ﻿using System;
 using System.Collections;
+using System.Runtime.CompilerServices;
+using System.Serialization;
+
+[assembly: ScriptAssembly("test")]
 
 namespace ExpressionTests
 {
-    public class DisposeMe : Program, IDisposable { public void Dispose() { } }
+    public class TestBase
+    {
+        public void PerformAction() { }
+    }
+
+    public class TestDisposableBase : TestBase, IDisposable
+    {
+        public void Dispose() { }
+    }
 
     public class Program
     {
         public void Main()
         {
-            AAAAA(new DisposeMe(), new DisposeMe());
+            NoParameters<int>();
+            NoParameters<TestBase>();
+
+            NoParametersConstrained<TestDisposableBase>();
+            NoParametersConstrained<IDisposable>();
+
+            InParameter(1234);
+            InParameter(1234f);
+            InParameter<double>(1234);
+
+            NoParametersConstrained<TestDisposableBase>(new TestDisposableBase());
+            NoParametersConstrained<IDisposable>(new TestDisposableBase());
+
+            ComplexInGenerics(new TestDisposableBase(), new TestDisposableBase());
         }
 
         public void NoParameters<T>()
         {
         }
 
-        public void NoParametersConstrained<T>(T x)
+        public void NoParametersConstrained<T>()
             where T : IDisposable
         {
-            // this doesn't work
-            Type t = typeof(T);
-
-            // this works now
-            x.Dispose();
         }
 
         public object InParameter<T>(T inGenericParameter)
@@ -31,12 +51,21 @@ namespace ExpressionTests
             return inGenericParameter;
         }
 
-        public void AAAAA<T, Y>(T a1, Y a2)
+        public void InParameterConstrained<T>(T x)
             where T : IDisposable
-            where Y : Program, IDisposable
+        {
+            Type xType = x.GetType();
+
+            x.Dispose();
+        }
+
+        public void ComplexInGenerics<T, Y>(T a1, Y a2)
+            where T : IDisposable
+            where Y : TestBase, IDisposable
         {
             a1.Dispose();
-            a2.Main();
+
+            a2.PerformAction();
             a2.Dispose();
         }
     }
