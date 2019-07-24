@@ -31,8 +31,8 @@ namespace ExpressionTests
             InParameter(1234f);
             InParameter<double>(1234);
 
-            NoParametersConstrained<TestDisposableBase>(new TestDisposableBase());
-            NoParametersConstrained<IDisposable>(new TestDisposableBase());
+            InParameterConstrained<TestDisposableBase>(new TestDisposableBase());
+            InParameterConstrained<IDisposable>(new TestDisposableBase());
 
             ComplexInGenerics(new TestDisposableBase(), new TestDisposableBase());
         }

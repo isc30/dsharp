@@ -25,8 +25,8 @@ define('test', ['ss'], function(ss) {
       this.inParameter(1234);
       this.inParameter(1234);
       this.inParameter(1234);
-      this.noParametersConstrained(new TestDisposableBase());
-      this.noParametersConstrained(new TestDisposableBase());
+      this.inParameterConstrained(new TestDisposableBase());
+      this.inParameterConstrained(new TestDisposableBase());
       this.complexInGenerics(new TestDisposableBase(), new TestDisposableBase());
     },
     noParameters: function() {
