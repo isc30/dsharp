@@ -14,6 +14,7 @@ using DSharp.Compiler.CodeModel.Tokens;
 using DSharp.Compiler.CodeModel.Types;
 using DSharp.Compiler.Errors;
 using DSharp.Compiler.Extensions;
+using DSharp.Compiler.Importer;
 using DSharp.Compiler.ScriptModel.Symbols;
 
 namespace DSharp.Compiler.Compiler
@@ -695,6 +696,14 @@ namespace DSharp.Compiler.Compiler
 
             foreach (MemberNode member in typeNode.Members)
             {
+                var nodeAttributes = member.Attributes.Cast<AttributeNode>();
+
+                // skip symbol generation for members decorated with [ScriptIgnore]
+                if (nodeAttributes.Any(a => a.TypeName == DSharpStringResources.SCRIPT_IGNORE_ATTRIBUTE))
+                {
+                    continue;
+                }
+
                 MemberSymbol memberSymbol = null;
 
                 switch (member.NodeType)

@@ -134,6 +134,12 @@ namespace DSharp.Compiler.Importer
                 != null;
         }
 
+        public static bool IsIgnored(MethodDefinition method)
+        {
+            return GetAttribute(method, DSharpStringResources.SCRIPT_IGNORE_ATTRIBUTE_FULLTYPENAME)
+                != null;
+        }
+
         public static string GetScriptName(ICustomAttributeProvider attributeProvider, out bool preserveName,
                                            out bool preserveCase)
         {

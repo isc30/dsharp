@@ -164,8 +164,9 @@ namespace DSharp.Compiler.Validator
                     }
 
                     string name = memberNode.Name;
+                    AttributeNode ignoreAttribute = AttributeNode.FindAttribute(memberNode.Attributes, DSharpStringResources.SCRIPT_IGNORE_ATTRIBUTE);
 
-                    if (memberNames.ContainsKey(name))
+                    if (ignoreAttribute == null && memberNames.ContainsKey(name))
                     {
                         errorHandler.ReportNodeValidationError(DSharpStringResources.UNSUPPORTED_METHOD_OVERLOAD, memberNode);
                     }

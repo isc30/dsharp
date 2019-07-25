@@ -209,7 +209,7 @@
         "Name": "Generics2",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt",
-        "References": [ ]
+        "References": []
       },
       {
         "Name": "GetType",
@@ -253,6 +253,11 @@
       },
       {
         "Name": "Script",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt"
+      },
+      {
+        "Name": "ScriptIgnore",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt"
       },

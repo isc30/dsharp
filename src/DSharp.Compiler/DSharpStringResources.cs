@@ -10,6 +10,8 @@
         public static readonly string DSHARP_MEMBER_NAME_ATTRIBUTE = "DSharpScriptMemberName";
         public static readonly string SCRIPT_NAMESPACE_ATTRIBUTE = "ScriptNamespace";
         public static readonly string SCRIPT_IMPORT_ATTRIBUTE = "ScriptImport";
+        public static readonly string SCRIPT_IGNORE_ATTRIBUTE = "ScriptIgnore";
+        public static readonly string SCRIPT_IGNORE_ATTRIBUTE_FULLTYPENAME = "System.ScriptIgnore";
         public static readonly string SCRIPT_OBJECT_ATTRIBUTE = "ScriptObject";
         public static readonly string SCRIPT_EXTENSION_ATTRIBUTE = "ScriptExtension";
         public static readonly string SCRIPT_MODULE_ATTRIBUTE = "ScriptModule";

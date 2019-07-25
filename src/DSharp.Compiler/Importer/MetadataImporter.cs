@@ -470,11 +470,18 @@ namespace DSharp.Compiler.Importer
                     continue;
                 }
 
+                // skip symbol generation for members decorated with [ScriptIgnore]
+                if (MetadataHelpers.IsIgnored(method))
+                {
+                    continue;
+                }
+
                 MethodSymbol methodSymbol = new MethodSymbol(
                     methodName, 
                     typeSymbol, 
                     returnType, 
                     MetadataHelpers.IsExtensionMethod(method));
+
                 methodSymbol.SetParseContext(method);
                 ImportMemberDetails(methodSymbol, method, method);
 

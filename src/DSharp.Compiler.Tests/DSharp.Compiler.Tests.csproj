@@ -56,6 +56,7 @@
     <Compile Remove="Source\Expression\Members\Code.cs" />
     <Compile Remove="Source\Expression\New\Code.cs" />
     <Compile Remove="Source\Expression\Number\Code.cs" />
+    <Compile Remove="Source\Expression\ScriptIgnore\Code.cs" />
     <Compile Remove="Source\Expression\Script\Code.cs" />
     <Compile Remove="Source\Expression\String\Code.cs" />
     <Compile Remove="Source\Expression\Truthy\Code.cs" />
@@ -166,6 +167,7 @@
     <None Remove="Source\Expression\Members\Baseline.txt" />
     <None Remove="Source\Expression\New\Baseline.txt" />
     <None Remove="Source\Expression\Number\Baseline.txt" />
+    <None Remove="Source\Expression\ScriptIgnore\Baseline.txt" />
     <None Remove="Source\Expression\Script\Baseline.txt" />
     <None Remove="Source\Expression\String\Baseline.txt" />
     <None Remove="Source\Expression\Truthy\Baseline.txt" />
@@ -484,6 +486,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Source\Expression\Number\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Source\Expression\ScriptIgnore\Baseline.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Source\Expression\ScriptIgnore\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Source\Expression\Script\Baseline.txt">
