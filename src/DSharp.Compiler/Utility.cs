@@ -27,13 +27,12 @@ namespace DSharp.Compiler
             "if", "switch", "var", "catch", "else", "in", "this",
             "void", "continue", "false", "instanceof", "throw", "while",
             "debugger", "finally", "new", "true", "with", "default",
-            "for", "null", "try",
-            // Future reserved words
+            "for", "null", "try", "volatile",
             "abstract", "double", "goto", "native", "static", "boolean",
             "enum", "implements", "package", "super", "byte", "export",
             "import", "private", "synchronized", "char", "extends", "int",
-            "protected", "throws", "class", "final", "interface", "public",
-            "transient", "const", "float", "long", "short", "volatile",
+            "protected", "throws", "class", "sealed", "interface", "public",
+            "const", "float", "long", "short",
             // Script specific words
             DSharpStringResources.DSHARP_SCRIPT_NAME, "global"
         };
