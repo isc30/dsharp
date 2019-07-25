@@ -4,8 +4,10 @@ using NonStandard;
 
 namespace System
 {
-    public abstract partial class Array
+    public partial class Array
     {
+        private Array() { }
+
         [ScriptName("push")]
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
         public extern void AddRange(params object[] items);
