@@ -25,6 +25,7 @@
     <Compile Remove="Source\Basic\Flags\Code.cs" />
     <Compile Remove="Source\Basic\Guid\Code.cs" />
     <Compile Remove="Source\Basic\Includes\Code.cs" />
+    <Compile Remove="Source\Basic\GenericInheritance\Code.cs" />
     <Compile Remove="Source\Basic\Lists\Code.cs" />
     <Compile Remove="Source\Basic\Minimization\Code.cs" />
     <Compile Remove="Source\Basic\Minimization\Lib.cs" />
@@ -135,6 +136,7 @@
     <None Remove="Source\Basic\Includes\Post.js" />
     <None Remove="Source\Basic\Includes\Pre.js" />
     <None Remove="Source\Basic\Includes\SingleIncBaseline.txt" />
+    <None Remove="Source\Basic\GenericInheritance\Baseline.txt" />
     <None Remove="Source\Basic\Lists\Baseline.txt" />
     <None Remove="Source\Basic\Minimization\Baseline.txt" />
     <None Remove="Source\Basic\Minimization\Lib.bat" />
@@ -294,6 +296,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Source\Basic\Includes\SingleIncBaseline.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Source\Basic\GenericInheritance\Baseline.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Source\Basic\Lists\Baseline.txt">
@@ -774,6 +779,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Source\Basic\GenericInheritance\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Source\Basic\Resources\Strings1.Designer.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

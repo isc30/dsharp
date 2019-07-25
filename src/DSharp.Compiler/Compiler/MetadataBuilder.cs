@@ -1276,8 +1276,16 @@ namespace DSharp.Compiler.Compiler
 
                 foreach (NameNode node in customTypeNode.BaseTypes)
                 {
+                    string nodeName = node.Name;
+
+                    if (node is GenericNameNode genericNameNode)
+                    {
+                        nodeName += $"`{genericNameNode.TypeArguments.Count}";
+                    }
+
                     TypeSymbol baseTypeSymbol =
-                        (TypeSymbol)symbolTable.FindSymbol(node.Name, classSymbol, SymbolFilter.Types);
+                        (TypeSymbol)symbolTable.FindSymbol(nodeName, classSymbol, SymbolFilter.Types);
+
                     Debug.Assert(baseTypeSymbol != null);
 
                     if (baseTypeSymbol.Type == SymbolType.Class)
@@ -1315,8 +1323,16 @@ namespace DSharp.Compiler.Compiler
 
                 foreach (NameNode node in customTypeNode.BaseTypes)
                 {
+                    string nodeName = node.Name;
+
+                    if (node is GenericNameNode genericNameNode)
+                    {
+                        nodeName += $"`{genericNameNode.TypeArguments.Count}";
+                    }
+
                     TypeSymbol baseTypeSymbol =
-                        (TypeSymbol)symbolTable.FindSymbol(node.Name, interfaceSymbol, SymbolFilter.Types);
+                        (TypeSymbol)symbolTable.FindSymbol(nodeName, interfaceSymbol, SymbolFilter.Types);
+
                     Debug.Assert(baseTypeSymbol.Type == SymbolType.Interface);
 
                     if (interfaces == null)

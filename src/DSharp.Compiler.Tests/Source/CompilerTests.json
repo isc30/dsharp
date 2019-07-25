@@ -93,6 +93,11 @@
         "ComparisonFile": "MultipleIncBaseline.txt"
       },
       {
+        "Name": "GenericInheritance",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt"
+      },
+      {
         "Name": "Default_Loader",
         "SourceFolder": "Simple",
         "SourceFiles": [ "Code.cs" ],

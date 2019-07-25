@@ -10,7 +10,7 @@ define('test', ['ss'], function(ss) {
     list.push('one');
     list.push('two', 'three');
     var readOnlyList = list;
-    var array = list;
+    var array = ss.toArray(list);
   }
   var PublicClass$ = {
 

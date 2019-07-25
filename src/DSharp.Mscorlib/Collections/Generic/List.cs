@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections;
+using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 
 namespace System.Collections.Generic
@@ -59,7 +60,7 @@ namespace System.Collections.Generic
 
         public extern void ForEach(Action<T> action);
 
-        [ScriptSkip]
+        [DSharpScriptMemberName("toArray")]
         public extern T[] ToArray();
 
         [ScriptSkip]
