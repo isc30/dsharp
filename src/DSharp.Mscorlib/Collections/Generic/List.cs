@@ -44,12 +44,13 @@ namespace System.Collections.Generic
 
         extern int IList.IndexOf(object value);
 
-        [DSharpScriptMemberName("remove")]
+        [ScriptAlias("ss.removeItem")]
         public extern bool Remove(T item);
 
-        [DSharpScriptMemberName("remove")]
+        [ScriptAlias("ss.removeItem")]
         extern void IList.Remove(object value);
 
+        [ScriptAlias("ss.removeAt")]
         public extern void RemoveAt(int index);
 
         public extern IEnumerator<T> GetEnumerator();

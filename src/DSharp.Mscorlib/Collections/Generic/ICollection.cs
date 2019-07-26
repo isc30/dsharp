@@ -17,7 +17,7 @@ namespace System.Collections.Generic
 
         bool Contains(T item);
 
-        [DSharpScriptMemberName("remove")]
+        [ScriptAlias("ss.removeItem")]
         bool Remove(T item);
     }
 }

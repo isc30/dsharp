@@ -5,7 +5,23 @@ function toArray(obj) {
             : Array.prototype.slice.call(obj)
         : null;
 }
+function removeAt(a, index) {
+    // custom implementation
+    if (typeof (a.removeAt === "function")) {
+        return a.removeAt(index);
+    }
+
+    return index >= 0
+        ? (a.splice(index, 1), true)
+        : false;
+}
+
 function removeItem(a, item) {
+    // custom implementation
+    if (typeof(a.remove === "function")) {
+        return a.remove(item);
+    }
+
     var index = a.indexOf(item);
     return index >= 0
         ? (a.splice(index, 1), true)
