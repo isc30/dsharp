@@ -8,7 +8,7 @@
         "ComparisonFile": "Baseline.txt"
       },
       {
-        "Name": "ICollection",
+        "Name": "Collections",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt"
       }
