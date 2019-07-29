@@ -27,6 +27,19 @@ define('test', ['ss'], function(ss) {
     },
     remove: function(item) {
       return false;
+    },
+    indexOf: function(item) {
+      return 1;
+    },
+    insert: function(index, item) {
+    },
+    removeAt: function(index) {
+    },
+    get_item: function(index) {
+      return 1;
+    },
+    set_item: function(index, value) {
+      return value;
     }
   };
 
@@ -38,7 +51,7 @@ define('test', ['ss'], function(ss) {
   X.testList = function() {
     var c = [];
     c.push(12);
-    c.push(c);
+    ss.addRange(c, c);
     ss.clear(c);
     ss.contains(c, 12);
     ss.removeItem(c, 12);
@@ -52,8 +65,8 @@ define('test', ['ss'], function(ss) {
   };
   X.testIList_T = function() {
     var c = [];
-    var n = c[0];
-    c[0] = c[1];
+    var n = ss.getItem(c, 0);
+    ss.setItem(c, 0, ss.getItem(c, 1));
     c.push(12);
     ss.clear(c);
     ss.contains(c, 12);
@@ -65,8 +78,8 @@ define('test', ['ss'], function(ss) {
   };
   X.testIList = function() {
     var c = [];
-    var n = c[0];
-    c[0] = c[1];
+    var n = ss.getItem(c, 0);
+    ss.setItem(c, 0, ss.getItem(c, 1));
     c.push(12);
     ss.clear(c);
     ss.contains(c, 12);
@@ -92,7 +105,7 @@ define('test', ['ss'], function(ss) {
   };
   X.testIReadOnlyList = function() {
     var c = [];
-    var n = c[0];
+    var n = ss.getItem(c, 0);
     var e = ss.enumerate(c);
     var cc = c.length;
   };
@@ -116,8 +129,8 @@ define('test', ['ss'], function(ss) {
   };
   X.testCustomList = function() {
     var c = new MyCollection();
-    var n = c.get_item(0);
-    c.set_item(0, c.get_item(1));
+    var n = ss.getItem(c, 0);
+    ss.setItem(c, 0, ss.getItem(c, 1));
     c.push(12);
     ss.clear(c);
     ss.contains(c, 12);
