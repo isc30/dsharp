@@ -7,7 +7,7 @@ function toArray(obj) {
 }
 function removeAt(a, index) {
     // custom implementation
-    if (typeof (a.removeAt === "function")) {
+    if (typeof a.removeAt === "function") {
         return a.removeAt(index);
     }
 
@@ -18,7 +18,7 @@ function removeAt(a, index) {
 
 function removeItem(a, item) {
     // custom implementation
-    if (typeof(a.remove === "function")) {
+    if (typeof a.remove === "function") {
         return a.remove(item);
     }
 
@@ -62,4 +62,34 @@ function values(obj) {
 
 function keyCount(obj) {
     return keys(obj).length;
+}
+
+function addRange(obj, range)
+{
+    if (typeof obj.addRange === "function")
+    {
+        return obj.addRange(range);
+    }
+
+    if (Array.isArray(range))
+    {
+        for (var i = 0; i < range.length; ++i)
+        {
+            obj.push(range[i]);
+        }
+
+        return;
+    }
+
+    while (range.moveNext())
+    {
+        obj.push(range.current);
+    }
+}
+
+function addRangeParams(obj)
+{
+    var params = arguments.slice(1);
+
+    addRange(obj, params);
 }

@@ -1,4 +1,5 @@
-﻿using NonStandard;
+﻿using System.Runtime.CompilerServices;
+using NonStandard;
 
 namespace System.Collections.Generic
 {
@@ -7,9 +8,9 @@ namespace System.Collections.Generic
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
         public extern void ForEach(ListCallback<T> callback);
 
-        [ScriptName("push")]
+        [ScriptAlias("ss.addRangeParams")]
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
-        public extern void AddRange(params T[] items);
+        public extern void AddRangeParams(params T[] items);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
         public extern List<T> Concat(params T[] objects);

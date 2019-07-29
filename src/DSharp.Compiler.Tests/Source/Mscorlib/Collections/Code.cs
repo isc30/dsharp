@@ -60,7 +60,8 @@ namespace MscorlibTests
         {
             List<int> c = new List<int>();
             c.Add(12);
-            c.AddRange(c); // remove method or wrap in spread operator
+            c.AddRange(c);
+            c.AddRangeParams(1, 2, 3); // obsolete, but supported on web
             c.Clear();
             c.Contains(12);
             c.Remove(12);

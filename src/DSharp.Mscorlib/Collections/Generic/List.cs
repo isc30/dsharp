@@ -34,6 +34,9 @@ namespace System.Collections.Generic
         [ScriptName("push")]
         extern int IList.Add(object value);
 
+        [ScriptAlias("ss.addRange")]
+        public extern void AddRange(IEnumerable<T> collection);
+
         public extern bool Contains(T item);
 
         extern bool IList.Contains(object value);
