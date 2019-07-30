@@ -52,10 +52,12 @@ define('test', ['ss'], function(ss) {
     var c = [];
     c.push(12);
     ss.addRange(c, c);
+    ss.addRangeParams(c, 1, 2, 3);
     ss.clear(c);
     ss.contains(c, 12);
     ss.removeItem(c, 12);
     ss.removeAt(c, 1);
+    ss.insert(c, 0, 11);
     var e = ss.enumerate(c);
     var i = c.indexOf(12);
     c.forEach(function(n) {
@@ -136,6 +138,7 @@ define('test', ['ss'], function(ss) {
     ss.contains(c, 12);
     ss.removeItem(c, 12);
     ss.removeAt(c, 1);
+    ss.insert(c, 0, 11);
     var e = ss.enumerate(c);
     var i = c.indexOf(12);
     var cc = c.length;
@@ -144,7 +147,7 @@ define('test', ['ss'], function(ss) {
 
   var $exports = ss.module('test', null,
     {
-      MyCollection: ss.defineClass(MyCollection, MyCollection$, [], null, [ss.ICollection]),
+      MyCollection: ss.defineClass(MyCollection, MyCollection$, [], null, [ss.IList]),
       X: ss.defineClass(X, null, [], null)
     });
 

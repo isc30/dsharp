@@ -13,6 +13,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
     {
         private SymbolImplementation implementation;
         private string selector;
+        private string _transformName;
 
         public MethodSymbol(string name, TypeSymbol parent, TypeSymbol returnType, bool isExtensionMethod = false)
             : this(SymbolType.Method, name, parent, returnType, isExtensionMethod)
@@ -31,7 +32,11 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             IsExtensionMethod = isExtensionMethod;
         }
 
-        public string TransformName { get; private set; }
+        public string TransformName
+        {
+            get => _transformName ?? (InterfaceMember as MethodSymbol)?.TransformName;
+            private set => _transformName = value;
+        }
 
         public ICollection<string> Conditions { get; private set; }
 
@@ -39,7 +44,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         {
             get
             {
-                TypeSymbol parent = (TypeSymbol) Parent;
+                TypeSymbol parent = (TypeSymbol)Parent;
 
                 StringBuilder sb = new StringBuilder();
                 sb.Append("M:");
@@ -84,7 +89,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             }
         }
 
-        public bool IsAliased => string.IsNullOrEmpty(TransformName) == false;
+        public bool IsAliased => !string.IsNullOrEmpty(TransformName);
 
         public bool IsExtension
         {
@@ -92,7 +97,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             {
                 if (Parent.Type == SymbolType.Class)
                 {
-                    return ((ClassSymbol) Parent).IsExtenderClass;
+                    return ((ClassSymbol)Parent).IsExtenderClass;
                 }
 
                 return false;

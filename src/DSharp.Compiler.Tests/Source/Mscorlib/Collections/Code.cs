@@ -66,6 +66,7 @@ namespace MscorlibTests
             c.Contains(12);
             c.Remove(12);
             c.RemoveAt(1);
+            c.Insert(0, 11);
             IEnumerator<int> e = c.GetEnumerator();
             int i = c.IndexOf(12);
             c.ForEach(delegate (int n) { ++n; });
@@ -183,6 +184,7 @@ namespace MscorlibTests
             c.Contains(12);
             c.Remove(12);
             c.RemoveAt(1);
+            c.Insert(0, 11);
             IEnumerator<int> e = c.GetEnumerator();
             int i = c.IndexOf(12);
             int cc = c.Count;

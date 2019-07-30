@@ -8,7 +8,7 @@ namespace System.Collections.Generic
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
         public extern void ForEach(ListCallback<T> callback);
 
-        [ScriptAlias("ss.addRangeParams")]
+        [DSharpScriptMemberName("addRangeParams")]
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
         public extern void AddRangeParams(params T[] items);
 
@@ -82,10 +82,6 @@ namespace System.Collections.Generic
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
         public extern TReduced ReduceRight<TReduced>(ListItemReduceCallback<TReduced, T> callback, TReduced initialValue);
-
-        [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
-        // Modified to return void. Check implementation
-        public extern void RemoveRange(int index, int count);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
         public extern void Reverse();

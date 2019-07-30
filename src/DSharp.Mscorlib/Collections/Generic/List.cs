@@ -28,13 +28,11 @@ namespace System.Collections.Generic
         [ScriptField]
         extern object IList.this[int index] { get; set; }
 
-        [ScriptName("push")]
         public extern void Add(T item);
 
-        [ScriptName("push")]
         extern int IList.Add(object value);
 
-        [ScriptAlias("ss.addRange")]
+        [DSharpScriptMemberName("addRange")]
         public extern void AddRange(IEnumerable<T> collection);
 
         public extern bool Contains(T item);
@@ -47,13 +45,10 @@ namespace System.Collections.Generic
 
         extern int IList.IndexOf(object value);
 
-        [ScriptAlias("ss.removeItem")]
         public extern bool Remove(T item);
 
-        [ScriptAlias("ss.removeItem")]
         extern void IList.Remove(object value);
 
-        [ScriptAlias("ss.removeAt")]
         public extern void RemoveAt(int index);
 
         public extern IEnumerator<T> GetEnumerator();
@@ -75,8 +70,6 @@ namespace System.Collections.Generic
         public extern static explicit operator object[] (List<T> list);
 
         public extern static implicit operator T[] (List<T> list);
-
-        public extern static explicit operator ArrayList(List<T> list);
 
         public extern static explicit operator List<T>(T[] array);
     }

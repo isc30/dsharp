@@ -299,7 +299,7 @@ namespace DSharp.Compiler.Generator
                 writer.Write(".");
             }
 
-            writer.Write(methodSymbol.GeneratedName);
+            writer.Write(methodSymbol.GeneratedMemberName);
 
             if (instanceMember)
             {
