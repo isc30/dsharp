@@ -10,9 +10,6 @@ define('test', ['ss'], function(ss) {
     $get_length: function() {
       return 2;
     },
-    $get_isReadOnly: function() {
-      return false;
-    },
     push: function(item) {
     },
     clear: function() {

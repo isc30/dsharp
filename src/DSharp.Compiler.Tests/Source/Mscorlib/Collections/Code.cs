@@ -10,8 +10,6 @@ namespace MscorlibTests
     {
         public int Count { get { return 2; } }
 
-        public bool IsReadOnly { get { return false; } }
-
         public void Add(int item)
         {
         }
