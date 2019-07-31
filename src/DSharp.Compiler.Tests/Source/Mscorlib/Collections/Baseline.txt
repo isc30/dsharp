@@ -61,6 +61,8 @@ define('test', ['ss'], function(ss) {
       ++n;
     });
     var cc = c.length;
+    ss.insert(c, 1, 22);
+    var ca = ss.toArray(c);
   };
   X.testIList_T = function() {
     var c = [];
@@ -74,6 +76,7 @@ define('test', ['ss'], function(ss) {
     var e = ss.enumerate(c);
     var i = c.indexOf(12);
     var cc = c.length;
+    ss.insert(c, 1, 22);
   };
   X.testIList = function() {
     var c = [];
@@ -87,6 +90,7 @@ define('test', ['ss'], function(ss) {
     var e = ss.enumerate(c);
     var i = c.indexOf(12);
     var cc = c.length;
+    ss.insert(c, 1, 22);
   };
   X.testICollection_T = function() {
     var c = [];
@@ -139,6 +143,7 @@ define('test', ['ss'], function(ss) {
     var e = ss.enumerate(c);
     var i = c.indexOf(12);
     var cc = c.length;
+    ss.insert(c, 1, 22);
   };
 
 

@@ -23,6 +23,9 @@ namespace System.Collections
 
         int IndexOf(object value);
 
+        [DSharpScriptMemberName("insert")]
+        void Insert(int index, object value);
+
         [DSharpScriptMemberName("removeItem")]
         void Remove(object value);
 

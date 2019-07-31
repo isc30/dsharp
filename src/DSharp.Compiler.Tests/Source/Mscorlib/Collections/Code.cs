@@ -69,8 +69,8 @@ namespace MscorlibTests
             int i = c.IndexOf(12);
             c.ForEach(delegate (int n) { ++n; });
             int cc = c.Count;
-            //bool eq = c.Equals(c);
-            //c.Insert(1, 22);
+            c.Insert(1, 22);
+            int[] ca = c.ToArray();
             //c.CopyTo(null);
         }
 
@@ -87,8 +87,7 @@ namespace MscorlibTests
             IEnumerator<int> e = c.GetEnumerator();
             int i = c.IndexOf(12);
             int cc = c.Count;
-            //bool eq = c.Equals(c);
-            //c.Insert(1, 22);
+            c.Insert(1, 22);
             //c.CopyTo(null, 0);
         }
 
@@ -105,8 +104,7 @@ namespace MscorlibTests
             IEnumerator e = c.GetEnumerator();
             int i = c.IndexOf(12);
             int cc = c.Count;
-            //bool eq = c.Equals(c);
-            //c.Insert(1, 22);
+            c.Insert(1, 22);
             //c.CopyTo(null, 0);
         }
 
@@ -119,7 +117,6 @@ namespace MscorlibTests
             c.Remove(12);
             IEnumerator<int> e = c.GetEnumerator();
             int cc = c.Count;
-            //bool eq = c.Equals(c);
             //c.CopyTo(null, 0);
         }
 
@@ -128,7 +125,6 @@ namespace MscorlibTests
             ICollection c = new List<int>();
             IEnumerator e = c.GetEnumerator();
             int cc = c.Count;
-            //bool eq = c.Equals(c);
             //c.CopyTo(null, 0);
         }
 
@@ -138,7 +134,6 @@ namespace MscorlibTests
             object n = c[0];
             IEnumerator e = c.GetEnumerator();
             int cc = c.Count;
-            //bool eq = c.Equals(c);
         }
 
         public static void TestArray()
@@ -146,7 +141,6 @@ namespace MscorlibTests
             Array c = new int[4];
             int cl = c.Length;
             IEnumerator e = c.GetEnumerator();
-            //bool eq = c.Equals(c);
             //c.CopyTo(null, 0);
         }
 
@@ -155,21 +149,18 @@ namespace MscorlibTests
             IReadOnlyCollection<int> c = new List<int>().AsReadOnly();
             IEnumerator e = c.GetEnumerator();
             int cc = c.Count;
-            //bool eq = c.Equals(c);
         }
 
         public static void TestIEnumerable_T()
         {
             IEnumerable<int> c = new List<int>();
             IEnumerator<int> e = c.GetEnumerator();
-            //bool eq = c.Equals(c);
         }
 
         public static void TestIEnumerable()
         {
             IEnumerable c = new List<int>();
             IEnumerator e = c.GetEnumerator();
-            //bool eq = c.Equals(c);
         }
 
         public static void TestCustomList()
@@ -186,8 +177,7 @@ namespace MscorlibTests
             IEnumerator<int> e = c.GetEnumerator();
             int i = c.IndexOf(12);
             int cc = c.Count;
-            //bool eq = c.Equals(c);
-            //c.Insert(1, 22);
+            c.Insert(1, 22);
             //c.CopyTo(null, 0);
         }
     }

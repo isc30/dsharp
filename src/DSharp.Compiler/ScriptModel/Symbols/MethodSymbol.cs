@@ -13,7 +13,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
     {
         private SymbolImplementation implementation;
         private string selector;
-        private string _transformName;
+        private string transformName;
 
         public MethodSymbol(string name, TypeSymbol parent, TypeSymbol returnType, bool isExtensionMethod = false)
             : this(SymbolType.Method, name, parent, returnType, isExtensionMethod)
@@ -34,8 +34,8 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public string TransformName
         {
-            get => _transformName ?? (InterfaceMember as MethodSymbol)?.TransformName;
-            private set => _transformName = value;
+            get => this.transformName ?? (InterfaceMember as MethodSymbol)?.TransformName;
+            private set => this.transformName = value;
         }
 
         public ICollection<string> Conditions { get; private set; }

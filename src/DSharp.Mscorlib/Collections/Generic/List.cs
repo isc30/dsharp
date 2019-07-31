@@ -57,6 +57,8 @@ namespace System.Collections.Generic
 
         public extern void Insert(int index, T item);
 
+        extern void IList.Insert(int index, object item);
+
         public extern void ForEach(Action<T> action);
 
         [DSharpScriptMemberName("toArray")]

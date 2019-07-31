@@ -33,6 +33,8 @@ namespace System
 
         public extern int IndexOf(object value);
 
+        public extern void Insert(int index, object value);
+
         public extern void Remove(object value);
 
         public extern void RemoveAt(int index);

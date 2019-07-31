@@ -576,6 +576,13 @@ namespace DSharp.Compiler.Importer
                     methodSymbol.SetTransformName(transformedName);
                 }
 
+                string scriptName = MetadataHelpers.GetScriptName(method, out _, out _);
+
+                if (string.IsNullOrEmpty(scriptName) == false && !methodSymbol.IsTransformed)
+                {
+                    methodSymbol.SetTransformedName(scriptName);
+                }
+
                 string selector = MetadataHelpers.GetScriptMethodSelector(method);
 
                 if (string.IsNullOrEmpty(selector) == false)

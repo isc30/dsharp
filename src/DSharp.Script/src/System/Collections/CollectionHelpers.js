@@ -1,3 +1,13 @@
+function createFallbackFunction(name, fallback) {
+    return function (instance) {
+        if (typeof instance[name] === "function") {
+            return instance[name].apply(instance, arguments.splice(1));
+        }
+
+        return fallback.apply(null, arguments);
+    }
+}
+
 function toArray(obj) {
     return obj
         ? typeof obj == "string"
@@ -5,28 +15,24 @@ function toArray(obj) {
             : Array.prototype.slice.call(obj)
         : null;
 }
-function removeAt(a, index) {
-    // custom implementation
-    if (typeof a.removeAt === "function") {
-        return a.removeAt(index);
-    }
 
+var removeAt = createFallbackFunction("removeAt", function (obj, index) {
     return index >= 0
-        ? (a.splice(index, 1), true)
+        ? (obj.splice(index, 1), true)
         : false;
-}
+});
 
-function removeItem(a, item) {
-    // custom implementation
-    if (typeof a.remove === "function") {
-        return a.remove(item);
-    }
-
-    var index = a.indexOf(item);
+var removeItem = createFallbackFunction("remove", function (obj, item) {
+    var index = obj.indexOf(item);
     return index >= 0
-        ? (a.splice(index, 1), true)
+        ? (obj.splice(index, 1), true)
         : false;
-}
+});
+
+function getRange(obj, start, end) {
+    return obj.slice(start, end);
+};
+
 function clearKeys(obj) {
     for (var key in obj) {
         delete obj[key];
@@ -64,48 +70,45 @@ function keyCount(obj) {
     return keys(obj).length;
 }
 
-function addRange(obj, range)
-{
-    if (typeof obj.addRange === "function")
-    {
+var contains = createFallbackFunction("contains", function (obj, value) {
+    return obj.indexOf(value) >= 0;
+});
+
+var insert = createFallbackFunction("insert", function (obj, index, value) {
+    obj.splice(index, 0, value);
+});
+
+var clear = createFallbackFunction("clear", function (obj) {
+    obj.length = 0;
+});
+
+function addRange(obj, range) {
+    if (typeof obj.addRange === "function") {
         return obj.addRange(range);
     }
 
-    if (Array.isArray(range))
-    {
-        for (var i = 0; i < range.length; ++i)
-        {
+    if (Array.isArray(range)) {
+        for (var i = 0; i < range.length; ++i) {
             obj.push(range[i]);
         }
 
         return;
     }
 
-    while (range.moveNext())
-    {
+    while (range.moveNext()) {
         obj.push(range.current);
     }
 }
 
-function addRangeParams(obj)
-{
+function addRangeParams(obj) {
     var params = arguments.slice(1);
-
     addRange(obj, params);
 }
 
-function getItem(obj, key) {
-    if (typeof obj.get_item === "function") {
-        return obj.get_item(key);
-    }
-
+var getItem = createFallbackFunction("get_item", function (obj, key) {
     return obj[key];
-}
+});
 
-function setItem(obj, key, value) {
-    if (typeof obj.set_item === "function") {
-        return obj.set_item(key, value);
-    }
-
+var setItem = createFallbackFunction("set_item", function (obj, key) {
     return obj[key] = value;
-}
+});
