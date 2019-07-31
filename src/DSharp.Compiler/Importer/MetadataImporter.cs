@@ -968,9 +968,9 @@ namespace DSharp.Compiler.Importer
 
         private void SetArrayTypeMetadata(TypeDefinition type, TypeSymbol symbol, string scriptName)
         {
-            if (scriptName == nameof(Array))
+            if (scriptName == nameof(Array) || scriptName == nameof(Object))
             {
-                symbol.SetArray();
+                symbol.SetNativeArray();
             }
         }
 

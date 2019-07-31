@@ -93,3 +93,19 @@ function addRangeParams(obj)
 
     addRange(obj, params);
 }
+
+function getItem(obj, key) {
+    if (typeof obj.get_item === "function") {
+        return obj.get_item(key);
+    }
+
+    return obj[key];
+}
+
+function setItem(obj, key, value) {
+    if (typeof obj.set_item === "function") {
+        return obj.set_item(key, value);
+    }
+
+    return obj[key] = value;
+}

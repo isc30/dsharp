@@ -128,8 +128,8 @@ define('test', ['ss'], function(ss) {
   };
   X.testCustomList = function() {
     var c = new MyCollection();
-    var n = ss.getItem(c, 0);
-    ss.setItem(c, 0, ss.getItem(c, 1));
+    var n = c.get_item(0);
+    c.set_item(0, c.get_item(1));
     c.push(12);
     ss.clear(c);
     ss.contains(c, 12);

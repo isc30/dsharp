@@ -73,40 +73,54 @@ namespace DSharp.Compiler.Generator
                     return;
                 }
 
-                if (expression.LeftOperand is IndexerExpression indexExpression &&
-                    !indexExpression.Indexer.UseScriptIndexer)
+                if (expression.LeftOperand is IndexerExpression indexExpression)
                 {
-                    Debug.Assert(indexExpression.Type == ExpressionType.Indexer);
+                    IndexerSymbol indexerSymbol = indexExpression.Indexer;
 
-                    if (indexExpression.ObjectReference is BaseExpression)
+                    if (!indexerSymbol.UseScriptIndexer)
                     {
-                        writer.Write(((BaseExpression) indexExpression.ObjectReference)
-                                     .EvaluatedType.FullGeneratedName);
-                        writer.Write(".prototype.set_");
-                        writer.Write(indexExpression.Indexer.GeneratedName);
-                        writer.Write(".call(");
-                        writer.Write(generator.CurrentImplementation.ThisIdentifier);
-                        writer.Write(", ");
-                        GenerateExpressionList(generator, symbol, indexExpression.Indices);
-                        writer.Write(", ");
-                        GenerateExpression(generator, symbol, expression.RightOperand);
-                        writer.Write(")");
+                        Debug.Assert(indexExpression.Type == ExpressionType.Indexer);
+
+                        if (indexExpression.ObjectReference is BaseExpression)
+                        {
+                            writer.Write(((BaseExpression)indexExpression.ObjectReference)
+                                         .EvaluatedType.FullGeneratedName);
+                            writer.Write(".prototype.set_");
+                            writer.Write(indexerSymbol.GeneratedName);
+                            writer.Write(".call(");
+                            writer.Write(generator.CurrentImplementation.ThisIdentifier);
+                            writer.Write(", ");
+                            GenerateExpressionList(generator, symbol, indexExpression.Indices);
+                            writer.Write(", ");
+                            GenerateExpression(generator, symbol, expression.RightOperand);
+                            writer.Write(")");
+                        }
+                        else
+                        {
+                            GenerateExpression(generator, symbol, indexExpression.ObjectReference);
+                            writer.Write(".set_");
+                            writer.Write(indexerSymbol.GeneratedName);
+                            writer.Write("(");
+                            GenerateExpressionList(generator, symbol, indexExpression.Indices);
+                            writer.Write(", ");
+                            GenerateExpression(generator, symbol, expression.RightOperand);
+                            writer.Write(")");
+                        }
+
+                        return;
                     }
-                    else
+                    else if (indexerSymbol.Parent is TypeSymbol typeSymbol && !typeSymbol.IsNativeArray)
                     {
-                        IndexerSymbol indexerSymbol = indexExpression.Indexer;
-
+                        writer.Write($"ss.setItem(");
                         GenerateExpression(generator, symbol, indexExpression.ObjectReference);
-                        writer.Write(".set_");
-                        writer.Write(indexerSymbol.GeneratedName);
-                        writer.Write("(");
+                        writer.Write(", ");
                         GenerateExpressionList(generator, symbol, indexExpression.Indices);
                         writer.Write(", ");
                         GenerateExpression(generator, symbol, expression.RightOperand);
                         writer.Write(")");
-                    }
 
-                    return;
+                        return;
+                    }
                 }
             }
             else if (expression.Operator == Operator.PlusEquals ||
@@ -575,10 +589,21 @@ namespace DSharp.Compiler.Generator
 
             if (expression.Indexer.UseScriptIndexer)
             {
-                GenerateExpression(generator, symbol, expression.ObjectReference);
-                writer.Write("[");
-                GenerateExpressionList(generator, symbol, expression.Indices);
-                writer.Write("]");
+                if (expression.Indexer.Parent is TypeSymbol typeSymbol && typeSymbol.IsNativeArray)
+                {
+                    GenerateExpression(generator, symbol, expression.ObjectReference);
+                    writer.Write("[");
+                    GenerateExpressionList(generator, symbol, expression.Indices);
+                    writer.Write("]");
+                }
+                else
+                {
+                    writer.Write($"ss.getItem(");
+                    GenerateExpression(generator, symbol, expression.ObjectReference);
+                    writer.Write(", ");
+                    GenerateExpressionList(generator, symbol, expression.Indices);
+                    writer.Write(")");
+                }
             }
             else if (expression.ObjectReference is BaseExpression baseExpression)
             {

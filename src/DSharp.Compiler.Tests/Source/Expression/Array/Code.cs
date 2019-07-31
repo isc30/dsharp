@@ -6,12 +6,11 @@ using System.Runtime.CompilerServices;
 [assembly: ScriptAssembly("test")]
 
 namespace ExpressionTests {
-
     public class App {
-
         public void Test(int arg) {
             List<int> numbers = new List<int>();
             numbers.Add(1);
+            numbers[1] = numbers[0];
             numbers.AddRange(numbers);
             numbers.Clear();
             bool b2 = numbers.Contains(4);
@@ -28,11 +27,13 @@ namespace ExpressionTests {
 
             IList<int> x = new List<int>();
             x.Add(2);
+            x[1] = x[0];
             enumerator = x.GetEnumerator();
             count = x.Count;
 
             IList a = new List<int>();
             a.Add(2);
+            a[1] = a[0];
             enumerator = a.GetEnumerator();
             count = a.Count;
 

@@ -10,6 +10,7 @@ define('test', ['ss'], function(ss) {
     test: function(arg) {
       var numbers = [];
       numbers.push(1);
+      numbers[1] = numbers[0];
       ss.addRange(numbers, numbers);
       ss.clear(numbers);
       var b2 = ss.contains(numbers, 4);
@@ -23,10 +24,12 @@ define('test', ['ss'], function(ss) {
       var count;
       var x = [];
       x.push(2);
+      ss.setItem(x, 1, ss.getItem(x, 0));
       enumerator = ss.enumerate(x);
       count = x.length;
       var a = [];
       a.push(2);
+      ss.setItem(a, 1, ss.getItem(a, 0));
       enumerator = ss.enumerate(a);
       count = a.length;
       var c = [];
