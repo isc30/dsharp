@@ -145,12 +145,37 @@ define('test', ['ss'], function(ss) {
     var cc = c.length;
     ss.insert(c, 1, 22);
   };
+  X.testCustomInheritedList = function() {
+    var c = new MyChildrenCollection();
+    var n = c.get_item(0);
+    c.set_item(0, c.get_item(1));
+    c.push(12);
+    ss.clear(c);
+    ss.contains(c, 12);
+    ss.removeItem(c, 12);
+    ss.removeAt(c, 1);
+    ss.insert(c, 0, 11);
+    var e = ss.enumerate(c);
+    var i = c.indexOf(12);
+    var cc = c.length;
+    ss.insert(c, 1, 22);
+  };
 
+
+  // MscorlibTests.MyChildrenCollection
+
+  function MyChildrenCollection() {
+    MyCollection.call(this);
+  }
+  var MyChildrenCollection$ = {
+
+  };
 
   var $exports = ss.module('test', null,
     {
       MyCollection: ss.defineClass(MyCollection, MyCollection$, [], null, [ss.IList]),
-      X: ss.defineClass(X, null, [], null)
+      X: ss.defineClass(X, null, [], null),
+      MyChildrenCollection: ss.defineClass(MyChildrenCollection, MyChildrenCollection$, [], MyCollection)
     });
 
 

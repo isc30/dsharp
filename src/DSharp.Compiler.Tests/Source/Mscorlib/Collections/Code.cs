@@ -6,6 +6,8 @@ using System.Collections.Generic;
 
 namespace MscorlibTests
 {
+    public class MyChildrenCollection : MyCollection { }
+
     public class MyCollection : IList<int>
     {
         public int Count { get { return 2; } }
@@ -166,6 +168,24 @@ namespace MscorlibTests
         public static void TestCustomList()
         {
             MyCollection c = new MyCollection();
+            int n = c[0];
+            c[0] = c[1];
+            c.Add(12);
+            c.Clear();
+            c.Contains(12);
+            c.Remove(12);
+            c.RemoveAt(1);
+            c.Insert(0, 11);
+            IEnumerator<int> e = c.GetEnumerator();
+            int i = c.IndexOf(12);
+            int cc = c.Count;
+            c.Insert(1, 22);
+            //c.CopyTo(null, 0);
+        }
+
+        public static void TestCustomInheritedList()
+        {
+            MyChildrenCollection c = new MyChildrenCollection();
             int n = c[0];
             c[0] = c[1];
             c.Add(12);

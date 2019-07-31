@@ -106,13 +106,13 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public ICollection<string> Imports { get; private set; }
 
-        private bool _isNativeArray = false;
+        private bool isNativeArray = false;
 
         public bool IsNativeArray
         {
             get
             {
-                if (_isNativeArray)
+                if (this.isNativeArray)
                 {
                     return true;
                 }
@@ -243,7 +243,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public void SetNativeArray()
         {
-            _isNativeArray = true;
+            this.isNativeArray = true;
         }
 
         public void SetImports(ICollection<string> imports)

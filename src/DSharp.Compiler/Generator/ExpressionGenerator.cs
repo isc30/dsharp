@@ -81,10 +81,9 @@ namespace DSharp.Compiler.Generator
                     {
                         Debug.Assert(indexExpression.Type == ExpressionType.Indexer);
 
-                        if (indexExpression.ObjectReference is BaseExpression)
+                        if (indexExpression.ObjectReference is BaseExpression objectReference)
                         {
-                            writer.Write(((BaseExpression)indexExpression.ObjectReference)
-                                         .EvaluatedType.FullGeneratedName);
+                            writer.Write(objectReference.EvaluatedType.FullGeneratedName);
                             writer.Write(".prototype.set_");
                             writer.Write(indexerSymbol.GeneratedName);
                             writer.Write(".call(");

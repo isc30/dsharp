@@ -82,11 +82,7 @@ var clear = createFallbackFunction("clear", function (obj) {
     obj.length = 0;
 });
 
-function addRange(obj, range) {
-    if (typeof obj.addRange === "function") {
-        return obj.addRange(range);
-    }
-
+var addRange = createFallbackFunction("addRange", function (obj, range) {
     if (Array.isArray(range)) {
         for (var i = 0; i < range.length; ++i) {
             obj.push(range[i]);
@@ -98,7 +94,7 @@ function addRange(obj, range) {
     while (range.moveNext()) {
         obj.push(range.current);
     }
-}
+});
 
 function addRangeParams(obj) {
     var params = arguments.slice(1);
