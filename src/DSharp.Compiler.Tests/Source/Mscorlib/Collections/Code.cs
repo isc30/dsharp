@@ -73,7 +73,6 @@ namespace MscorlibTests
             int cc = c.Count;
             c.Insert(1, 22);
             int[] ca = c.ToArray();
-            //c.CopyTo(null);
         }
 
         public static void TestIList_T()
@@ -90,7 +89,6 @@ namespace MscorlibTests
             int i = c.IndexOf(12);
             int cc = c.Count;
             c.Insert(1, 22);
-            //c.CopyTo(null, 0);
         }
 
         public static void TestIList()
@@ -107,7 +105,6 @@ namespace MscorlibTests
             int i = c.IndexOf(12);
             int cc = c.Count;
             c.Insert(1, 22);
-            //c.CopyTo(null, 0);
         }
 
         public static void TestICollection_T()
@@ -119,7 +116,6 @@ namespace MscorlibTests
             c.Remove(12);
             IEnumerator<int> e = c.GetEnumerator();
             int cc = c.Count;
-            //c.CopyTo(null, 0);
         }
 
         public static void TestICollection()
@@ -127,7 +123,6 @@ namespace MscorlibTests
             ICollection c = new List<int>();
             IEnumerator e = c.GetEnumerator();
             int cc = c.Count;
-            //c.CopyTo(null, 0);
         }
 
         public static void TestIReadOnlyList()
@@ -143,7 +138,6 @@ namespace MscorlibTests
             Array c = new int[4];
             int cl = c.Length;
             IEnumerator e = c.GetEnumerator();
-            //c.CopyTo(null, 0);
         }
 
         public static void TestIReadOnlyCollection()
@@ -180,7 +174,6 @@ namespace MscorlibTests
             int i = c.IndexOf(12);
             int cc = c.Count;
             c.Insert(1, 22);
-            //c.CopyTo(null, 0);
         }
 
         public static void TestCustomInheritedList()
@@ -198,7 +191,6 @@ namespace MscorlibTests
             int i = c.IndexOf(12);
             int cc = c.Count;
             c.Insert(1, 22);
-            //c.CopyTo(null, 0);
         }
     }
 }
