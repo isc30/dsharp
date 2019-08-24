@@ -16,7 +16,7 @@
         Guid: defineClass(Guid, Guid$, [], null),
         DateTime: defineClass(DateTime, {}, [], null)
     }), {
-            version: {{version}},
+            version: '{{version}}',
             isValue: isValue,
             value: value,
             extend: extend,
@@ -80,11 +80,7 @@
             getConstructorParams: getConstructorParams,
             createInstance: paramsGenerator(1, createInstance),
 
-            culture: {
-                neutral: neutralCulture,
-                current: currentCulture
-            },
-
+            culture: culture,
             fail: fail,
 
             contains: contains,
