@@ -986,12 +986,14 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         //TODO: Migrate this to be on the symbol directly
         public MethodSymbol ResolveExtensionMethodSymbol(TypeSymbol type, string memberName)
         {
-            var extensionMethods = TypeSymbolVisitor.Visit(type, t => GetTypeExtensionMethod(t, memberName));
-
-            return extensionMethods
+            var extensionMethods = TypeSymbolVisitor.Visit(type, t => GetTypeExtensionMethod(t, memberName))
                 .Where(i => i != null)
                 .Distinct()
-                .SingleOrDefault();
+                .ToList();
+
+            return extensionMethods.Count == 1
+                ? extensionMethods.First()
+                : null;
         }
 
         private MethodSymbol GetTypeExtensionMethod(TypeSymbol type, string memberName)
