@@ -49,6 +49,20 @@ define('ExpressionTests.ExtensionMethods', ['ss'], function(ss) {
   };
 
 
+  // ExpressionTests.ServiceCollection
+
+  function ServiceCollection() {
+  }
+  var ServiceCollection$ = {
+    addSpecialSingleton: function($TArgs) {
+      return null;
+    },
+    addSpecialSingleton2: function($TArgs, value) {
+      return null;
+    }
+  };
+
+
   // ExpressionTests.Program
 
   function Program() {
@@ -60,6 +74,16 @@ define('ExpressionTests.ExtensionMethods', ['ss'], function(ss) {
     IServiceCollectionExtension.addSingletonMany({TBase: ITemp, TImp: Temp}, services, 1);
     services.addSpecialSingleton({T: Temp});
     services.addSpecialSingleton2({T: Temp}, 1);
+    var serviceColection = null;
+    IServiceCollectionExtension.addSingleton({T: Temp}, serviceColection);
+    IServiceCollectionExtension.addSingletonMany({TBase: ITemp, TImp: Temp}, serviceColection, 1);
+    serviceColection.addSpecialSingleton({T: Temp});
+    serviceColection.addSpecialSingleton2({T: Temp}, 1);
+    var myServiceColection = null;
+    IServiceCollectionExtension.addSingleton({T: Temp}, myServiceColection);
+    IServiceCollectionExtension.addSingletonMany({TBase: ITemp, TImp: Temp}, myServiceColection, 1);
+    myServiceColection.addSpecialSingleton({T: Temp});
+    myServiceColection.addSpecialSingleton2({T: Temp}, 1);
     return IntExtensions.increment(0);
   };
   var Program$ = {
@@ -76,6 +100,16 @@ define('ExpressionTests.ExtensionMethods', ['ss'], function(ss) {
   };
 
 
+  // ExpressionTests.MyServiceCollection
+
+  function MyServiceCollection() {
+    ServiceCollection.call(this);
+  }
+  var MyServiceCollection$ = {
+
+  };
+
+
   var $exports = ss.module('ExpressionTests.ExtensionMethods',
     {
       InternalIntExtensions: ss.defineClass(InternalIntExtensions, null, [], null),
@@ -86,8 +120,10 @@ define('ExpressionTests.ExtensionMethods', ['ss'], function(ss) {
       ITemp: ss.defineInterface(ITemp),
       StringExtensions: ss.defineClass(StringExtensions, null, [], null),
       IntExtensions: ss.defineClass(IntExtensions, null, [], null),
+      ServiceCollection: ss.defineClass(ServiceCollection, ServiceCollection$, [], null, [IServiceCollection]),
       Program: ss.defineClass(Program, Program$, [], null),
-      Temp: ss.defineClass(Temp, Temp$, [], null, [ITemp])
+      Temp: ss.defineClass(Temp, Temp$, [], null, [ITemp]),
+      MyServiceCollection: ss.defineClass(MyServiceCollection, MyServiceCollection$, [], ServiceCollection)
     });
 
 

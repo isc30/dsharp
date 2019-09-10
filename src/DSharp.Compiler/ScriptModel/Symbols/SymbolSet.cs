@@ -985,48 +985,51 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         //TODO: Migrate this to be on the symbol directly
         public MethodSymbol ResolveExtensionMethodSymbol(TypeSymbol type, string memberName)
         {
-            var extensionMethod = GetTypeExtensionMethod(type, memberName);
-            if (extensionMethod != null)
-            {
-                return extensionMethod;
-            }
+            TypeSymbol extendedType = type;
 
-            var baseType = type.GetBaseType();
-            while (baseType != null)
+            do
             {
-                extensionMethod = GetTypeExtensionMethod(baseType, memberName);
+                // Resolve extension methods on the Class
+                MethodSymbol extensionMethod = GetTypeExtensionMethod(extendedType, memberName);
+
                 if (extensionMethod != null)
                 {
                     return extensionMethod;
                 }
 
-                baseType = baseType.GetBaseType();
+                // Resolve extension methods on the Interfaces
+                foreach (TypeSymbol extendedInterface in ExtractTypeInterfaces(extendedType))
+                {
+                    extensionMethod = GetTypeExtensionMethod(extendedInterface, memberName);
+
+                    if (extensionMethod != null)
+                    {
+                        return extensionMethod;
+                    }
+                }
+
+                // Iterate through the inheritance chain
+                extendedType = extendedType.GetBaseType();
             }
+            while (extendedType != null);
+
+            return null;
+        }
+
+        private IEnumerable<TypeSymbol> ExtractTypeInterfaces(TypeSymbol type)
+        {
+            IEnumerable<TypeSymbol> interfaces = null;
 
             if (type is ClassSymbol classSymbol)
             {
-                foreach (var inheritedInterface in classSymbol?.Interfaces ?? Enumerable.Empty<InterfaceSymbol>())
-                {
-                    extensionMethod = GetTypeExtensionMethod(inheritedInterface, memberName);
-                    if (extensionMethod != null)
-                    {
-                        return extensionMethod;
-                    }
-                }
+                interfaces = classSymbol?.Interfaces;
             }
             else if (type is InterfaceSymbol interfaceSymbol)
             {
-                foreach (var inheritedInterface in interfaceSymbol?.Interfaces ?? Enumerable.Empty<InterfaceSymbol>())
-                {
-                    extensionMethod = GetTypeExtensionMethod(inheritedInterface, memberName);
-                    if (extensionMethod != null)
-                    {
-                        return extensionMethod;
-                    }
-                }
+                interfaces = interfaceSymbol?.Interfaces;
             }
 
-            return null;
+            return interfaces ?? Enumerable.Empty<InterfaceSymbol>();
         }
 
         private MethodSymbol GetTypeExtensionMethod(TypeSymbol type, string memberName)
