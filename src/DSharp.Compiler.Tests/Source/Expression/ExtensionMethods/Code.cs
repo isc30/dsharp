@@ -58,6 +58,8 @@ namespace ExpressionTests
 
     public class MyServiceCollection : ServiceCollection { }
 
+    public class MyOtherServiceCollection : ServiceCollection, IServiceCollection { }
+
     public class Program
     {
         public static int Main(string[] args)
@@ -83,6 +85,12 @@ namespace ExpressionTests
             myServiceColection.AddSingletonMany<ITemp, Temp>(1);
             myServiceColection.AddSpecialSingleton<Temp>();
             myServiceColection.AddSpecialSingleton2<Temp>(1);
+
+            MyOtherServiceCollection myOtherServiceColection = null;
+            myOtherServiceColection.AddSingleton<Temp>();
+            myOtherServiceColection.AddSingletonMany<ITemp, Temp>(1);
+            myOtherServiceColection.AddSpecialSingleton<Temp>();
+            myOtherServiceColection.AddSpecialSingleton2<Temp>(1);
 
             return 0.Increment();
         }

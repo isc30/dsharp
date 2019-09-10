@@ -5,6 +5,16 @@ namespace DSharp.Compiler.ScriptModel.Visitors
 {
     internal abstract class SymbolVisitor
     {
+        protected Symbol Visit(Symbol symbol)
+        {
+            if (symbol is TypeSymbol typeSymbol)
+            {
+                return VisitTypeSymbol(typeSymbol);
+            }
+
+            return symbol;
+        }
+
         protected virtual TypeSymbol VisitTypeSymbol(TypeSymbol type)
         {
             if (type is ClassSymbol classSymbol)
@@ -23,14 +33,14 @@ namespace DSharp.Compiler.ScriptModel.Visitors
         {
             foreach (var extendedInterfaceSymbol in classSymbol?.Interfaces ?? Enumerable.Empty<InterfaceSymbol>())
             {
-                VisitTypeSymbol(extendedInterfaceSymbol);
+                Visit(extendedInterfaceSymbol);
             }
 
             TypeSymbol baseType = classSymbol.GetBaseType();
 
             if (baseType != null)
             {
-                VisitTypeSymbol(baseType);
+                Visit(baseType);
             }
 
             return classSymbol;
@@ -40,7 +50,7 @@ namespace DSharp.Compiler.ScriptModel.Visitors
         {
             foreach (var extendedInterfaceSymbol in interfaceSymbol?.Interfaces ?? Enumerable.Empty<InterfaceSymbol>())
             {
-                VisitTypeSymbol(extendedInterfaceSymbol);
+                Visit(extendedInterfaceSymbol);
             }
 
             return interfaceSymbol;

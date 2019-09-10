@@ -25,7 +25,7 @@ namespace DSharp.Compiler.ScriptModel.Visitors
         public static IEnumerable<T> Visit(TypeSymbol type, Func<TypeSymbol, T> selector)
         {
             TypeSymbolVisitor<T> visitor = new TypeSymbolVisitor<T>(selector);
-            visitor.VisitTypeSymbol(type);
+            visitor.Visit(type);
 
             return visitor.items;
         }

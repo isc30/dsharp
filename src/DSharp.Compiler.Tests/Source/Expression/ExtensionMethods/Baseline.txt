@@ -84,6 +84,11 @@ define('ExpressionTests.ExtensionMethods', ['ss'], function(ss) {
     IServiceCollectionExtension.addSingletonMany({TBase: ITemp, TImp: Temp}, myServiceColection, 1);
     myServiceColection.addSpecialSingleton({T: Temp});
     myServiceColection.addSpecialSingleton2({T: Temp}, 1);
+    var myOtherServiceColection = null;
+    IServiceCollectionExtension.addSingleton({T: Temp}, myOtherServiceColection);
+    IServiceCollectionExtension.addSingletonMany({TBase: ITemp, TImp: Temp}, myOtherServiceColection, 1);
+    myOtherServiceColection.addSpecialSingleton({T: Temp});
+    myOtherServiceColection.addSpecialSingleton2({T: Temp}, 1);
     return IntExtensions.increment(0);
   };
   var Program$ = {
@@ -110,6 +115,16 @@ define('ExpressionTests.ExtensionMethods', ['ss'], function(ss) {
   };
 
 
+  // ExpressionTests.MyOtherServiceCollection
+
+  function MyOtherServiceCollection() {
+    ServiceCollection.call(this);
+  }
+  var MyOtherServiceCollection$ = {
+
+  };
+
+
   var $exports = ss.module('ExpressionTests.ExtensionMethods',
     {
       InternalIntExtensions: ss.defineClass(InternalIntExtensions, null, [], null),
@@ -123,7 +138,8 @@ define('ExpressionTests.ExtensionMethods', ['ss'], function(ss) {
       ServiceCollection: ss.defineClass(ServiceCollection, ServiceCollection$, [], null, [IServiceCollection]),
       Program: ss.defineClass(Program, Program$, [], null),
       Temp: ss.defineClass(Temp, Temp$, [], null, [ITemp]),
-      MyServiceCollection: ss.defineClass(MyServiceCollection, MyServiceCollection$, [], ServiceCollection)
+      MyServiceCollection: ss.defineClass(MyServiceCollection, MyServiceCollection$, [], ServiceCollection),
+      MyOtherServiceCollection: ss.defineClass(MyOtherServiceCollection, MyOtherServiceCollection$, [], ServiceCollection, [IServiceCollection])
     });
 
 

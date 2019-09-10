@@ -990,6 +990,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
             return extensionMethods
                 .Where(i => i != null)
+                .Distinct()
                 .SingleOrDefault();
         }
 
