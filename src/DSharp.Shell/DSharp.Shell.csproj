@@ -8,9 +8,6 @@
     <AssemblyOriginatorKeyFile>$(SolutionDir)DSharp.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
-
-  
-  
   
   <ItemGroup>
     <Compile Include="..\FileInputStreamSource.cs">

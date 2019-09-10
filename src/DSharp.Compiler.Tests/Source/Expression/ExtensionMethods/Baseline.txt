@@ -138,7 +138,7 @@ define('ExpressionTests.ExtensionMethods', ['ss'], function(ss) {
       ServiceCollection: ss.defineClass(ServiceCollection, ServiceCollection$, [], null, [IServiceCollection]),
       Program: ss.defineClass(Program, Program$, [], null),
       Temp: ss.defineClass(Temp, Temp$, [], null, [ITemp]),
-      MyServiceCollection: ss.defineClass(MyServiceCollection, MyServiceCollection$, [], ServiceCollection),
+      MyServiceCollection: ss.defineClass(MyServiceCollection, MyServiceCollection$, [], ServiceCollection)
       MyOtherServiceCollection: ss.defineClass(MyOtherServiceCollection, MyOtherServiceCollection$, [], ServiceCollection, [IServiceCollection])
     });
 
