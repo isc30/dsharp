@@ -49,6 +49,15 @@ namespace ExpressionTests
         IServiceCollection AddSpecialSingleton2<T>(int value);
     }
 
+    public abstract class ServiceCollection : IServiceCollection
+    {
+        public IServiceCollection AddSpecialSingleton<T>() { return null; }
+
+        public IServiceCollection AddSpecialSingleton2<T>(int value) { return null; }
+    }
+
+    public class MyServiceCollection : ServiceCollection { }
+
     public class Program
     {
         public static int Main(string[] args)
@@ -62,6 +71,18 @@ namespace ExpressionTests
             services.AddSingletonMany<ITemp, Temp>(1);
             services.AddSpecialSingleton<Temp>();
             services.AddSpecialSingleton2<Temp>(1);
+
+            ServiceCollection serviceColection = null;
+            serviceColection.AddSingleton<Temp>();
+            serviceColection.AddSingletonMany<ITemp, Temp>(1);
+            serviceColection.AddSpecialSingleton<Temp>();
+            serviceColection.AddSpecialSingleton2<Temp>(1);
+
+            MyServiceCollection myServiceColection = null;
+            myServiceColection.AddSingleton<Temp>();
+            myServiceColection.AddSingletonMany<ITemp, Temp>(1);
+            myServiceColection.AddSpecialSingleton<Temp>();
+            myServiceColection.AddSpecialSingleton2<Temp>(1);
 
             return 0.Increment();
         }
