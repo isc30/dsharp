@@ -15,6 +15,7 @@ using DSharp.Compiler.CodeModel.Members;
 using DSharp.Compiler.CodeModel.Names;
 using DSharp.Compiler.CodeModel.Tokens;
 using DSharp.Compiler.CodeModel.Types;
+using DSharp.Compiler.ScriptModel.Visitors;
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
@@ -985,51 +986,9 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         //TODO: Migrate this to be on the symbol directly
         public MethodSymbol ResolveExtensionMethodSymbol(TypeSymbol type, string memberName)
         {
-            TypeSymbol extendedType = type;
+            var extensionMethods = TypeSymbolVisitor<MethodSymbol>.Visit(type, t => GetTypeExtensionMethod(t, memberName));
 
-            do
-            {
-                // Resolve extension methods on the Class
-                MethodSymbol extensionMethod = GetTypeExtensionMethod(extendedType, memberName);
-
-                if (extensionMethod != null)
-                {
-                    return extensionMethod;
-                }
-
-                // Resolve extension methods on the Interfaces
-                foreach (TypeSymbol extendedInterface in ExtractTypeInterfaces(extendedType))
-                {
-                    extensionMethod = GetTypeExtensionMethod(extendedInterface, memberName);
-
-                    if (extensionMethod != null)
-                    {
-                        return extensionMethod;
-                    }
-                }
-
-                // Iterate through the inheritance chain
-                extendedType = extendedType.GetBaseType();
-            }
-            while (extendedType != null);
-
-            return null;
-        }
-
-        private IEnumerable<TypeSymbol> ExtractTypeInterfaces(TypeSymbol type)
-        {
-            IEnumerable<TypeSymbol> interfaces = null;
-
-            if (type is ClassSymbol classSymbol)
-            {
-                interfaces = classSymbol?.Interfaces;
-            }
-            else if (type is InterfaceSymbol interfaceSymbol)
-            {
-                interfaces = interfaceSymbol?.Interfaces;
-            }
-
-            return interfaces ?? Enumerable.Empty<InterfaceSymbol>();
+            return extensionMethods.OfType<MethodSymbol>().SingleOrDefault();
         }
 
         private MethodSymbol GetTypeExtensionMethod(TypeSymbol type, string memberName)
