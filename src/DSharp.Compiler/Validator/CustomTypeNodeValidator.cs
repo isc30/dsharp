@@ -138,7 +138,11 @@ namespace DSharp.Compiler.Validator
                         errorHandler.ReportNodeValidationError(DSharpStringResources.UNSUPPORTED_METHOD_OVERLOAD, memberNode);
                     }
 
-                    memberNames[name] = null;
+                    // remember the method overload only if it wasn't ignored
+                    if (ignoreAttribute == null)
+                    {
+                        memberNames[name] = null;
+                    }
 
                     string nameToValidate = name;
                     bool preserveCase = false;

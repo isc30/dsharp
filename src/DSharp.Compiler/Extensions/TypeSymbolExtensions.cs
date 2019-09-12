@@ -41,7 +41,7 @@ namespace DSharp.Compiler.Extensions
             }
 
             if (interfaces.Any(i => i.FullName.StartsWith("System.Collections")
-                && (i.FullGeneratedName.EndsWith("IList") || i.FullGeneratedName.EndsWith("IList`1"))))
+                && (i.FullName.EndsWith("IList") || i.FullName.EndsWith("IList`1"))))
             {
                 return true;
             }

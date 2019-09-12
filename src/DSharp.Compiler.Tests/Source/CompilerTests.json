@@ -148,6 +148,11 @@
         "ComparisonFile": "Baseline.txt"
       },
       {
+        "Name": "TypeDeclarations",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt"
+      },
+      {
         "Name": "Binary",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt"

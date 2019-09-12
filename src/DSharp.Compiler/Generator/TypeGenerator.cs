@@ -408,7 +408,8 @@ namespace DSharp.Compiler.Generator
                         writer.Write(", ");
                     }
 
-                    writer.Write(inheritedInterface.FullGeneratedName);
+                    string parameterTypeName = GetParameterTypeName(inheritedInterface);
+                    writer.Write(parameterTypeName);
                     first = false;
                 }
 

@@ -287,74 +287,6 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         private TypeSymbol CreateGenericTypeCore(TypeSymbol templateType, IList<TypeSymbol> typeArguments)
         {
-            if (templateType.Type == SymbolType.Class)
-            {
-                ClassSymbol genericClass = (ClassSymbol)templateType;
-                ClassSymbol instanceClass = new ClassSymbol(genericClass.Name, (NamespaceSymbol)genericClass.Parent);
-
-                instanceClass.SetInheritance(genericClass.BaseClass, genericClass.Interfaces);
-                instanceClass.SetImported(genericClass.Dependency);
-
-                if (genericClass.IgnoreNamespace)
-                {
-                    instanceClass.SetIgnoreNamespace();
-                }
-
-                instanceClass.ScriptNamespace = genericClass.ScriptNamespace;
-
-                if (genericClass.IsTransformed)
-                {
-                    instanceClass.SetTransformedName(genericClass.GeneratedName);
-                }
-                else if (genericClass.IsTransformAllowed == false)
-                {
-                    instanceClass.DisableNameTransformation();
-                }
-
-                if (genericClass.IsNativeArray)
-                {
-                    instanceClass.SetNativeArray();
-                }
-
-                instanceClass.AddGenericParameters(genericClass.GenericParameters);
-                instanceClass.AddGenericArguments(genericClass, typeArguments);
-
-                CreateGenericTypeMembers(genericClass, instanceClass, typeArguments);
-
-                return instanceClass;
-            }
-
-            if (templateType.Type == SymbolType.Interface)
-            {
-                InterfaceSymbol genericInterface = (InterfaceSymbol)templateType;
-                InterfaceSymbol instanceInterface =
-                    new InterfaceSymbol(genericInterface.Name, (NamespaceSymbol)genericInterface.Parent);
-
-                instanceInterface.SetInheritance(genericInterface.Interfaces);
-                instanceInterface.SetImported(genericInterface.Dependency);
-
-                if (genericInterface.IgnoreNamespace)
-                {
-                    instanceInterface.SetIgnoreNamespace();
-                }
-
-                if (genericInterface.IsTransformed)
-                {
-                    instanceInterface.SetTransformedName(genericInterface.GeneratedName);
-                }
-                else if (genericInterface.IsTransformAllowed == false)
-                {
-                    instanceInterface.DisableNameTransformation();
-                }
-
-                instanceInterface.AddGenericParameters(genericInterface.GenericParameters);
-                instanceInterface.AddGenericArguments(genericInterface, typeArguments);
-
-                CreateGenericTypeMembers(genericInterface, instanceInterface, typeArguments);
-
-                return instanceInterface;
-            }
-
             if (templateType.Type == SymbolType.Delegate)
             {
                 DelegateSymbol genericDelegate = (DelegateSymbol)templateType;
@@ -367,6 +299,67 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 CreateGenericTypeMembers(genericDelegate, instanceDelegate, typeArguments);
 
                 return instanceDelegate;
+            }
+
+
+
+            if (templateType.Type == SymbolType.Class
+                || templateType.Type == SymbolType.Interface)
+            {
+                TypeSymbol genericCoreType = null;
+                TypeSymbol instanceCoreType = null;
+
+                if (templateType.Type == SymbolType.Class)
+                {
+                    ClassSymbol genericClass = (ClassSymbol)templateType;
+                    ClassSymbol instanceClass = new ClassSymbol(genericClass.Name, (NamespaceSymbol)genericClass.Parent);
+
+                    instanceClass.SetInheritance(genericClass.BaseClass, genericClass.Interfaces);
+
+                    genericCoreType = genericClass;
+                    instanceCoreType = instanceClass;
+                }
+                else if (templateType.Type == SymbolType.Interface)
+                {
+                    InterfaceSymbol genericInterface = (InterfaceSymbol)templateType;
+                    InterfaceSymbol instanceInterface =
+                        new InterfaceSymbol(genericInterface.Name, (NamespaceSymbol)genericInterface.Parent);
+
+                    instanceInterface.SetInheritance(genericInterface.Interfaces);
+
+                    genericCoreType = genericInterface;
+                    instanceCoreType = instanceInterface;
+                }
+
+                instanceCoreType.SetImported(genericCoreType.Dependency);
+
+                if (genericCoreType.IgnoreNamespace)
+                {
+                    instanceCoreType.SetIgnoreNamespace();
+                }
+
+                instanceCoreType.ScriptNamespace = genericCoreType.ScriptNamespace;
+
+                if (genericCoreType.IsTransformed)
+                {
+                    instanceCoreType.SetTransformedName(genericCoreType.GeneratedName);
+                }
+                else if (genericCoreType.IsTransformAllowed == false)
+                {
+                    instanceCoreType.DisableNameTransformation();
+                }
+
+                if (genericCoreType.IsNativeArray)
+                {
+                    instanceCoreType.SetNativeArray();
+                }
+
+                instanceCoreType.AddGenericParameters(genericCoreType.GenericParameters);
+                instanceCoreType.AddGenericArguments(genericCoreType, typeArguments);
+
+                CreateGenericTypeMembers(genericCoreType, instanceCoreType, typeArguments);
+
+                return instanceCoreType;
             }
 
             return null;
