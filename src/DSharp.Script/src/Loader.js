@@ -5,6 +5,7 @@
     {{body}}
 
     return extend(module('ss', null, {
+        IServiceProvider: defineInterface(IServiceProvider),
         IDisposable: defineInterface(IDisposable),
         IEnumerable: defineInterface(IEnumerable),
         IEnumerable_$1: defineInterface(IEnumerable_$1, [IEnumerable]),
