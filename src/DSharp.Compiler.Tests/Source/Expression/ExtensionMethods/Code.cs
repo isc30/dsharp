@@ -13,12 +13,27 @@ namespace ExpressionTests
         }
     }
 
+    public enum MyNumbers
+    {
+        One = 1, Two = 2
+    }
+
+    [ScriptConstants(UseNames = true)]
+    public enum MyConstantNumbers
+    {
+        One = 1, Two = 2
+    }
+
     public static class IntExtensions
     {
         public static int Increment(this int source)
         {
             return source.Add(1);
         }
+
+        public static bool IsNumber(this int source, MyNumbers number) { return source == (int)number; }
+
+        public static bool IsNumber2(this int source, MyConstantNumbers number) { return source == (int)number; }
     }
 
     internal static class InternalIntExtensions
@@ -91,6 +106,9 @@ namespace ExpressionTests
             myOtherServiceColection.AddSingletonMany<ITemp, Temp>(1);
             myOtherServiceColection.AddSpecialSingleton<Temp>();
             myOtherServiceColection.AddSpecialSingleton2<Temp>(1);
+
+            0.IsNumber(MyNumbers.One);
+            1.IsNumber2(MyConstantNumbers.Two);
 
             return 0.Increment();
         }
