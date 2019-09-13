@@ -671,8 +671,11 @@ namespace DSharp.Compiler.Parser
                     hasConstructorConstraint = true;
 
                     Eat(TokenType.New);
-                    Eat(TokenType.OpenParen);
-                    Eat(TokenType.CloseParen);
+                    if(PeekType() == TokenType.OpenParen)
+                    {
+                        Eat(TokenType.OpenParen);
+                        Eat(TokenType.CloseParen);
+                    }
                 }
                 else if (PeekType() == TokenType.Class)
                 {
@@ -3133,6 +3136,7 @@ namespace DSharp.Compiler.Parser
                 case TokenType.True:
                 case TokenType.False:
                 case TokenType.Literal:
+                case TokenType.Default:
                     expr = new LiteralNode(NextToken());
 
                     break;
@@ -3384,20 +3388,23 @@ namespace DSharp.Compiler.Parser
         {
             Token token = PeekToken();
 
-            Eat(TokenType.OpenParen);
             ParseNodeList list = new ParseNodeList();
-
-            while (PeekType() != TokenType.CloseParen)
+            if(PeekType() == TokenType.OpenParen)
             {
-                list.Append(ParseArgument());
+                Eat(TokenType.OpenParen);
 
-                if (null == EatOpt(TokenType.Comma))
+                while (PeekType() != TokenType.CloseParen)
                 {
-                    break;
-                }
-            }
+                    list.Append(ParseArgument());
 
-            Eat(TokenType.CloseParen);
+                    if (null == EatOpt(TokenType.Comma))
+                    {
+                        break;
+                    }
+                }
+
+                Eat(TokenType.CloseParen);
+            }
 
             return new ExpressionListNode(token, list);
         }

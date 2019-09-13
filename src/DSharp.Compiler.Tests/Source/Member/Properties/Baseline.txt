@@ -13,7 +13,6 @@ define('test', ['ss'], function(ss) {
   }
   Program.main = function(args) {
     var properties = new Properties('Private String');
-    properties.Normal = 'Set in the property initialiser';
     properties.Standard = 'Standard Property!';
     properties.Normal = 'test2';
     var readWrite = properties.ReadLocalWrite;

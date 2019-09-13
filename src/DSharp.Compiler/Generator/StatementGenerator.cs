@@ -161,7 +161,7 @@ namespace DSharp.Compiler.Generator
                 writer.Indent--;
                 writer.WriteLine("}");
             }
-            else if (evaluatedType.IsNativeArray || evaluatedType.IsListType())
+            else if (evaluatedType.IsNativeArray || evaluatedType.ImplementsListType())
             {
                 string dataSourceVariableName = statement.LoopVariable.GeneratedName;
                 string indexVariableName = dataSourceVariableName + "_index";

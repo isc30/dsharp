@@ -62,6 +62,27 @@ namespace ExpressionTests
         }
     }
 
+    public static class ServiceProviderExtensions
+    {
+        public static T GetService<T>(this IServiceProvider serviceProvider)
+        {
+            return temp;
+        }
+
+        public static T3 GetT3<T1, T2, T3>(this IServiceProvider serviceProvider)
+        {
+            return temp;
+        }
+    }
+
+    public static class ITempExtensions
+    {
+        public static ITemp MyAwesomeExtension(this ITemp temp)
+        {
+            return temp;
+        }
+    }
+
     public interface IServiceCollection
     {
         IServiceCollection AddSpecialSingleton<T>();
@@ -112,11 +133,22 @@ namespace ExpressionTests
             myOtherServiceColection.AddSpecialSingleton<Temp>();
             myOtherServiceColection.AddSpecialSingleton2<Temp>(1);
 
+            int i = Resolve().GetService<int>().Add(1);
+            ITemp temp = Resolve().GetService<Temp>().MyAwesomeExtension();
+            ITemp temp2 = Resolve().GetT3<int, bool, Temp>()
+                .MyAwesomeExtension()
+                .MyAwesomeExtension();
+          
             0.IsNumber(MyNumbers.One);
             1.IsNumber2(MyConstantNumbers.ConstantOne);
             1.IsNumber2(MyConstantNumbers.ConstantTwo);
 
             return MyNumbers.Zero;
+        }
+
+        private static IServiceProvider Resolve()
+        {
+            return null;
         }
     }
 

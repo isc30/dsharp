@@ -7,8 +7,8 @@ namespace DSharp.Compiler.CodeModel.Expressions
         public ObjectInitializerNode(Token token, NewNode typeInitialiser, ParseNodeList objectAssignmentExpressions)
             : base(ParseNodeType.ObjectInitializer, token)
         {
-            NewNodeExpression = typeInitialiser;
-            ObjectAssignmentExpressions = objectAssignmentExpressions;
+            NewNodeExpression = (NewNode)GetParentedNode(typeInitialiser);
+            ObjectAssignmentExpressions = GetParentedNodeList(objectAssignmentExpressions);
         }
 
         public NewNode NewNodeExpression { get; }

@@ -98,10 +98,6 @@ namespace DSharp.Compiler.Compiler
                 if (statement != null)
                 {
                     statements.Add(statement);
-                    if(statementNode is VariableDeclarationNode variableDeclarationNode && IsObjectInitializerStatement(variableDeclarationNode))
-                    {
-                        statements.AddRange(ExpandInitializerStatements(statementBuilder, variableDeclarationNode));
-                    }
                 }
             }
 
@@ -113,17 +109,6 @@ namespace DSharp.Compiler.Compiler
             }
 
             return new SymbolImplementation(statements, rootScope, thisIdentifier);
-        }
-
-        private bool IsObjectInitializerStatement(VariableDeclarationNode variableDeclarationNode)
-        {
-            if(variableDeclarationNode == null || !variableDeclarationNode.Initializers.Any())
-            {
-                return false;
-            }
-
-            var initializer = variableDeclarationNode.Initializers.First().As<VariableInitializerNode>();
-            return initializer.Value is ObjectInitializerNode;
         }
 
         private IEnumerable<Statement> ExpandInitializerStatements(StatementBuilder statementBuilder, VariableDeclarationNode variableDeclarationNode)

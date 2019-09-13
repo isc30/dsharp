@@ -408,92 +408,75 @@ namespace DSharp.Compiler.Generator
             {
                 case ExpressionType.Literal:
                     GenerateLiteralExpression(generator, symbol, (LiteralExpression)expression);
-
                     break;
                 case ExpressionType.Local:
                     GenerateLocalExpression(generator, symbol, (LocalExpression)expression);
-
                     break;
                 case ExpressionType.Member:
                     GenerateMemberExpression(generator, symbol, (MemberExpression)expression);
                     break;
                 case ExpressionType.Field:
                     GenerateFieldExpression(generator, symbol, (FieldExpression)expression);
-
                     break;
                 case ExpressionType.EnumerationField:
                     GenerateEnumerationFieldExpression(generator, symbol, (EnumerationFieldExpression)expression);
-
                     break;
                 case ExpressionType.PropertyGet:
                     GeneratePropertyExpression(generator, symbol, (PropertyExpression)expression);
-
                     break;
                 case ExpressionType.PropertySet:
                     throw new ScriptGeneratorException(symbol, "PropertyExpression(set) should be covered as part of BinaryExpression logic.");
                 case ExpressionType.MethodInvoke:
                 case ExpressionType.DelegateInvoke:
                     GenerateMethodExpression(generator, symbol, (MethodExpression)expression);
-
                     break;
                 case ExpressionType.BaseInitializer:
                     GenerateBaseInitializerExpression(generator, symbol, (BaseInitializerExpression)expression);
-
                     break;
                 case ExpressionType.EventAdd:
                 case ExpressionType.EventRemove:
                     GenerateEventExpression(generator, symbol, (EventExpression)expression);
-
                     break;
                 case ExpressionType.Indexer:
                     GenerateIndexerExpression(generator, symbol, (IndexerExpression)expression);
-
                     break;
                 case ExpressionType.This:
                     GenerateThisExpression(generator);
-
                     break;
                 case ExpressionType.Base:
                     throw new ScriptGeneratorException(symbol, "BaseExpression not handled by container expression");
                 case ExpressionType.New:
                     GenerateNewExpression(generator, symbol, (NewExpression)expression);
-
                     break;
                 case ExpressionType.Unary:
                     GenerateUnaryExpression(generator, symbol, (UnaryExpression)expression);
-
                     break;
                 case ExpressionType.Binary:
                     GenerateBinaryExpression(generator, symbol, (BinaryExpression)expression);
-
                     break;
                 case ExpressionType.Conditional:
                     GenerateConditionalExpression(generator, symbol, (ConditionalExpression)expression);
-
                     break;
                 case ExpressionType.Type:
                     GenerateTypeExpression(generator, symbol, (TypeExpression)expression);
-
                     break;
                 case ExpressionType.Delegate:
                     GenerateDelegateExpression(generator, symbol, (DelegateExpression)expression);
-
                     break;
                 case ExpressionType.LateBound:
                     GenerateLateBoundExpression(generator, symbol, (LateBoundExpression)expression);
-
                     break;
                 case ExpressionType.InlineScript:
                     GenerateInlineScriptExpression(generator, symbol, (InlineScriptExpression)expression);
-
                     break;
                 case ExpressionType.NewDelegate:
                     GenerateExpression(generator, symbol, ((NewDelegateExpression)expression).TypeExpression);
-
                     break;
-
                 case ExpressionType.Object:
-                    GenerateObjectExpression(generator, symbol, (ObjectExpression)expression);
+                    GenerateObjectExpression(generator, symbol, ((ObjectExpression)expression).Properties);
+                    break;
+                case ExpressionType.ObjectInitializer:
+                    GenerateObjectInitializerExpression(generator, symbol, (ObjectInitializerExpression)expression);
                     break;
                 default:
                     throw new ScriptGeneratorException(symbol, "Unexpected expression type: " + expression.Type);
@@ -517,14 +500,14 @@ namespace DSharp.Compiler.Generator
             writer.Write(expression.Member.GeneratedName);
         }
 
-        private static void GenerateObjectExpression(ScriptGenerator generator, MemberSymbol symbol, ObjectExpression expression)
+        private static void GenerateObjectExpression(ScriptGenerator generator, MemberSymbol symbol, IDictionary<string, Expression> properties)
         {
             ScriptTextWriter writer = generator.Writer;
 
             writer.Write("{");
             bool commaNeeded = false;
 
-            foreach (var property in expression.Properties)
+            foreach (var property in properties)
             {
                 if(commaNeeded)
                 {
@@ -539,6 +522,34 @@ namespace DSharp.Compiler.Generator
             }
 
             writer.Write("}");
+        }
+
+        public static void GenerateObjectInitializerExpression(
+            ScriptGenerator generator, 
+            MemberSymbol symbol, 
+            ObjectInitializerExpression initializerExpression)
+        {
+            ScriptTextWriter writer = generator.Writer;
+
+            var type = initializerExpression.NewExpression.EvaluatedType;
+
+            if(type.IsReservedType())
+            {
+                //TODO: Implement Dictionary initializer + List Initializer + Custom initializers
+                GenerateNewExpression(generator, symbol, initializerExpression.NewExpression);
+            }
+            else
+            {
+                writer.Write($"{DSharpStringResources.ScriptExportMember("initializeObject")}");
+                writer.Write("(");
+                GenerateNewExpression(generator, symbol, initializerExpression.NewExpression);
+                writer.Write(", ");
+                var properties = initializerExpression.Initializers.ToDictionary(
+                    item => (((BinaryExpression)item).LeftOperand as PropertyExpression).Property.GeneratedName,
+                    item => ((BinaryExpression)item).RightOperand);
+                GenerateObjectExpression(generator, symbol, properties);
+                writer.Write(")");
+            }
         }
 
         public static void GenerateExpressionList(ScriptGenerator generator, MemberSymbol symbol,

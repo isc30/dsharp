@@ -16,12 +16,8 @@ namespace MemberTests {
     {
         public static int Main(string[] args)
         {
-            Properties properties = new Properties("Private String")
-            {
-                Normal = "Set in the property initialiser",
-                Standard = "Standard Property!"
-            };
-
+            Properties properties = new Properties("Private String");
+            properties.Standard = "Standard Property!";
             properties.Normal = "test2";
             var readWrite = properties.ReadLocalWrite;
             var readonlyValue = properties.ReadonlyValue;

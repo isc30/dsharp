@@ -174,6 +174,8 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public string ScriptNamespace { get; set; }
 
+        public ICollection Symbols => members;
+
         public virtual void AddMember(MemberSymbol memberSymbol)
         {
             Debug.Assert(memberSymbol != null);
@@ -291,11 +293,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             parentSymbolTable = symbolTable;
         }
 
-        #region ISymbolTable Members
-
-        ICollection ISymbolTable.Symbols => members;
-
-        Symbol ISymbolTable.FindSymbol(string name, Symbol context, SymbolFilter filter)
+        public Symbol FindSymbol(string name, Symbol context, SymbolFilter filter)
         {
             Debug.Assert(string.IsNullOrEmpty(name) == false);
 
@@ -386,7 +384,5 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             types.Add(typeSymbol);
             typeMap[nestedName] = typeSymbol;
         }
-
-        #endregion
     }
 }

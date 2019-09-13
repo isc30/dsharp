@@ -27,3 +27,14 @@ function defineProperty(instance, propertyName) {
         set: function (value) { prop = value; }
     });
 }
+function initializeObject(obj, initializerMap) {
+    if (!isValue(obj) || !isValue(initializerMap)) {
+        return obj;
+    }
+
+    for (var prop in initializerMap) {
+        obj[prop] = initializerMap[prop];
+    }
+
+    return obj;
+}

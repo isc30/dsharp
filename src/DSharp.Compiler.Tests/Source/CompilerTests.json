@@ -272,6 +272,11 @@
         "ComparisonFile": "Baseline.txt"
       },
       {
+        "Name": "ObjectInitializers",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt"
+      },
+      {
         "Name": "Script",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt"

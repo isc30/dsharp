@@ -27,6 +27,7 @@ define('test', ['ss'], function(ss) {
       this.parseTheList({T: Number}, []).push(4);
       var wrapper = new Wrapper();
       wrapper.Invokee.invoke({T: ss.getGenericConstructor(GenericClass_$1, {T: Number})}, '').doSomethingWith({TNew: Boolean}, true, 0);
+      var val = new Invoker().invokeAll({T: Number}, '1');
     },
     parseTheList: function($TArgs, what) {
       return what;
@@ -84,6 +85,9 @@ define('test', ['ss'], function(ss) {
   }
   var Invoker$ = {
     invoke: function($TArgs, value) {
+      return null;
+    },
+    invokeAll: function($TArgs, value) {
       return null;
     }
   };

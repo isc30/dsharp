@@ -24,6 +24,8 @@ namespace TypeTests
 
             Wrapper wrapper = new Wrapper();
             wrapper.Invokee.Invoke<GenericClass<int>>("").DoSomethingWith<bool>(true, 0);
+
+            int val = new Invoker().InvokeAll<int>("1");
         }
 
         public interface IBase { }
@@ -89,7 +91,12 @@ namespace TypeTests
         public T Invoke<T>(string value)
             where T : class
         {
-            return null;
+            return default;
+        }
+
+        public T InvokeAll<T>(string value)
+        {
+            return default;
         }
     }
 }
