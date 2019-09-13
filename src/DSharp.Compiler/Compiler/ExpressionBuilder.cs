@@ -1364,6 +1364,12 @@ namespace DSharp.Compiler.Compiler
                 foreach (var parameterNode in parameters.Expressions)
                 {
                     var parameterExpression = BuildExpression(parameterNode);
+
+                    if (parameterExpression is MemberExpression)
+                    {
+                        parameterExpression = TransformMemberExpression((MemberExpression)parameterExpression);
+                    }
+
                     methodExpression.AddParameterValue(parameterExpression);
                 }
 

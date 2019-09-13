@@ -15,13 +15,18 @@ namespace ExpressionTests
 
     public enum MyNumbers
     {
-        One = 1, Two = 2
+        Zero = 0,
+
+        One = 1,
     }
 
     [ScriptConstants(UseNames = true)]
     public enum MyConstantNumbers
     {
-        One = 1, Two = 2
+        ConstantOne = 1,
+
+        [ScriptName("CONSTANT_TWO")]
+        ConstantTwo = 2,
     }
 
     public static class IntExtensions
@@ -108,9 +113,10 @@ namespace ExpressionTests
             myOtherServiceColection.AddSpecialSingleton2<Temp>(1);
 
             0.IsNumber(MyNumbers.One);
-            1.IsNumber2(MyConstantNumbers.Two);
+            1.IsNumber2(MyConstantNumbers.ConstantOne);
+            1.IsNumber2(MyConstantNumbers.ConstantTwo);
 
-            return 0.Increment();
+            return MyNumbers.Zero;
         }
     }
 

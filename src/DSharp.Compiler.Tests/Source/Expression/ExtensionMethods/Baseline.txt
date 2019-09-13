@@ -2,6 +2,14 @@
 
 define('ExpressionTests.ExtensionMethods', ['ss'], function(ss) {
   var $global = this;
+  // ExpressionTests.MyNumbers
+
+  var MyNumbers = {
+    zero: 0, 
+    one: 1
+  };
+
+
   // ExpressionTests.IServiceCollection
 
   function IServiceCollection() { }
@@ -27,6 +35,12 @@ define('ExpressionTests.ExtensionMethods', ['ss'], function(ss) {
   }
   IntExtensions.increment = function(source) {
     return InternalIntExtensions.add(source, 1);
+  };
+  IntExtensions.isNumber = function(source, number) {
+    return source === number;
+  };
+  IntExtensions.isNumber2 = function(source, number) {
+    return source === number;
   };
 
 
@@ -89,7 +103,10 @@ define('ExpressionTests.ExtensionMethods', ['ss'], function(ss) {
     IServiceCollectionExtension.addSingletonMany({TBase: ITemp, TImp: Temp}, myOtherServiceColection, 1);
     myOtherServiceColection.addSpecialSingleton({T: Temp});
     myOtherServiceColection.addSpecialSingleton2({T: Temp}, 1);
-    return IntExtensions.increment(0);
+    IntExtensions.isNumber(0, 1);
+    IntExtensions.isNumber2(1, 'constantOne');
+    IntExtensions.isNumber2(1, 'CONSTANT_TWO');
+    return 0;
   };
   var Program$ = {
 
@@ -131,6 +148,7 @@ define('ExpressionTests.ExtensionMethods', ['ss'], function(ss) {
       IServiceCollectionExtension: ss.defineClass(IServiceCollectionExtension, null, [], null)
     },
     {
+      MyNumbers: MyNumbers,
       IServiceCollection: ss.defineInterface(IServiceCollection),
       ITemp: ss.defineInterface(ITemp),
       StringExtensions: ss.defineClass(StringExtensions, null, [], null),
