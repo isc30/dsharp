@@ -130,7 +130,7 @@ define('ExpressionTests.ExtensionMethods', ['ss'], function(ss) {
     IntExtensions.isNumber(0, 1);
     IntExtensions.isNumber2(1, 'constantOne');
     IntExtensions.isNumber2(1, 'CONSTANT_TWO');
-    return 0;
+    return IntExtensions.increment(0);
   };
   Program._resolve = function() {
     return null;

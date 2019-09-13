@@ -143,7 +143,7 @@ namespace ExpressionTests
             1.IsNumber2(MyConstantNumbers.ConstantOne);
             1.IsNumber2(MyConstantNumbers.ConstantTwo);
 
-            return MyNumbers.Zero;
+            return 0.Increment();
         }
 
         private static IServiceProvider Resolve()
