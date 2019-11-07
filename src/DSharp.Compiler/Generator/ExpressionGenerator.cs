@@ -1155,10 +1155,13 @@ namespace DSharp.Compiler.Generator
                 }
             }
 
-            if(expression.AssociatedType.IsGeneric && (expression.AssociatedType.GenericArguments?.Any() ?? false))
+            if (expression.AssociatedType.IsGeneric
+                && expression.AssociatedType.GenericType.IsApplicationType
+                && (expression.AssociatedType.GenericArguments?.Any() ?? false))
             {
                 writer.Write(DSharpStringResources.ScriptExportMember("createGenericType"));
                 writer.Write("(");
+
                 if (expression.IsSpecificType)
                 {
                     writer.Write(expression.AssociatedType.FullGeneratedName);
@@ -1167,13 +1170,16 @@ namespace DSharp.Compiler.Generator
                 {
                     GenerateExpression(generator, symbol, expression.TypeExpression);
                 }
+
                 writer.Write(", ");
                 generator.WriteGenericTypeArgumentsMap(expression.AssociatedType.GenericArguments, expression.AssociatedType.GenericParameters);
-                writer.Write(", ");
+                
                 if (expression.Parameters != null)
                 {
+                    writer.Write(", ");
                     GenerateExpressionList(generator, symbol, expression.Parameters);
                 }
+
                 writer.Write(")");
             }
             else
