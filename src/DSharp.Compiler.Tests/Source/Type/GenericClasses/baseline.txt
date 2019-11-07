@@ -23,7 +23,7 @@ define('test', ['ss'], function(ss) {
     var copiedValues = Program.copyDictionary(values);
     var copiedValues2 = Program.copyDictionary(values2);
     var copiedValuesOfStrings = Program.copyDictionary(Program.copyDictionaryOfStringKeys(values));
-    var bem = ss.createGenericType(BulkAsyncExecutionManager_$1, {T : String}, );
+    var bem = ss.createGenericType(BulkAsyncExecutionManager_$1, {T : String});
     bem.addExecutionKey('');
     bem.addExecutionKeys([ 'Lol', 'asdasd', 'hashasd' ]);
     bem.startExecution();
@@ -33,7 +33,7 @@ define('test', ['ss'], function(ss) {
     }
     if (ss.canAssign(ss.getGenericConstructor(IBulkAsyncExecutionManager_$1, {T: String}), ss.typeOf(bem))) {
     }
-    var genericWithMultipleParams = ss.createGenericType(GenericWithMultipleParams_$3, {T1 : Number, T2 : Boolean, T3 : String}, );
+    var genericWithMultipleParams = ss.createGenericType(GenericWithMultipleParams_$3, {T1 : Number, T2 : Boolean, T3 : String});
     var str = genericWithMultipleParams.toString();
     var specificClassOfGeneric = new SpecificClassOfGeneric();
     var isInt = specificClassOfGeneric.Type === Number;
