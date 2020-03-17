@@ -1,5 +1,7 @@
-﻿var jsDate = jsDate || Date;
-function DateTime() { }
+﻿function DateTime(year, month, day, hour, minute, second, millisecond)
+{
+    return new Date(year, month || (month - 1), day, hour, minute, second, millisecond);
+}
 
 createPropertyGet(DateTime, 'Now', function()
 {
@@ -13,14 +15,6 @@ createPropertyGet(DateTime, 'Today', function()
 
     return today;
 });
-
-DateTime.New = function (year, month, day, hour, minute, second, millisecond)
-{
-    return new jsDate(year, month || (month - 1), day, hour, minute, second, millisecond);
-};
-
-// Replace native Date JS constructor with our logic!
-Date = DateTime.New;
 
 DateTime.Equals = function (d1, d2)
 {

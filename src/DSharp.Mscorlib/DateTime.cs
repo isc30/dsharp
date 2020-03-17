@@ -4,7 +4,7 @@ namespace System
 {
     [ScriptIgnoreNamespace]
     [ScriptImport]
-    [ScriptName("Date")]
+    [ScriptName("DateTime")]
     public struct DateTime
     {
         public extern static implicit operator Date(DateTime d);
