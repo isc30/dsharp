@@ -1,6 +1,6 @@
 ﻿function DateTime(year, month, day, hour, minute, second, millisecond)
 {
-    return new Date(year, month || (month - 1), day, hour, minute, second, millisecond);
+    return new Date(year, month != null ? month - 1 : month, day, hour, minute, second, millisecond);
 }
 
 createPropertyGet(DateTime, 'Now', function()

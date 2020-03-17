@@ -2,9 +2,6 @@
 
 namespace System
 {
-    [ScriptIgnoreNamespace]
-    [ScriptImport]
-    [ScriptName("DateTime")]
     public struct DateTime
     {
         public extern static implicit operator Date(DateTime d);
@@ -22,11 +19,11 @@ namespace System
         [ScriptAlias("ss.DateTime.Equals")]
         public extern static bool Equals(DateTime d1, DateTime d2);
 
-        public DateTime(int year, int month, int day) { }
+        public extern DateTime(int year, int month, int day);
 
-        public DateTime(int year, int month, int day, int hour, int minute, int second) { }
+        public extern DateTime(int year, int month, int day, int hour, int minute, int second);
 
-        public DateTime(int year, int month, int day, int hour, int minute, int second, int millisecond) { }
+        public extern DateTime(int year, int month, int day, int hour, int minute, int second, int millisecond);
 
         [ScriptAlias("Year")]
         public extern int Year { get; }
