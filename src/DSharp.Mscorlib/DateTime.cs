@@ -88,9 +88,11 @@ namespace System
         [ScriptAlias("ss.DateTime.Parse")]
         public extern static DateTime Parse(string date);
 
-        public extern static bool operator ==(DateTime left, DateTime right);
+        // force the usage of .Equals, operator== behaves weirdly in JS
+        //public extern static bool operator ==(DateTime left, DateTime right);
 
-        public extern static bool operator !=(DateTime left, DateTime right);
+        // force the usage of .Equals, operator== behaves weirdly in JS
+        //public extern static bool operator !=(DateTime left, DateTime right);
 
         public extern static bool operator >=(DateTime left, DateTime right);
 

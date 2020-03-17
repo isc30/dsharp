@@ -47,7 +47,7 @@ DateTime.GetMonth = function (date)
 {
     date = DateTime._parseIfString(date);
 
-    return date.getMonth();
+    return date.getMonth() + 1;
 };
 
 createPropertyGet(Date.prototype, 'Day', function ()
