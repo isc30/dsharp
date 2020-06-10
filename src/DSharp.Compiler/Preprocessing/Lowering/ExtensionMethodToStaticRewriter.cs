@@ -40,7 +40,9 @@ namespace DSharp.Compiler.Preprocessing.Lowering
             var symb = Try(() => sem.GetSymbolInfo(node).Symbol as IMethodSymbol, null);
             var newNode = (InvocationExpressionSyntax)base.VisitInvocationExpression(node);
 
-            if (symb != null && symb.IsExtensionMethod)
+            if (symb != null
+                && symb.IsExtensionMethod
+                && symb.ReceiverType != symb.ContainingSymbol) // ignore extension methods invoked as static methods
             {
                 var extensionClass = symb.ContainingSymbol.ToDisplayString();
                 var extensionAlias = extensionClass.Replace(".", "_");
@@ -53,29 +55,29 @@ namespace DSharp.Compiler.Preprocessing.Lowering
                 switch (newNode.Expression)
                 {
                     case MemberAccessExpressionSyntax memberExpression:
-                    {
-                        var newArguments = ArgumentList();
-                        newArguments = newArguments.AddArguments(Argument(memberExpression.Expression.WithoutTrivia())); // extension method target
-                        newArguments = newArguments.AddArguments(newNode.ArgumentList.Arguments.ToArray());
+                        {
+                            var newArguments = ArgumentList();
+                            newArguments = newArguments.AddArguments(Argument(memberExpression.Expression.WithoutTrivia())); // extension method target
+                            newArguments = newArguments.AddArguments(newNode.ArgumentList.Arguments.ToArray());
 
-                        return InvocationExpression(
-                            MemberAccessExpression(
-                                memberExpression.Kind(),
-                                IdentifierName(extensionAlias),
-                                memberExpression.OperatorToken,
-                                memberExpression.Name),
-                            newArguments);
-                    }
+                            return InvocationExpression(
+                                MemberAccessExpression(
+                                    memberExpression.Kind(),
+                                    IdentifierName(extensionAlias),
+                                    memberExpression.OperatorToken,
+                                    memberExpression.Name),
+                                newArguments);
+                        }
 
                     case SimpleNameSyntax nameExpression:
-                    {
-                       return InvocationExpression(
-                            MemberAccessExpression(
-                                SyntaxKind.SimpleMemberAccessExpression,
-                                IdentifierName(extensionAlias),
-                                nameExpression.WithoutTrivia()),
-                            newNode.ArgumentList);
-                    }
+                        {
+                            return InvocationExpression(
+                                    MemberAccessExpression(
+                                        SyntaxKind.SimpleMemberAccessExpression,
+                                        IdentifierName(extensionAlias),
+                                        nameExpression.WithoutTrivia()),
+                                    newNode.ArgumentList);
+                        }
 
                     default:
                         throw new NotImplementedException(); // please implement extra cases!

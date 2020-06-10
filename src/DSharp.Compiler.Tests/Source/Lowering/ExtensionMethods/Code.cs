@@ -38,6 +38,9 @@ namespace LoweringTests
 
         public static void Main()
         {
+            AAAA.What<int>(1, 2);
+            AAAA.What<int>(AAAA.What<int>(1, 2), AAAA.What<int>(3, 4));
+
             int x = 3.DoSomething(5);
 
             var a = x.DoSomethingElse(WOW);

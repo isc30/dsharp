@@ -30,6 +30,8 @@ define('test', ['ss'], function(ss) {
   function Main() {
   }
   Main.main = function() {
+    AAAA.what({T: Number}, 1, 2);
+    AAAA.what({T: Number}, AAAA.what({T: Number}, 1, 2), AAAA.what({T: Number}, 3, 4));
     var x = Extensions.doSomething(3, 5);
     var a = Extensions.doSomethingElse({T: Number}, x, Main.WOW);
     var b = AAAA.what({T: Number}, Extensions.doSomething(Extensions.doSomethingElse({T: Number}, Main.WOW, a), 234), 56);
