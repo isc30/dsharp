@@ -1,4 +1,7 @@
 ﻿using System;
+#if X
+wooow
+#endif
 
 [assembly: ScriptAssembly("test")]
 

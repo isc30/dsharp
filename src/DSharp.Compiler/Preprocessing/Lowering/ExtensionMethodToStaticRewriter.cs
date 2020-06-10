@@ -22,17 +22,32 @@ namespace DSharp.Compiler.Preprocessing.Lowering
 
             if (typeAliases.Any())
             {
-                var missingDirectives = typeAliases.Select(s => 
-                    UsingDirective(
-                        NameEquals(s.Key).WithLeadingTrivia(Whitespace(" ")),
-                        ParseName(s.Value).WithLeadingTrivia(Whitespace(" "))
-                    ).WithLeadingTrivia(CarriageReturn)
-                ).ToArray();
-
-                newRoot = newRoot.AddUsings(missingDirectives);
+                newRoot = newRoot.AddUsings(CreateTypeAliases());
             }
 
             return newRoot;
+        }
+
+        private UsingDirectiveSyntax[] CreateTypeAliases()
+        {
+            bool isFirstUsing = true;
+
+            return typeAliases.Select(s =>
+            {
+                var line = UsingDirective(
+                    NameEquals(s.Key).WithLeadingTrivia(Whitespace(" ")),
+                    ParseName(s.Value)
+                ).WithTrailingTrivia(CarriageReturn);
+
+                if (isFirstUsing)
+                {
+                    isFirstUsing = false;
+                    line = line.WithLeadingTrivia(line.GetTrailingTrivia());
+                }
+
+                return line;
+
+            }).ToArray();
         }
 
         public override SyntaxNode VisitInvocationExpression(InvocationExpressionSyntax node)
