@@ -12,12 +12,13 @@ namespace DSharp.CodeAnalysis.Diagnostics
         public static IDiagnostic[] RuleDefinitions
             => new IDiagnostic[]
                 {
-                    GenericTypeArgumentMissing,
+                    // GenericTypeArgumentMissing,
                     ScriptIgnoreGenericArgumentsAttributeMissing
                 };
 
-        public static IDiagnostic GenericTypeArgumentMissing { get; }
-            = new GenericTypeArgumentsMissingDiagnostic();
+        // No longer needed. This should always have a Type which will be stamped by `GenericArgumentRewriter`
+        //public static IDiagnostic GenericTypeArgumentMissing { get; }
+        //    = new GenericTypeArgumentsMissingDiagnostic();
 
         public static IDiagnostic ScriptIgnoreGenericArgumentsAttributeMissing { get; }
             = new ScriptIgnoreGenericArgumentsAttributeMissingDiagnostic();
