@@ -12,6 +12,9 @@ define('test', ['ss'], function(ss) {
     },
     genericMethod2: function($TArgs, arg) {
       throw new Error();
+    },
+    genericMethod3: function(arg) {
+      throw new Error();
     }
   };
 
@@ -25,6 +28,7 @@ define('test', ['ss'], function(ss) {
       var subject = ss.createGenericType(GenericClass_$1, {T1 : Number});
       var x = subject.genericMethod1('test');
       var y = subject.genericMethod2('test');
+      var z = subject.genericMethod3(123);
     }
   };
 
