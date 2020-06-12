@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -51,8 +52,8 @@ namespace DSharp.Compiler.Preprocessing.Lowering
 
         public override SyntaxNode VisitInvocationExpression(InvocationExpressionSyntax node)
         {
-            var symb = Try(() => sem.GetSymbolInfo(node).Symbol as IMethodSymbol, null);
             var newNode = (InvocationExpressionSyntax)base.VisitInvocationExpression(node);
+            var symb = Try(() => sem.GetSymbolInfo(newNode).Symbol as IMethodSymbol, null);
 
             if (symb != null
                 && symb.IsExtensionMethod
