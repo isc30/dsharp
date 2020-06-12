@@ -522,7 +522,7 @@ namespace ConsoleApp1
 
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
-            return new DSharpAnalyzer(new GenericTypeArgumentsMissingDiagnostic().Rule);
+            return new DSharpAnalyzer(AvailableDiagnostics.GenericTypeArgumentMissing.Rule);
         }
     }
 }
