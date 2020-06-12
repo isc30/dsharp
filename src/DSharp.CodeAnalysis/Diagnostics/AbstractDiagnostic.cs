@@ -31,7 +31,7 @@ namespace DSharp.CodeAnalysis.Diagnostics
                 Title,
                 MessageFormat,
                 Consts.Category,
-                DiagnosticSeverity.Info,
+                DiagnosticSeverity.Error,
                 isEnabledByDefault: true,
                 description: Description);
         }

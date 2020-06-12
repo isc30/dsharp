@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DSharp.Compiler.ScriptModel.Expressions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -52,8 +53,8 @@ namespace DSharp.Compiler.Preprocessing.Lowering
 
         public override SyntaxNode VisitInvocationExpression(InvocationExpressionSyntax node)
         {
-            var symb = Try(() => sem.GetSymbolInfo(node).Symbol as IMethodSymbol, null);
             var newNode = (InvocationExpressionSyntax)base.VisitInvocationExpression(node);
+            var symb = Try(() => sem.GetSymbolInfo(newNode).Symbol as IMethodSymbol, null);
 
             if (symb != null
                 && symb.IsExtensionMethod
@@ -87,11 +88,11 @@ namespace DSharp.Compiler.Preprocessing.Lowering
                     case SimpleNameSyntax nameExpression:
                         {
                             return InvocationExpression(
-                                    MemberAccessExpression(
-                                        SyntaxKind.SimpleMemberAccessExpression,
-                                        IdentifierName(extensionAlias),
-                                        nameExpression.WithoutTrivia()),
-                                    newNode.ArgumentList);
+                                MemberAccessExpression(
+                                    SyntaxKind.SimpleMemberAccessExpression,
+                                    IdentifierName(extensionAlias),
+                                    nameExpression.WithoutTrivia()),
+                                newNode.ArgumentList);
                         }
 
                     default:
@@ -105,7 +106,7 @@ namespace DSharp.Compiler.Preprocessing.Lowering
         private static T Try<T>(Func<T> action, T defaultValue)
         {
             try { return action(); }
-            catch (Exception ex) { throw ex; }
+            catch (Exception) { }
 
             return defaultValue;
         }
