@@ -12,7 +12,11 @@ namespace LoweringTests {
         public Test() {
             this.getFalse = () => false;
             Func<int, int> addOne = a => a + 1;
+#if TEST
+            Func<int, int, int> sumFail = (a, b) => a + b;
+#else
             Func<int, int, int> sum = (a, b) => a + b;
+#endif
             Action doNothing = () => { };
             Action<bool> doSomething = a => {
                 if(!a)

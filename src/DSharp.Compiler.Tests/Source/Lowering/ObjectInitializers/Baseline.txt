@@ -38,6 +38,14 @@ define('test', ['ss'], function(ss) {
         _obj_.Prop = 'world';
         return _obj_;
       })();
+      this._testFunc((function() {
+        var _obj_ = new C1();
+        _obj_.BoolProp = false;
+        return _obj_;
+      })());
+    },
+    _testFunc: function(obj) {
+      throw new Error();
     }
   };
 

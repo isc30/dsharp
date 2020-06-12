@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 [assembly: ScriptAssembly("test")]
 
@@ -22,10 +23,27 @@ namespace LoweringTests
                 }
             };
 
+#if TEST
             C2 c2 = new C2("hello")
             {
                 Prop = "world"
             };
+#else
+            C2 c2 = new C2("hello")
+            {
+                Prop = "world"
+            };
+#endif
+
+            TestFunc(new C1()
+            {
+                BoolProp = false
+            });
+        }
+
+        private void TestFunc(C1 obj)
+        {
+            throw new NotImplementedException();
         }
     }
 
