@@ -202,7 +202,7 @@ namespace ConsoleApp1
         }
 
         [TestMethod]
-        public void StaticMethod_NoTypeArgumentsIn_NoReportedDiagnostics()
+        public void StaticMethod_NoTypeArgumentsIn_ReportsDiagnostics()
         {
             var test = @"namespace ConsoleApp1
 {
@@ -214,8 +214,18 @@ namespace ConsoleApp1
         }
     }
 }";
+            var expected = new DiagnosticResult
+            {
+                Id = Consts.GenericTypeArgumentsMissingId,
+                Severity = DiagnosticSeverity.Error,
+                Message = "Method 'Magic' is missing type arguments and should be included.",
+                Locations =
+                    new[] {
+                            new DiagnosticResultLocation("Test1.cs", 7, 28)
+                        }
+            };
 
-            VerifyCSharpDiagnostic(new string[] { codeUnderTest, test });
+            VerifyCSharpDiagnostic(new string[] { codeUnderTest, test }, expected);
         }
 
         [TestMethod]
@@ -254,7 +264,7 @@ namespace ConsoleApp1
         }
 
         [TestMethod]
-        public void InstanceMethod_NoTypeArgumentsIn_NoReportedDiagnostics()
+        public void InstanceMethod_NoTypeArgumentsIn_ReportsDiagnostics()
         {
             var test = @"namespace ConsoleApp1
 {
@@ -267,8 +277,18 @@ namespace ConsoleApp1
         }
     }
 }";
+            var expected = new DiagnosticResult
+            {
+                Id = Consts.GenericTypeArgumentsMissingId,
+                Severity = DiagnosticSeverity.Error,
+                Message = "Method 'Store' is missing type arguments and should be included.",
+                Locations =
+                    new[] {
+                            new DiagnosticResultLocation("Test1.cs", 8, 13)
+                        }
+            };
 
-            VerifyCSharpDiagnostic(new string[] { codeUnderTest, test });
+            VerifyCSharpDiagnostic(new string[] { codeUnderTest, test }, expected);
         }
 
         [TestMethod]
@@ -308,7 +328,7 @@ namespace ConsoleApp1
         }
 
         [TestMethod]
-        public void ExtensionMethod_NoTypeArgumentsIn_NoReportedDiagnostics()
+        public void ExtensionMethod_NoTypeArgumentsIn_ReportsDiagnostics()
         {
             var test = @"namespace ConsoleApp1
 {
@@ -321,8 +341,18 @@ namespace ConsoleApp1
         }
     }
 }";
+            var expected = new DiagnosticResult
+            {
+                Id = Consts.GenericTypeArgumentsMissingId,
+                Severity = DiagnosticSeverity.Error,
+                Message = "Method 'ValIn' is missing type arguments and should be included.",
+                Locations =
+                    new[] {
+                            new DiagnosticResultLocation("Test1.cs", 8, 13)
+                        }
+            };
 
-            VerifyCSharpDiagnostic(new string[] { codeUnderTest, test });
+            VerifyCSharpDiagnostic(new string[] { codeUnderTest, test }, expected);
         }
 
         [TestMethod]
@@ -362,7 +392,7 @@ namespace ConsoleApp1
         }
 
         [TestMethod]
-        public void BaseClassGenericMethodWithNewTypeArguments_NoTypeArgumentsIn_NoReportedDiagnostics()
+        public void BaseClassGenericMethodWithNewTypeArguments_NoTypeArgumentsIn_ReportsDiagnostics()
         {
             var test = @"namespace ConsoleApp1
 {
@@ -374,8 +404,18 @@ namespace ConsoleApp1
         }
     }
 }";
+            var expected = new DiagnosticResult
+            {
+                Id = Consts.GenericTypeArgumentsMissingId,
+                Severity = DiagnosticSeverity.Error,
+                Message = "Method 'Mutate' is missing type arguments and should be included.",
+                Locations =
+                    new[] {
+                            new DiagnosticResultLocation("Test1.cs", 7, 27)
+                        }
+            };
 
-            VerifyCSharpDiagnostic(new string[] { codeUnderTest, test });
+            VerifyCSharpDiagnostic(new string[] { codeUnderTest, test }, expected);
         }
 
         [TestMethod]
@@ -449,7 +489,7 @@ namespace ConsoleApp1
         }
 
         [TestMethod]
-        public void NonGenericInterfaceWithGenericMethod_NoTypeArgumentsIn_NoReportedDiagnostics()
+        public void NonGenericInterfaceWithGenericMethod_NoTypeArgumentsIn_ReportsDiagnostics()
         {
             var test = @"namespace ConsoleApp1
 {
@@ -462,8 +502,18 @@ namespace ConsoleApp1
         }
     }
 }";
+            var expected = new DiagnosticResult
+            {
+                Id = Consts.GenericTypeArgumentsMissingId,
+                Severity = DiagnosticSeverity.Error,
+                Message = "Method 'Update' is missing type arguments and should be included.",
+                Locations =
+                    new[] {
+                            new DiagnosticResultLocation("Test1.cs", 8, 13)
+                        }
+            };
 
-            VerifyCSharpDiagnostic(new string[] { codeUnderTest, test });
+            VerifyCSharpDiagnostic(new string[] { codeUnderTest, test }, expected);
         }
 
         [TestMethod]
