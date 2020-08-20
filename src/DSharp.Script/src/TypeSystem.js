@@ -120,7 +120,7 @@ function canAssign(type, otherType) {
     }
 
     // Arrays in CLR implement IList and IList<T>
-    if (Array.isArray(instance) && (
+    if (otherType === Array && (
         type === IList
         || type == IList_$1)) {
         return true;
