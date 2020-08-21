@@ -30,7 +30,7 @@
         Stack: defineClass(Stack, Stack$, [], null),
         Queue: defineClass(Queue, Queue$, [], null),
         Guid: defineClass(Guid, Guid$, [], null),
-        DateTime: defineClass(DateTime, {}, [], null),
+        DateTime: defineClass(DateTime, {}, [IEquatable_$1, IComparable_$1], null),
         Lazy: defineClass(Lazy, {}, [], null),
         Nullable: defineClass(Nullable, Nullable$, [], null),
         Enum: defineClass(Enum, {}, [], null)
