@@ -89,9 +89,7 @@ In order to debug the shell you need to:
 2. In the `Core/DSharp.Shell` project, `Right Click` -> `Properties` -> `Debug` -> `Application arguments` and set the following:
 
     ```console
-    /ref:C:\Working\dsharp\src\DSharp.Mscorlib\bin\Debug\net461\DSharp.Mscorlib.dll
-    /out:out.js
-    C:\Working\dsharp\src\DSharp.Compiler.Tests\Source\Mscorlib\DateTime\Code.cs
+    /ref:C:\Dev\dsharp\src\DSharp.Mscorlib\bin\Debug\net471\DSharp.Mscorlib.dll /out:out.js C:\Dev\dsharp\src\DSharp.Compiler.Tests\Source\Mscorlib\DateTime\Code.cs
     ```
     > update the paths to match the ones in your pc
 3. F5 in debug mode
