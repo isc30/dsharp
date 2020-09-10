@@ -107,7 +107,7 @@
         module: module,
         modules: _modules,
         dependency: dependency,
-        meta: _meta,
+        registerMetadataImporter: registerMetadataImporter,
         importMetadata: importMetadata,
 
         isClass: isClass,

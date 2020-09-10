@@ -1,5 +1,5 @@
 var _modules = {};
-var _meta = {};
+var _meta = []; // array of functions
 var _genericConstructorCache = {};
 
 var _classMarker = 'class';
@@ -7,15 +7,13 @@ var _interfaceMarker = 'interface';
 
 /// imports metadata info onto the types, this is needed to avoid namespace conflicts
 function importMetadata() {
-    for (var moduleName in _meta) {
-        var module = ss.modules[moduleName];
-        if (module != null) {
-            var metadata = _meta[moduleName];
-            for (var type in metadata) {
-                extend(module[type], metadata[type]);
-            }
-        }
+    for (var i = 0; i < _meta.length; ++i) {
+        _meta[i]();
     }
+}
+
+function registerMetadataImporter(func) {
+    _meta.push(func);
 }
 
 // resolves an internal dependency (module -> global)

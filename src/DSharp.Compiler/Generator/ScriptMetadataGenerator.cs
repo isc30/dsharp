@@ -41,22 +41,23 @@ namespace DSharp.Compiler.Generator
 
             List<string> dependencies = GenerateDependenciesList(symbolSet);
 
+            Writer.Write("ss.registerMetadataImporter(function(){");
             Writer.Write("(function(");
             Writer.Write(string.Join(",", dependencies));
             Writer.WriteLine(") {");
             Writer.Indent++;
             Writer.WriteLine("\"use strict\"");
             Writer.WriteLine("var Void = null;");
-            Writer.WriteLine($"var m = {DSharpStringResources.DSHARP_SCRIPT_NAME}.meta['{symbols.ScriptName}'] = {{}};");
+            Writer.WriteLine($"var module = {DSharpStringResources.DSHARP_SCRIPT_NAME}.modules['{symbols.ScriptName}'];");
 
             foreach (TypeSymbol type in types)
             {
                 if (GetMembers(type) is IEnumerable<MemberSymbol> members && members.Any())
                 {
-                    Writer.WriteLine($"m.{type.GeneratedName} = {{ $members: [");
+                    Writer.WriteLine($"module.{type.GeneratedName}.$members = [");
                     Writer.Indent++;
                     WriteMembers(members, nullableType);
-                    Writer.WriteLine(" ] };");
+                    Writer.WriteLine("];");
                     Writer.Indent--;
                 }
             }
@@ -66,7 +67,7 @@ namespace DSharp.Compiler.Generator
             Writer.Write(string.Join(",", dependencies.Select(d => d != DSharpStringResources.DSHARP_SCRIPT_NAME
                 ? $"ss.dependency('{d}')"
                 : DSharpStringResources.DSHARP_SCRIPT_NAME)));
-            Writer.Write(");");
+            Writer.Write(")});");
         }
 
         private List<string> GenerateDependenciesList(SymbolSet symbols)

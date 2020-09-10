@@ -1,11 +1,11 @@
-(function(ss) {
+ss.registerMetadataImporter(function(){(function(ss) {
   "use strict"
   var Void = null;
-  var m = ss.meta['test'] = {};
-  m.MyClass = { $members: [
+  var module = ss.modules['test'];
+  module.MyClass.$members = [
     {MemberType: 16,Name: 'Getter', Type: Number},
     {MemberType: 8,Name: 'method', Type: Void},
     {MemberType: 8,Name: '_assert', Type: Void},
     {MemberType: 8,Name: 'get_item', Type: Object},
-    {MemberType: 8,Name: 'set_item', Type: Object} ] };
-})(ss);
+    {MemberType: 8,Name: 'set_item', Type: Object}];
+})(ss)});
