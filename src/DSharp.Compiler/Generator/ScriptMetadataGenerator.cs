@@ -171,6 +171,13 @@ namespace DSharp.Compiler.Generator
 
             if (associatedType.IsApplicationType)
             {
+                if (associatedType is GenericParameterSymbol)
+                {
+                    // we have no idea what the generic parameters are at this point
+                    // apply boxing and hope for the best
+                    return "Object";
+                }
+
                 return $"module.{associatedType.FullGeneratedName}";
             }
 

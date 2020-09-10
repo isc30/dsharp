@@ -36,8 +36,7 @@ function defineProperty(instance, propertyName, value) {
         get: function () { return prop; },
         set: function (value) { prop = value; },
         configurable: true,
-        enumerable: true,
-        writable: true
+        enumerable: true
     });
 }
 

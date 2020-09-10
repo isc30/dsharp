@@ -5,6 +5,7 @@ define('test', ['ss'], function(ss) {
   // TypeTests.MyClass
 
   function MyClass() {
+    ss.defineProperty(this, 'Other', null);
     ss.defineProperty(this, 'Getter', 0);
     var members = ss.getMembers((MyClass));
     MyClass._assert(members[0].Name === 'get_Item');
@@ -19,6 +20,15 @@ define('test', ['ss'], function(ss) {
   var MyClass$ = {
     method: function() {
     },
+    method2: function($TArgs) {
+      throw new Error();
+    },
+    method3: function() {
+      throw new Error();
+    },
+    method4: function() {
+      throw new Error();
+    },
     get_item: function(index) {
       return index;
     },
@@ -28,9 +38,20 @@ define('test', ['ss'], function(ss) {
   };
 
 
+  // TypeTests.MyClass`1
+
+  function MyClass_$1() {
+    ss.defineProperty(this, 'Other', null);
+  }
+  var MyClass_$1$ = {
+
+  };
+
+
   var $exports = ss.module('test', null,
     {
-      MyClass: ss.defineClass(MyClass, MyClass$, [], null)
+      MyClass: ss.defineClass(MyClass, MyClass$, [], null),
+      MyClass_$1: ss.defineClass(MyClass_$1, MyClass_$1$, [], null)
     });
 
 

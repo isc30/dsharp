@@ -319,7 +319,10 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                     instanceCoreType = instanceInterface;
                 }
 
-                instanceCoreType.SetImported(genericCoreType.Dependency);
+                if (genericCoreType.Dependency != null)
+                {
+                    instanceCoreType.SetImported(genericCoreType.Dependency);
+                }
 
                 if (genericCoreType.IgnoreNamespace)
                 {

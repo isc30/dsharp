@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -6,7 +8,9 @@ using System.Runtime.CompilerServices;
 
 namespace TypeTests {
 
-    public class MyClass {
+    public class MyClass
+    {
+        public MyClass<int> Other { get; set; }
 
         public object this[int index]
         {
@@ -18,8 +22,13 @@ namespace TypeTests {
 
         public void Method()
         {
-
         }
+
+        public T Method2<T>() { throw new Exception();  }
+
+        public IEnumerable Method3() { throw new Exception();  }
+
+        public IList<int> Method4() { throw new Exception();  }
 
         public MyClass() {
             MemberInfo[] members = typeof(MyClass).GetMembers();
@@ -35,5 +44,10 @@ namespace TypeTests {
         {
 
         }
+    }
+
+    public class MyClass<T>
+    {
+        public MyClass Other { get; set; }
     }
 }
