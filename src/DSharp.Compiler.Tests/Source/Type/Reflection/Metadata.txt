@@ -3,9 +3,11 @@ ss.registerMetadataImporter(function(){(function(ss) {
   var Void = null;
   var module = ss.modules['test'];
   module.MyClass.$members = [
+    {MemberType: 8,Name: 'getDelegate', Type: Function},
     {MemberType: 16,Name: 'Other', Type: module.MyClass_$1},
     {MemberType: 16,Name: 'Getter', Type: Number},
     {MemberType: 8,Name: 'method', Type: Void},
+    {MemberType: 16,Name: 'Tyyype', Type: Type},
     {MemberType: 8,Name: 'method2', Type: Object},
     {MemberType: 8,Name: 'method3', Type: ss.IEnumerable},
     {MemberType: 8,Name: 'method4', Type: ss.IList_$1},
