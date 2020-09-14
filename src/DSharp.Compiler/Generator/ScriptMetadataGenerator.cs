@@ -48,6 +48,7 @@ namespace DSharp.Compiler.Generator
             Writer.Indent++;
             Writer.WriteLine("\"use strict\"");
             Writer.WriteLine("var Void = null;");
+            Writer.WriteLine("var Type = Function;");
             Writer.WriteLine($"var module = {DSharpStringResources.DSHARP_SCRIPT_NAME}.modules['{symbols.ScriptName}'];");
 
             foreach (TypeSymbol type in types)
@@ -191,8 +192,9 @@ namespace DSharp.Compiler.Generator
             Writer.Write($"MemberType: {memberType},");
             Writer.Write($"Name: '{name}'");
             Writer.Write(", ");
-            Writer.Write("Type: ");
+            Writer.Write("Type: eval(\"try{");
             Writer.Write(type);
+            Writer.Write("}catch{}\")");
             Writer.Write("}");
         }
 
