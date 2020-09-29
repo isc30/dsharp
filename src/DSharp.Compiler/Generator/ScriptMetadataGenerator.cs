@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using DSharp.Compiler.Extensions;
 using DSharp.Compiler.ScriptModel.Symbols;
 
 namespace DSharp.Compiler.Generator
@@ -101,6 +102,11 @@ namespace DSharp.Compiler.Generator
 
         private IEnumerable<MemberSymbol> GetMembers(TypeSymbol type)
         {
+            if (type == null)
+            {
+                return Array.Empty<MemberSymbol>();
+            }
+
             MemberSymbol indexerSymbol = null;
 
             if(type is ClassSymbol classSymbol)
@@ -112,7 +118,18 @@ namespace DSharp.Compiler.Generator
                 indexerSymbol = interfaceSymbol.Indexer;
             }
 
-            return type.Members?.Concat(new [] {indexerSymbol}).Where(MemberHasMetadata);
+            IEnumerable<MemberSymbol> parentMembers = GetMembers(type.Parent as TypeSymbol);
+            IEnumerable<MemberSymbol> interfacesMembers = type.GetInterfaces().SelectMany(i => GetMembers(i));
+
+            return Array.Empty<MemberSymbol>()
+                .Concat(type.Members ?? Array.Empty<MemberSymbol>())
+                .Concat(new [] { indexerSymbol })
+                .Concat(parentMembers)
+                .Concat(interfacesMembers)
+                .Where(m => m != null)
+                .GroupBy(m => m.GeneratedName)
+                .Select(g => g.First())
+                .Where(MemberHasMetadata);
         }
 
         private void WriteMembers(IEnumerable<MemberSymbol> members, TypeSymbol nullableType)
@@ -203,6 +220,7 @@ namespace DSharp.Compiler.Generator
             switch (arg?.Type)
             {
                 case SymbolType.Method:
+                    return !((MethodSymbol)arg).IsAliased; // ignore aliased members
                 case SymbolType.Field:
                 case SymbolType.Property:
                 case SymbolType.Indexer:

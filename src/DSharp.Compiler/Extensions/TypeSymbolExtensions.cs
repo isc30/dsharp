@@ -18,7 +18,7 @@ namespace DSharp.Compiler.Extensions
 
             if (symbol is InterfaceSymbol interfaceSymbol)
             {
-                var interfaces = new List<InterfaceSymbol> { interfaceSymbol };
+                var interfaces = new List<InterfaceSymbol>();
 
                 if (interfaceSymbol.Interfaces != null)
                 {
@@ -28,16 +28,16 @@ namespace DSharp.Compiler.Extensions
                 return interfaces;
             }
 
-            return null;
+            return Array.Empty<InterfaceSymbol>();
         }
 
         internal static bool ImplementsListType(this TypeSymbol symbol)
         {
             var interfaces = symbol.GetInterfaces();
 
-            if (interfaces == null)
+            if (symbol is InterfaceSymbol interfaceSymbol)
             {
-                return false;
+                interfaces.Add(interfaceSymbol);
             }
 
             return interfaces.Any(i => IsSpecifiedType(i, "System.Collections", "IList", "IList`1"));

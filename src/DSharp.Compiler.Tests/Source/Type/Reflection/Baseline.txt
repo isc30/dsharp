@@ -2,21 +2,37 @@
 
 define('test', ['ss'], function(ss) {
   var $global = this;
+  // TypeTests.ExtendedInterface
+
+  function ExtendedInterface() { }
+
+
+  // TypeTests.BaseClass
+
+  function BaseClass() {
+  }
+  var BaseClass$ = {
+    dispose: function() {
+    }
+  };
+
+
   // TypeTests.MyClass
 
   function MyClass() {
     ss.defineProperty(this, 'Other', null);
     ss.defineProperty(this, 'Getter', 0);
     ss.defineProperty(this, 'Tyyype', null);
+    BaseClass.call(this);
     var members = ss.getMembers((MyClass));
-    MyClass._assert(members[0].Name === 'get_Item');
-    MyClass._assert(members[1].Name === 'set_Item');
-    MyClass._assert(members[2].Name === 'Getter');
-    MyClass._assert((members[2]).Type === Number);
-    MyClass._assert(members[3].Name === 'Method');
-    MyClass._assert((members[3]).Type == null);
+    MyClass._assert$1(members[0].Name === 'get_Item');
+    MyClass._assert$1(members[1].Name === 'set_Item');
+    MyClass._assert$1(members[2].Name === 'Getter');
+    MyClass._assert$1((members[2]).Type === Number);
+    MyClass._assert$1(members[3].Name === 'Method');
+    MyClass._assert$1((members[3]).Type == null);
   }
-  MyClass._assert = function(assertion) {
+  MyClass._assert$1 = function(assertion) {
   };
   var MyClass$ = {
     getDelegate: function() {
@@ -46,6 +62,7 @@ define('test', ['ss'], function(ss) {
 
   function MyClass_$1() {
     ss.defineProperty(this, 'Other', null);
+    BaseClass.call(this);
   }
   var MyClass_$1$ = {
 
@@ -54,8 +71,10 @@ define('test', ['ss'], function(ss) {
 
   var $exports = ss.module('test', null,
     {
-      MyClass: ss.defineClass(MyClass, MyClass$, [], null),
-      MyClass_$1: ss.defineClass(MyClass_$1, MyClass_$1$, [], null)
+      ExtendedInterface: ss.defineInterface(ExtendedInterface, [ss.IDisposable, ss.ICollection_$1]),
+      BaseClass: ss.defineClass(BaseClass, BaseClass$, [], null, [ss.IDisposable]),
+      MyClass: ss.defineClass(MyClass, MyClass$, [], BaseClass),
+      MyClass_$1: ss.defineClass(MyClass_$1, MyClass_$1$, [], BaseClass)
     });
 
 

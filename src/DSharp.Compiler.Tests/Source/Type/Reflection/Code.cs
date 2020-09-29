@@ -10,7 +10,17 @@ namespace TypeTests {
 
     public delegate void Wooow();
 
-    public class MyClass
+    public class BaseClass : IDisposable
+    {
+        public virtual void Dispose() { }
+    }
+
+    public interface ExtendedInterface : IDisposable, ICollection<int>
+    {
+        IEnumerable Wow();
+    }
+
+    public class MyClass : BaseClass
     {
         public Wooow GetDelegate() { throw new Exception(); }
 
@@ -52,7 +62,7 @@ namespace TypeTests {
         }
     }
 
-    public class MyClass<T>
+    public class MyClass<T> : BaseClass
     {
         public MyClass Other { get; set; }
     }
